@@ -1,0 +1,77 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.aksw.simba</groupId>
+  <artifactId>gscheck</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <repositories>
+		<!-- Let's use a local repository for the local libraries of this project -->
+		<repository>
+			<id>local repository</id>
+			<url>file://${project.basedir}/repository</url>
+		</repository>
+		<repository>
+			<id>maven.aksw.internal</id>
+			<name>University Leipzig, AKSW Maven2 Repository</name>
+			<url>http://maven.aksw.org/repository/internal</url>
+		</repository>
+		<repository>
+			<id>maven.aksw.snapshots</id>
+			<name>University Leipzig, AKSW Maven2 Repository</name>
+			<url>http://maven.aksw.org/repository/snapshots</url>
+		</repository>
+		<repository>
+			<id>Apache Repo</id>
+			<name>Apache Repository</name>
+			<url>https://repository.apache.org/content/repositories/releases/</url>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.aksw</groupId>
+	<artifactId>gerbil</artifactId>
+	<version>1.2.2-SNAPSHOT</version>	
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<!-- License management plugin -->
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<header>com/mycila/maven/plugin/license/templates/LGPL-3.txt</header>
+					<properties>
+						<owner>Agile Knowledge Engineering and Semantic Web (AKSW) (usbeck@informatik.uni-leipzig.de)</owner>
+					</properties>
+					<excludes>
+						<exclude>**/README</exclude>
+						<exclude>*.log</exclude>
+						<exclude>*.html</exclude>
+						<exclude>start.sh</exclude>
+						<exclude>**/LICENSE</exclude>
+						<exclude>documentation/**</exclude>
+						<exclude>repository/**</exclude>
+						<exclude>gerbil_data/**</exclude>
+						<exclude>src/main/resources/**</exclude>
+						<exclude>src/main/properties/**</exclude>
+						<exclude>src/main/webapp/**</exclude>
+						<exclude>src/test/resources/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			
+			
+		</plugins>
+		</build>
+</project>
