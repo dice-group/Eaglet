@@ -8,7 +8,7 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 
-public class subsetmarking {
+public class SubsetMarkingError {
 
 	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
 			"C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
@@ -20,8 +20,8 @@ public class subsetmarking {
 	static int textend;
 	static String entity_name;
 
-	static Set<problem_entity> pe = new HashSet<problem_entity>();
-	static problem_entity funny_entity = new problem_entity();
+	static Set<Problem_Entity> pe = new HashSet<Problem_Entity>();
+	static Problem_Entity funny_entity = new Problem_Entity();
 
 	public static void main(String[] args) throws GerbilException {
 
@@ -98,8 +98,8 @@ public class subsetmarking {
 		printlist(pe);
 	}
 
-	public static void printlist(Set<problem_entity> pe2) {
-		for (problem_entity x : pe2) {
+	public static void printlist(Set<Problem_Entity> pe2) {
+		for (Problem_Entity x : pe2) {
 			System.out.println("DOC ID " + x.getDoc());
 			System.out.println("ENTITY NAME: " + x.getEntity_name());
 			System.out.println("ENTITY LENGTH " + x.getLength());

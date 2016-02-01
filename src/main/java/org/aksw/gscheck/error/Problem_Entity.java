@@ -1,6 +1,6 @@
 package org.aksw.gscheck.error;
 
-public class problem_entity {
+public class Problem_Entity {
 	String doc;
 	int start_pos;
 	int length;
