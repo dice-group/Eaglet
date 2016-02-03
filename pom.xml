@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.aksw.simba</groupId>
-  <artifactId>gscheck</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <repositories>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.aksw.simba</groupId>
+	<artifactId>gscheck</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<repositories>
 		<!-- Let's use a local repository for the local libraries of this project -->
 		<repository>
 			<id>local repository</id>
@@ -25,12 +26,19 @@
 			<url>https://repository.apache.org/content/repositories/releases/</url>
 		</repository>
 	</repositories>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.aksw</groupId>
-	<artifactId>gerbil</artifactId>
-	<version>1.2.2-SNAPSHOT</version>	
+			<artifactId>gerbil</artifactId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
+		<!-- Stanford NLP -->
+		<dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<!-- <version>3.5.1</version> -->
+			<version>3.4</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -52,7 +60,8 @@
 				<configuration>
 					<header>com/mycila/maven/plugin/license/templates/LGPL-3.txt</header>
 					<properties>
-						<owner>Agile Knowledge Engineering and Semantic Web (AKSW) (usbeck@informatik.uni-leipzig.de)</owner>
+						<owner>Agile Knowledge Engineering and Semantic Web (AKSW)
+							(usbeck@informatik.uni-leipzig.de)</owner>
 					</properties>
 					<excludes>
 						<exclude>**/README</exclude>
@@ -70,8 +79,8 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			
-			
+
+
 		</plugins>
-		</build>
+	</build>
 </project>

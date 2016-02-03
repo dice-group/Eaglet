@@ -1,9 +1,8 @@
 package org.aksw.gscheck.error;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.aksw.gerbil.dataset.DatasetConfiguration;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
@@ -11,53 +10,39 @@ import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 
 public class CombinedTaggingError {
-	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
-			"C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
-			ExperimentType.A2KB);
+    private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
+            "gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
 
-	static String text, text1;
+    public static void main(String[] args) throws GerbilException {
+        List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 
-	public static void main(String[] args) throws GerbilException {
-		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
-		int j = 0;
-
-		List<String> result = new ArrayList<String>();
-		for (Document doc : documents) {
-			text = doc.getText();
-			List<NamedEntity> entities = doc.getMarkings(NamedEntity.class);
-			NamedEntity a, b;
-			boolean s = false;
-			StringBuffer sb = new StringBuffer();
-			for (NamedEntity entity : entities) {
-				int i = entities.indexOf(entity);
-				if (i < entities.size()) {
-					text1 = text.substring(entity.getStartPosition() + entity.getLength(),
-							entities.get(i + 1).getStartPosition());
-					if (text1.equals("//s")) {
-						sb.append(text.substring(entity.getStartPosition(),
-								entities.get(i + 1).getStartPosition() + entities.get(i + 1).getLength()));
-
-						s = true;
-
-					} else {
-						s = false;
-					}
-
-				}
-
-				text1 = "";
-				
-				if(s==true)
-				{
-					result.add(sb.toString());
-					sb.delete(0,sb.length());
-				}
-			}
-
-		}
-		System.out.println(result);
-	}
+        String text, substring;
+        List<NamedEntity> entities;
+        NamedEntity a, b;
+        for (Document doc : documents) {
+            text = doc.getText();
+            entities = doc.getMarkings(NamedEntity.class);
+            Collections.sort(entities, new StartPosBasedComparator());
+            if (entities.size() > 0) {
+                b = entities.get(0);
+                for (int i = 1; i < entities.size(); ++i) {
+                    a = b;
+                    b = entities.get(i);
+                    // make sure that the entities are not overlapping
+                    if ((a.getStartPosition() + a.getLength()) <= b.getStartPosition()) {
+                        substring = text.substring(a.getStartPosition() + a.getLength(), b.getStartPosition());
+                        if (substring.matches("[\\s]*")) {
+                            System.out.println("I would connect two entities to a single large entity \""
+                                    + text.substring(a.getStartPosition(), b.getStartPosition() + b.getLength())
+                                    + "\".");
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }
