@@ -25,14 +25,14 @@ public class ErraticEntityError {
 
 	public static void main(String[] args) throws GerbilException {
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
-		LemmaCreator lc = new LemmaCreator();
+		DocumentProcessor dp = new DocumentProcessor();
 		
 		for (Document doc : documents) {
 			text = doc.getText();
 			List<NamedEntity> entities = doc.getMarkings(NamedEntity.class);
 			for (NamedEntity entity : entities) {
 				// creating the entity set for all documents.
-				entity_name = lc.lemmatize_entity(
+				entity_name = dp.lemmatize_entity(
 						text.substring(entity.getStartPosition(), entity.getStartPosition() + entity.getLength()));
 				// lc.lemmatize_entity(text.substring(entity.getStartPosition(),
 				// entity.getStartPosition() + entity.getLength()));
@@ -46,7 +46,7 @@ public class ErraticEntityError {
 				entity_set.add(dummy_entity);
 
 			}
-			List<Problem_Entity> dummy = lc.lemmatize(doc);
+			List<Problem_Entity> dummy = dp.lemmatize(doc);
 			lemma_set.addAll(dummy);
 			
 
