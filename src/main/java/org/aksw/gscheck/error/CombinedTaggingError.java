@@ -63,7 +63,6 @@ public class CombinedTaggingError {
 					}
 				}
 			}
-			// System.out.println("Document over!!");
 			eligible_makrings.clear();
 		}
 

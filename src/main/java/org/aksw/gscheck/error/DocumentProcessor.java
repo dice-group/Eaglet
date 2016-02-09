@@ -10,6 +10,7 @@ import org.aksw.gerbil.transfer.nif.Document;
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -102,10 +103,33 @@ public class DocumentProcessor {
 					|| (token.get(PartOfSpeechAnnotation.class).startsWith("JJ"))) {
 				eligible_makrings.add(token);
 
-				
 			}
 		}
-	
+
+		return eligible_makrings;
+	}
+
+	public List<CoreLabel> LongEntity_Extracter_util(String text) {
+		List<CoreLabel> eligible_makrings = new ArrayList<CoreLabel>();
+
+		Annotation document = new Annotation(text);
+		pipeline.annotate(document);
+
+		List<CoreLabel> tokens = document.get(TokensAnnotation.class);
+		for (CoreLabel token : tokens) {
+			// we can get the token that has been marked inside the text
+
+			//System.out.println(token.get(PartOfSpeechAnnotation.class));
+			//System.out.print(token.get(TextAnnotation.class));
+			//System.out.print("??????");
+			if ((token.get(PartOfSpeechAnnotation.class).equals("CC"))
+					|| (token.get(PartOfSpeechAnnotation.class).equals("WDT"))
+					|| ((token.get(PartOfSpeechAnnotation.class).equals("IN")))) {
+				eligible_makrings.add(token);
+
+			}
+		}
+
 		return eligible_makrings;
 	}
 }
