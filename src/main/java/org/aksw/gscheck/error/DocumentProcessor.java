@@ -122,9 +122,7 @@ public class DocumentProcessor {
 			//System.out.println(token.get(PartOfSpeechAnnotation.class));
 			//System.out.print(token.get(TextAnnotation.class));
 			//System.out.print("??????");
-			if ((token.get(PartOfSpeechAnnotation.class).equals("CC"))
-					|| (token.get(PartOfSpeechAnnotation.class).equals("WDT"))
-					|| ((token.get(PartOfSpeechAnnotation.class).equals("IN")))) {
+			if ((token.get(PartOfSpeechAnnotation.class).startsWith("CD"))) {
 				eligible_makrings.add(token);
 
 			}

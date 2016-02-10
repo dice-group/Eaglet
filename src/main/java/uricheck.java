@@ -21,8 +21,7 @@ public class uricheck {
 		EntityCheckerManagerImpl manager = new EntityCheckerManagerImpl();
 		HttpBasedEntityChecker checker = new HttpBasedEntityChecker();
 		manager.registerEntityChecker("http://dbpedia.org/resource", checker);
-		manager.registerEntityChecker("http://de.dbpedia.org/resource", checker);
-		manager.registerEntityChecker("http://fr.dbpedia.org/resource", checker);
+		
 
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 		for (Document doc : documents) {
