@@ -1,5 +1,6 @@
 package org.aksw.gscheck.error;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.aksw.gerbil.dataset.DatasetConfiguration;
@@ -8,6 +9,7 @@ import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
@@ -22,30 +24,32 @@ public class LongDescriptionError {
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 
 		DocumentProcessor dp = new DocumentProcessor();
-		List<NamedEntity> entities;
+
 		for (Document doc : documents) {
 			String text = doc.getText();
-			List<CoreLabel> eligible_makrings = dp.LongEntity_Extracter_util(text);
-
-			entities = doc.getMarkings(NamedEntity.class);
+			List<NamedEntity> entities = doc.getMarkings(NamedEntity.class);
+			List<CoreLabel> POSBlackList = dp.LongEntity_Extracter_util(text);
+			Collections.sort(entities, new StartPosBasedComparator());
 
 			for (NamedEntity entity : entities) {
-				String[] arr = text.substring(entity.getStartPosition(), entity.getStartPosition() + entity.getLength())
-						.split(" ");
-
-				for (String x : arr) {
-					for (CoreLabel z : eligible_makrings) {
-						if (z.get(TextAnnotation.class).equals(x)) {
-							System.out.println(z.get(TextAnnotation.class) + " " + z.get(PartOfSpeechAnnotation.class)
-									+ " " + z.beginPosition() + " " + z.endPosition() + " ---->" + text.substring(
-											entity.getStartPosition(), entity.getStartPosition() + entity.getLength()));
-
+				String entity_text = text.substring(entity.getStartPosition(),
+						entity.getLength() + entity.getStartPosition());
+				String[] arr = entity_text.split(" ");
+				for (String dummy : arr) {
+					for (CoreLabel bentity : POSBlackList) {
+						if (bentity.get(TextAnnotation.class).equals(dummy)) {
+							System.out.println(dummy +"-----> "+text.substring(entity.getStartPosition(),
+									entity.getLength() + entity.getStartPosition()) + " "
+									+ bentity.get(TextAnnotation.class) + " " + entity.getStartPosition() + " "
+									+ entity.getLength());
 						}
 					}
 				}
 
 			}
+
 		}
+
 	}
 
 }

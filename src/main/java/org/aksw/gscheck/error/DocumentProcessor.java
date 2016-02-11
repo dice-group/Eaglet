@@ -110,24 +110,29 @@ public class DocumentProcessor {
 	}
 
 	public List<CoreLabel> LongEntity_Extracter_util(String text) {
-		List<CoreLabel> eligible_makrings = new ArrayList<CoreLabel>();
+		List<CoreLabel> POS_Blacklist = new ArrayList<CoreLabel>();
 
 		Annotation document = new Annotation(text);
 		pipeline.annotate(document);
 
 		List<CoreLabel> tokens = document.get(TokensAnnotation.class);
-		for (CoreLabel token : tokens) {
+		for (CoreLabel token : tokens) 
+		{
 			// we can get the token that has been marked inside the text
 
-			//System.out.println(token.get(PartOfSpeechAnnotation.class));
-			//System.out.print(token.get(TextAnnotation.class));
-			//System.out.print("??????");
-			if ((token.get(PartOfSpeechAnnotation.class).startsWith("CD"))) {
-				eligible_makrings.add(token);
+			// System.out.println(token.get(PartOfSpeechAnnotation.class));
+			// System.out.print(token.get(TextAnnotation.class));
+			// System.out.print("??????");
+			if ((token.get(PartOfSpeechAnnotation.class).equals("VBP"))
+					|| (token.get(PartOfSpeechAnnotation.class).equals("VBZ")
+							|| (token.get(PartOfSpeechAnnotation.class).equals("WDT"))
+							|| (token.get(PartOfSpeechAnnotation.class).equals("PRP"))
+							|| (token.get(PartOfSpeechAnnotation.class).equals("MD")))) {
+				POS_Blacklist.add(token);
 
 			}
 		}
 
-		return eligible_makrings;
+		return POS_Blacklist;
 	}
 }
