@@ -1,4 +1,4 @@
-package org.aksw.gscheck.error;
+package org.aksw.gscheck.errorutils;
 
 public class Problem_Entity {
 	String doc;

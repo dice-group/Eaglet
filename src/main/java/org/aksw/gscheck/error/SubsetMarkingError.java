@@ -7,9 +7,12 @@ import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.aksw.gscheck.errorutils.Problem_Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SubsetMarkingError {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(ErraticEntityError.class);
 	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
 			"C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
 			ExperimentType.A2KB);
@@ -23,8 +26,8 @@ public class SubsetMarkingError {
 	static Set<Problem_Entity> pe = new HashSet<Problem_Entity>();
 	static Problem_Entity funny_entity = new Problem_Entity();
 
-	public static void main(String[] args) throws GerbilException {
-
+	public static void subsetmark() throws GerbilException {
+		LOGGER.info(" SUBSET MARKING MODULE RUNNING");
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 		for (Document doc : documents) { // getting list of documents
 			text = doc.getText();
@@ -86,7 +89,7 @@ public class SubsetMarkingError {
 						funny_entity.setLength(entity.getLength());
 						funny_entity.setProblem_text(text.substring(textstart, textend));
 						funny_entity.setStart_pos(entity.getStartPosition());
-						//adding the failed entity to list
+						// adding the failed entity to list
 						pe.add(funny_entity);
 					}
 				}

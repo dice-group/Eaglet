@@ -10,6 +10,9 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
+import org.aksw.gscheck.errorutils.DocumentProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
@@ -17,16 +20,18 @@ import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 
 public class CombinedTaggingError {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CombinedTaggingError.class);
+
 	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
 			"gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
+	static String substring;
+	static List<NamedEntity> entities;
+	static NamedEntity a, b;
+	static DocumentProcessor dp = new DocumentProcessor();
 
-	public static void main(String[] args) throws GerbilException {
+	public static void CombinedTagger() throws GerbilException {
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
-		DocumentProcessor dp = new DocumentProcessor();
-
-		String substring;
-		List<NamedEntity> entities;
-		NamedEntity a, b;
+		LOGGER.info(" COMBINED TAGGER MODULE RUNNING");
 
 		for (Document doc : documents) {
 			String text = doc.getText();

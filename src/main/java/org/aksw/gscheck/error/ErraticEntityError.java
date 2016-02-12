@@ -4,14 +4,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.aksw.gerbil.Experimenter;
 import org.aksw.gerbil.dataset.DatasetConfiguration;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.aksw.gscheck.errorutils.DocumentProcessor;
+import org.aksw.gscheck.errorutils.Problem_Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ErraticEntityError {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ErraticEntityError.class);
 	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
 			"C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
 			ExperimentType.A2KB);
@@ -22,11 +28,12 @@ public class ErraticEntityError {
 	static Problem_Entity funny_entity = new Problem_Entity();
 	static String text;
 	static Set<Problem_Entity> missedentity_set = new HashSet<Problem_Entity>();
+	static DocumentProcessor dp = new DocumentProcessor();
 
-	public static void main(String[] args) throws GerbilException {
+	public static void ErraticEntityProb() throws GerbilException {
+		LOGGER.info(" ERRATIC ENTITY MODULE RUNNING");
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
-		DocumentProcessor dp = new DocumentProcessor();
-		
+
 		for (Document doc : documents) {
 			text = doc.getText();
 			List<NamedEntity> entities = doc.getMarkings(NamedEntity.class);
@@ -48,16 +55,14 @@ public class ErraticEntityError {
 			}
 			List<Problem_Entity> dummy = dp.lemmatize(doc);
 			lemma_set.addAll(dummy);
-			
 
 		}
 		/*
-		for (Problem_Entity le : entity_set)
-		{
-			System.out.println(le.getEntity_name());
-			System.out.println(le.getStart_pos());
-			System.out.println(le.getLength());
-		}*/
+		 * for (Problem_Entity le : entity_set) {
+		 * System.out.println(le.getEntity_name());
+		 * System.out.println(le.getStart_pos());
+		 * System.out.println(le.getLength()); }
+		 */
 
 		// creating the lemma set document wise.
 
@@ -67,10 +72,9 @@ public class ErraticEntityError {
 			if (entity_set.contains(le)) {
 				break;
 			}
-			//System.out.println(le.getEntity_name());
+			// System.out.println(le.getEntity_name());
 			for (Problem_Entity es : entity_set) {
-				if ((le.getEntity_name().equals(es.getEntity_name())) && (le.getDoc().equals(es.getDoc()))) 
-				{
+				if ((le.getEntity_name().equals(es.getEntity_name())) && (le.getDoc().equals(es.getDoc()))) {
 
 					if ((le.getStart_pos() >= es.getStart_pos() && (le.getEnd_pos() <= es.getEnd_pos()))) {
 						break;
@@ -88,6 +92,7 @@ public class ErraticEntityError {
 	}
 
 	public static void printlist(Set<Problem_Entity> list) {
+
 		System.out.println("The missing entities are:");
 		for (Problem_Entity x : list) {
 			System.out.println("DOC ID " + x.getDoc());

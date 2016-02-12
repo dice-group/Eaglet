@@ -1,4 +1,4 @@
-package org.aksw.gscheck.error;
+package org.aksw.gscheck.errorutils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
