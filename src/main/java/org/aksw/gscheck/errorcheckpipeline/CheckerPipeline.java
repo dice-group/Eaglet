@@ -13,10 +13,10 @@ public class CheckerPipeline {
 
 	public static void PiPeStructure () throws GerbilException
 	{
-		CombinedTaggingError .CombinedTagger();
-		ErraticEntityError.ErraticEntityProb();
-		LongDescriptionError.LongDescription();
-		OverLappingError.overlapcheck();
+		//CombinedTaggingError .CombinedTagger();
+		//ErraticEntityError.ErraticEntityProb();
+		//LongDescriptionError.LongDescription();
+		//OverLappingError.overlapcheck();
 		SubsetMarkingError.subsetmark();
 	}
 	public static void main(String[] args) throws GerbilException 

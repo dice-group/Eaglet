@@ -23,16 +23,17 @@ public class SubsetMarkingError {
 	static int textend;
 	static String entity_name;
 
-	static Set<Problem_Entity> pe = new HashSet<Problem_Entity>();
-	static Problem_Entity funny_entity = new Problem_Entity();
-
 	public static void subsetmark() throws GerbilException {
 		LOGGER.info(" SUBSET MARKING MODULE RUNNING");
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
+
+		Set<Problem_Entity> pe = new HashSet<Problem_Entity>();
+
 		for (Document doc : documents) { // getting list of documents
 			text = doc.getText();
 			List<NamedEntity> entities = doc.getMarkings(NamedEntity.class);
 			for (NamedEntity entity : entities) { // getting list of entity
+				Problem_Entity funny_entity = new Problem_Entity();
 				start_index = entity.getStartPosition();
 				end_index = entity.getStartPosition() + entity.getLength();
 				if (start_index > 0) {
@@ -40,6 +41,7 @@ public class SubsetMarkingError {
 																// condition
 					// Executed only when start condition of entity are not met
 					{
+
 						entity_name = entity.getUri();
 						entity_name = entity_name.substring(entity.getUri().lastIndexOf("/") + 1);
 						if (entity.getStartPosition() + entity.getLength() + 40 > text.length() - 1) {
@@ -59,7 +61,8 @@ public class SubsetMarkingError {
 						funny_entity.setLength(entity.getLength());
 						funny_entity.setProblem_text(text.substring(textstart, textend));
 						funny_entity.setStart_pos(entity.getStartPosition());
-						pe.add(funny_entity); // adding failed entity to list
+
+						pe.add(funny_entity);
 					}
 				}
 
@@ -90,6 +93,7 @@ public class SubsetMarkingError {
 						funny_entity.setProblem_text(text.substring(textstart, textend));
 						funny_entity.setStart_pos(entity.getStartPosition());
 						// adding the failed entity to list
+
 						pe.add(funny_entity);
 					}
 				}
@@ -97,8 +101,8 @@ public class SubsetMarkingError {
 			}
 
 		}
-
 		printlist(pe);
+
 	}
 
 	public static void printlist(Set<Problem_Entity> pe2) {
