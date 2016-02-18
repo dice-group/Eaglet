@@ -22,11 +22,11 @@ public class MissingEntityCompletion {
 				String annotatorFilenName = file.getParent() + "/" + file.getName();
 				// System.out.println(annotatorFilenName);
 				System.out.println(file.getName());
-				ArrayList<NamedEntity> result_annotator = Ar.loadAnnotator(annotatorFilenName, file.getName());
+				ArrayList<NamedEntity> result_annotator = AnnotatorResult.loadAnnotator(annotatorFilenName,
+						file.getName());
 				ArrayList<NamedEntity> result_set = CompareWithGS(result_annotator);
 
-				Ar.printlist(result_set);
-				System.out.println("####################################################");
+				AnnotatorResult.printlist(result_set);
 
 			}
 
