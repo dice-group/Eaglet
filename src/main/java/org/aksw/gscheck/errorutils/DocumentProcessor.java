@@ -47,11 +47,11 @@ public class DocumentProcessor {
 			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
 				// Retrieve and add the lemma for each word into the
 				// list of lemmas
-				Problem_Entity dummy = new Problem_Entity();
+				Problem_Entity dummy = new Problem_Entity(token.beginPosition(),
+						token.endPosition() - token.beginPosition(), null);
 				dummy.setEntity_name(token.get(LemmaAnnotation.class));
-				dummy.setStart_pos(token.beginPosition());
+
 				dummy.setEnd_pos(token.endPosition());
-				dummy.setLength(token.endPosition() - token.beginPosition());
 
 				dummy.setDoc(doc.getDocumentURI());
 				if (dummy.getLength() != 0)
@@ -68,7 +68,6 @@ public class DocumentProcessor {
 
 		List<Problem_Entity> lemma_list = new LinkedList<Problem_Entity>();
 		// Create an empty Annotation just with the given text
-		Problem_Entity dummy = new Problem_Entity();
 		String result = null;
 		Annotation document = new Annotation(entity);
 		// run all Annotators on this text
@@ -116,8 +115,7 @@ public class DocumentProcessor {
 		pipeline.annotate(document);
 
 		List<CoreLabel> tokens = document.get(TokensAnnotation.class);
-		for (CoreLabel token : tokens) 
-		{
+		for (CoreLabel token : tokens) {
 			// we can get the token that has been marked inside the text
 
 			// System.out.println(token.get(PartOfSpeechAnnotation.class));

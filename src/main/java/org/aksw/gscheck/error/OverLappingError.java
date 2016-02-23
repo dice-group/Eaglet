@@ -10,6 +10,8 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
+import org.aksw.gscheck.corrections.NamedEntityCorrections;
+import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,18 +27,28 @@ public class OverLappingError {
 		LOGGER.info(" OVERLAPPING ENTITY MODULE RUNNING");
 		for (Document doc : documents) {
 			String text = doc.getText();
-			List<NamedEntity> entities = doc.getMarkings(NamedEntity.class);
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			Collections.sort(entities, new StartPosBasedComparator());
 			for (int i = 0; i < entities.size() - 1; i++) {
 				if ((entities.get(i).getStartPosition() + entities.get(i).getLength()) >= entities.get(i + 1)
 						.getStartPosition()) {
-					System.out.println(text.substring(entities.get(i).getStartPosition(),
-							entities.get(i).getStartPosition() + entities.get(i).getLength()) + " "
-							+ entities.get(i).getStartPosition() + " " + entities.get(i).getLength()
-							+ " is colliding with "
-							+ text.substring(entities.get(i + 1).getStartPosition(),
-									entities.get(i + 1).getStartPosition() + entities.get(i + 1).getLength())
-							+ " " + entities.get(i + 1).getStartPosition() + " " + entities.get(i + 1).getLength());
+					/*
+					 * System.out.println(text.substring(entities.get(i).
+					 * getStartPosition(), entities.get(i).getStartPosition() +
+					 * entities.get(i).getLength()) + " " +
+					 * entities.get(i).getStartPosition() + " " +
+					 * entities.get(i).getLength() + " is colliding with " +
+					 * text.substring(entities.get(i + 1).getStartPosition(),
+					 * entities.get(i + 1).getStartPosition() + entities.get(i +
+					 * 1).getLength()) + " " + entities.get(i +
+					 * 1).getStartPosition() + " " + entities.get(i +
+					 * 1).getLength());
+					 */
+					entities.get(i).setResult(Check.OVERLAPS);
+					entities.get(i).setPartner(entities.get(i + 1));
+					entities.get(i+1).setResult(Check.OVERLAPS);
+					entities.get(i+1).setPartner(entities.get(i));
+					
 				}
 			}
 

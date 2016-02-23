@@ -10,6 +10,8 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
+import org.aksw.gscheck.corrections.NamedEntityCorrections;
+import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
 import org.aksw.gscheck.errorutils.DocumentProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,22 +33,25 @@ public class LongDescriptionError {
 
 		for (Document doc : documents) {
 			String text = doc.getText();
-			List<NamedEntity> entities = doc.getMarkings(NamedEntity.class);
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			List<CoreLabel> POSBlackList = dp.LongEntity_Extracter_util(text);
 			Collections.sort(entities, new StartPosBasedComparator());
 
-			for (NamedEntity entity : entities) {
+			for (NamedEntityCorrections entity : entities) {
 				String entity_text = text.substring(entity.getStartPosition(),
 						entity.getLength() + entity.getStartPosition());
 				String[] arr = entity_text.split(" ");
 				for (String dummy : arr) {
 					for (CoreLabel bentity : POSBlackList) {
 						if (bentity.get(TextAnnotation.class).equals(dummy)) {
-							System.out.println(dummy + "-----> "
+							/*System.out.println(dummy + "-----> "
 									+ text.substring(entity.getStartPosition(),
 											entity.getLength() + entity.getStartPosition())
 									+ " " + bentity.get(TextAnnotation.class) + " " + entity.getStartPosition() + " "
-									+ entity.getLength());
+									+ entity.getLength());*/
+							entity.setResult(Check.DELETED);
+							
+							
 						}
 					}
 				}

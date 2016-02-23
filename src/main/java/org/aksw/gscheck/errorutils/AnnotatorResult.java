@@ -15,6 +15,7 @@ import org.aksw.gerbil.semantic.kb.SimpleWhiteListBasedUriKBClassifier;
 import org.aksw.gerbil.semantic.kb.UriKBClassifier;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.aksw.gscheck.corrections.NamedEntityCorrections;
 
 public class AnnotatorResult {
 
@@ -26,8 +27,6 @@ public class AnnotatorResult {
 			"http://dbpedia.org/resource/");
 	private static final ExperimentType EXPERIMENT_TYPE = ExperimentType.A2KB;
 
-	
-
 	public static void printlist(ArrayList<NamedEntity> result_set) {
 		for (NamedEntity x : result_set) {
 			System.out.println("Entity ID " + x.getUri());
@@ -37,23 +36,21 @@ public class AnnotatorResult {
 
 	}
 
-	public static ArrayList<NamedEntity> loadAnnotator(String annotatorFileName, String AnnotatorName)
+	public static ArrayList<NamedEntityCorrections> loadAnnotator(String annotatorFileName, String AnnotatorName)
 			throws GerbilException {
 		Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
 				.getDataset(EXPERIMENT_TYPE);
-		ArrayList<NamedEntity> entity_set = new ArrayList<NamedEntity>();
+		ArrayList<NamedEntityCorrections> entity_set = new ArrayList<NamedEntityCorrections>();
 
 		List<Document> documents = dataset.getInstances();
 		// System.out.println(documents.get(0).getDocumentURI());
 		for (Document doc : documents) {
-			List<NamedEntity> entities = doc.getMarkings(NamedEntity.class);
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 
 			entity_set.addAll(entities);
 		}
 
 		return entity_set;
 	}
-
-	
 
 }

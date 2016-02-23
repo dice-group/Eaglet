@@ -1,13 +1,33 @@
 package org.aksw.gscheck.errorutils;
 
-public class Problem_Entity {
+import java.util.Set;
+
+import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+
+public class Problem_Entity extends NamedEntity {
+	public Problem_Entity(int startPosition, int length, Set<String> uris) {
+		super(startPosition, length, uris);
+		// TODO Auto-generated constructor stub
+	}
+
+	
 	String doc;
-	int start_pos;
-	int length;
+
 	String entity_name;
 	String problem_text;
 	String entity_text;
 	int end_pos;
+	protected String uri;
+
+	@Deprecated
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
+
+	}
 
 	public int getEnd_pos() {
 		return end_pos;
@@ -31,14 +51,6 @@ public class Problem_Entity {
 
 	public void setDoc(String doc) {
 		this.doc = doc;
-	}
-
-	public int getStart_pos() {
-		return start_pos;
-	}
-
-	public void setStart_pos(int start_pos) {
-		this.start_pos = start_pos;
 	}
 
 	public int getLength() {

@@ -34,11 +34,11 @@ public class CheckerPipeline {
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 
 		for (Document doc : documents) {
-			List<NamedEntityCorrections> list =EntityTypeChange.changeType(doc);
-			
-			
-			doc.setMarkings(NamedEntity.class);
+			List<Marking> list =EntityTypeChange.changeType(doc);
+			doc.setMarkings(list);
 		}
+		
+		
 
 	}
 

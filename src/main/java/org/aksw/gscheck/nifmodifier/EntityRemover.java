@@ -43,26 +43,4 @@ public class EntityRemover {
 		System.out.println(document.getMarkings());
 	}
 
-	public static void removeEntity(Document document, List<NamedEntity> Problem_entity) {
-		
-		Model nifModel = ModelFactory.createDefaultModel();
-		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-		DocumentWriter writer = new DocumentWriter();
-		writer.writeDocumentToModel(nifModel, document);
-		
-		for(NamedEntity entity :Problem_entity){
-		
-		String annotationUri = NIFUriHelper.getNifUri(documentURI, start, end) ;
-		Resource annotation = nifModel.getResource(annotationUri);
-		StmtIterator iterator = nifModel.listStatements(annotation, null, (RDFNode) null);
-		List<Statement> stmtsToBeRemoved = new ArrayList<>();
-		while (iterator.hasNext()) {
-			stmtsToBeRemoved.add(iterator.next());
-		}
-		nifModel.remove(stmtsToBeRemoved);
-		
-		
-		document.getMarkings().remove(entity);
-		}
-	}
 }

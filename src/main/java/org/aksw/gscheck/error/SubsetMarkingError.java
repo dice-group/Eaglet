@@ -7,6 +7,8 @@ import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.aksw.gscheck.corrections.NamedEntityCorrections;
+import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
 import org.aksw.gscheck.errorutils.Problem_Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +33,10 @@ public class SubsetMarkingError {
 
 		for (Document doc : documents) { // getting list of documents
 			text = doc.getText();
-			List<NamedEntity> entities = doc.getMarkings(NamedEntity.class);
-			for (NamedEntity entity : entities) { // getting list of entity
-				Problem_Entity funny_entity = new Problem_Entity();
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
+			for (NamedEntityCorrections entity : entities) { // getting list of
+																// entity
+
 				start_index = entity.getStartPosition();
 				end_index = entity.getStartPosition() + entity.getLength();
 				if (start_index > 0) {
@@ -54,15 +57,21 @@ public class SubsetMarkingError {
 						} else
 							textstart = 0;
 
-						funny_entity.setDoc(doc.getDocumentURI());
-						funny_entity.setEntity_text(text.substring(entity.getStartPosition(),
-								entity.getStartPosition() + entity.getLength()));
-						funny_entity.setEntity_name(entity_name);
-						funny_entity.setLength(entity.getLength());
-						funny_entity.setProblem_text(text.substring(textstart, textend));
-						funny_entity.setStart_pos(entity.getStartPosition());
+						entity.setResult(Check.DELETED);
+						/*
+						 * funny_entity.setDoc(doc.getDocumentURI());
+						 * funny_entity.setEntity_text(text.substring(entity.
+						 * getStartPosition(), entity.getStartPosition() +
+						 * entity.getLength()));
+						 * funny_entity.setEntity_name(entity_name);
+						 * funny_entity.setLength(entity.getLength());
+						 * funny_entity.setProblem_text(text.substring(
+						 * textstart, textend));
+						 * funny_entity.setStart_pos(entity.getStartPosition());
+						 * 
+						 * pe.add(funny_entity);
+						 */
 
-						pe.add(funny_entity);
 					}
 				}
 
@@ -85,37 +94,41 @@ public class SubsetMarkingError {
 						} else
 							textstart = 0;
 
-						funny_entity.setDoc(doc.getDocumentURI());
-						funny_entity.setEntity_text(text.substring(entity.getStartPosition(),
-								entity.getStartPosition() + entity.getLength()));
-						funny_entity.setEntity_name(entity_name);
-						funny_entity.setLength(entity.getLength());
-						funny_entity.setProblem_text(text.substring(textstart, textend));
-						funny_entity.setStart_pos(entity.getStartPosition());
-						// adding the failed entity to list
+						entity.setResult(Check.DELETED);
 
-						pe.add(funny_entity);
+						/*
+						 * funny_entity.setDoc(doc.getDocumentURI());
+						 * funny_entity.setEntity_text(text.substring(entity.
+						 * getStartPosition(), entity.getStartPosition() +
+						 * entity.getLength()));
+						 * funny_entity.setEntity_name(entity_name);
+						 * funny_entity.setLength(entity.getLength());
+						 * funny_entity.setProblem_text(text.substring(
+						 * textstart, textend));
+						 * funny_entity.setStart_pos(entity.getStartPosition());
+						 * // adding the failed entity to list
+						 * 
+						 * pe.add(funny_entity);
+						 */
 					}
 				}
 
 			}
 
 		}
-		printlist(pe);
+		// printlist(pe);
 
 	}
 
-	public static void printlist(Set<Problem_Entity> pe2) {
-		for (Problem_Entity x : pe2) {
-			System.out.println("DOC ID " + x.getDoc());
-			System.out.println("ENTITY NAME: " + x.getEntity_name());
-			System.out.println("ENTITY LENGTH " + x.getLength());
-			System.out.println("ENTITY TEXT " + x.getProblem_text());
-			System.out.println("ENTITY START POS " + x.getStart_pos());
-			System.out.println("ENTITY TEXT " + x.getEntity_text());
-			System.out.println("==================================================================");
-		}
-
-	}
+	/*
+	 * public static void printlist(Set<Problem_Entity> pe2) { for
+	 * (Problem_Entity x : pe2) { System.out.println("DOC ID " + x.getDoc());
+	 * System.out.println("ENTITY NAME: " + x.getEntity_name());
+	 * System.out.println("ENTITY LENGTH " + x.getLength()); System.out.println(
+	 * "ENTITY TEXT " + x.getProblem_text()); System.out.println(
+	 * "ENTITY START POS " + x.getStart_pos()); System.out.println(
+	 * "ENTITY TEXT " + x.getEntity_text()); System.out.println(
+	 * "=================================================================="); }
+	 */
 
 }

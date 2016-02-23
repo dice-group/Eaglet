@@ -10,6 +10,8 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
+import org.aksw.gscheck.corrections.NamedEntityCorrections;
+import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
 import org.aksw.gscheck.errorutils.DocumentProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +27,8 @@ public class CombinedTaggingError {
 	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
 			"gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
 	static String substring;
-	static List<NamedEntity> entities;
-	static NamedEntity a, b;
+	static List<NamedEntityCorrections> entities;
+	static NamedEntityCorrections a, b;
 	static DocumentProcessor dp = new DocumentProcessor();
 
 	public static void CombinedTagger() throws GerbilException {
@@ -37,7 +39,7 @@ public class CombinedTaggingError {
 			String text = doc.getText();
 
 			List<CoreLabel> eligible_makrings = dp.Noun_Ad_Extracter(text);
-			entities = doc.getMarkings(NamedEntity.class);
+			entities = doc.getMarkings(NamedEntityCorrections.class);
 			Collections.sort(entities, new StartPosBasedComparator());
 			if (entities.size() > 0) {
 				b = entities.get(0);
@@ -59,10 +61,15 @@ public class CombinedTaggingError {
 									}
 								}
 							}
-							System.out.println("I would connect two entities to a single large entity \""
-									+ text.substring(a.getStartPosition(), b.getStartPosition() + b.getLength())
-									+ "\".");
 
+							/*
+							 * System.out.println(
+							 * "I would connect two entities to a single large entity \""
+							 * + text.substring(a.getStartPosition(),
+							 * b.getStartPosition() + b.getLength()) + "\".");
+							 */
+							entities.get(i).setResult(Check.NEED_TO_PAIR);
+							entities.get(i).setPartner(a);
 						}
 
 					}
