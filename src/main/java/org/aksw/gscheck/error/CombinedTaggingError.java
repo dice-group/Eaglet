@@ -21,13 +21,12 @@ import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 
 import edu.stanford.nlp.ling.CoreLabel;
 
-public class CombinedTaggingError {
+public class CombinedTaggingError implements ErrorChecker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CombinedTaggingError.class);
 
 	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
 			"gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
 	static String substring;
-	static List<NamedEntityCorrections> entities;
 	static NamedEntityCorrections a, b;
 	static DocumentProcessor dp = new DocumentProcessor();
 
@@ -39,7 +38,7 @@ public class CombinedTaggingError {
 			String text = doc.getText();
 
 			List<CoreLabel> eligible_makrings = dp.Noun_Ad_Extracter(text);
-			entities = doc.getMarkings(NamedEntityCorrections.class);
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			Collections.sort(entities, new StartPosBasedComparator());
 			if (entities.size() > 0) {
 				b = entities.get(0);
@@ -79,4 +78,10 @@ public class CombinedTaggingError {
 		}
 
 	}
+
+    @Override
+    public void check(List<Document> documents) {
+        // TODO Auto-generated method stub
+        
+    }
 }
