@@ -23,10 +23,10 @@ public class CheckerPipeline {
 			"gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
 
 	public static void PiPeStructure() throws GerbilException {
-		// CombinedTaggingError .CombinedTagger();
-		// ErraticEntityError.ErraticEntityProb();
-		// LongDescriptionError.LongDescription();
-		// OverLappingError.overlapcheck();
+		CombinedTaggingError .CombinedTagger();
+		ErraticEntityError.ErraticEntityProb();
+		LongDescriptionError.LongDescription();
+		OverLappingError.overlapcheck();
 		SubsetMarkingError.subsetmark();
 	}
 
@@ -43,7 +43,7 @@ public class CheckerPipeline {
 	}
 
 	public static void main(String[] args) throws GerbilException {
-		PiPeStructure();
+		//PiPeStructure();
 	}
 
 }

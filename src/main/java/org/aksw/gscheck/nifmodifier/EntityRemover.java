@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.gerbil.io.nif.DocumentWriter;
-import org.aksw.gerbil.io.nif.utils.NIFPositionHelper;
+
 import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
@@ -38,9 +38,17 @@ public class EntityRemover {
 		while (iterator.hasNext()) {
 			stmtsToBeRemoved.add(iterator.next());
 		}
+
 		nifModel.remove(stmtsToBeRemoved);
-		document.getMarkings().remove(0);
-		System.out.println(document.getMarkings());
+		//document.getMarkings().remove(0);
+		//System.out.println(document.getMarkings());
+	}
+	public void removeEntity(Document doc)
+	{
+		Model nifModel = ModelFactory.createDefaultModel();
+		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+		DocumentWriter writer = new DocumentWriter();
+		writer.writeDocumentToModel(nifModel, doc);
 	}
 
 }

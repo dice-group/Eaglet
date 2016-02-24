@@ -51,7 +51,6 @@ public class ErraticEntityError {
 				dummy_entity.setEntity_name(entity_name);
 
 				dummy_entity.setEnd_pos(entity.getStartPosition() + entity.getLength());
-				dummy_entity.setDoc(doc.getDocumentURI());
 
 				entity_set.add(dummy_entity);
 

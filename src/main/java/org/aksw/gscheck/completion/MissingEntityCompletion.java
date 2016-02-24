@@ -15,10 +15,10 @@ import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
 import org.aksw.gscheck.errorutils.AnnotatorResult;
 
 public class MissingEntityCompletion {
-	public static void main(String[] args) throws GerbilException {
+	public ArrayList<NamedEntityCorrections> completeDataset() throws GerbilException {
 		File folder = new File("C:/Users/Kunal/workspace/gerbil/Results_anontator_dbpedia");
 		File[] listOfFiles = folder.listFiles();
-		
+		ArrayList<NamedEntityCorrections> result_set = null;
 		for (File file : listOfFiles) {
 			if (file.isFile()) {
 				String annotatorFilenName = file.getParent() + "/" + file.getName();
@@ -26,17 +26,19 @@ public class MissingEntityCompletion {
 				System.out.println(file.getName());
 				ArrayList<NamedEntityCorrections> result_annotator = AnnotatorResult.loadAnnotator(annotatorFilenName,
 						file.getName());
-				ArrayList<NamedEntityCorrections> result_set = CompareWithGS(result_annotator);
+				result_set = CompareWithGS(result_annotator);
 
-				//AnnotatorResult.printlist(result_set);
+				// AnnotatorResult.printlist(result_set);
 
 			}
 
 		}
+		return result_set;
 
 	}
 
-	public static ArrayList<NamedEntityCorrections> CompareWithGS(ArrayList<NamedEntityCorrections> annotator_entity) throws GerbilException {
+	public static ArrayList<NamedEntityCorrections> CompareWithGS(ArrayList<NamedEntityCorrections> annotator_entity)
+			throws GerbilException {
 		ArrayList<NamedEntityCorrections> result_set = new ArrayList<NamedEntityCorrections>();
 		final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
 				"C:/Users/Kunal/workspace/gerbil/Results_anontator_dbpedia/WAT-DBpediaSpotlight-s-A2KB.ttl", false,
