@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-public class EntityRemover {
+public class EntityRemover  {
 	public static void main(String[] args) {
 		Document document = new DocumentImpl("This is a test.", "http://example.org/1");
 		document.addMarking(new NamedEntity(0, 10, "http://example.org/Barack_Obama"));
@@ -33,6 +33,8 @@ public class EntityRemover {
 		nifModel.add(annotation, nifModel.createProperty("http://aksw.org/anotationCheckClass"),
 				nifModel.createProperty("http://aksw.org/IWouldDeleteIt"));
 
+		
+		
 		StmtIterator iterator = nifModel.listStatements(annotation, null, (RDFNode) null);
 		List<Statement> stmtsToBeRemoved = new ArrayList<>();
 		while (iterator.hasNext()) {
@@ -49,6 +51,8 @@ public class EntityRemover {
 		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
 		DocumentWriter writer = new DocumentWriter();
 		writer.writeDocumentToModel(nifModel, doc);
+		
+		
 	}
 
 }

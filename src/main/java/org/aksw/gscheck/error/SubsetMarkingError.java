@@ -13,11 +13,14 @@ import org.aksw.gscheck.errorutils.Problem_Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SubsetMarkingError {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ErraticEntityError.class);
-	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
-			"C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
-			ExperimentType.A2KB);
+public class SubsetMarkingError implements ErrorChecker {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SubsetMarkingError.class);
+	/*
+	 * private static final DatasetConfiguration DATASET = new
+	 * NIFFileDatasetConfig("DBpedia",
+	 * "C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl",
+	 * false, ExperimentType.A2KB);
+	 */
 	static int start_index;
 	static int end_index;
 	static String text;
@@ -25,9 +28,10 @@ public class SubsetMarkingError {
 	static int textend;
 	static String entity_name;
 
-	public static void subsetmark() throws GerbilException {
+	public void subsetmark(List<Document> documents) throws GerbilException {
 		LOGGER.info(" SUBSET MARKING MODULE RUNNING");
-		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
+
+		// DATASET.getDataset(ExperimentType.A2KB).getInstances();
 
 		Set<Problem_Entity> pe = new HashSet<Problem_Entity>();
 
@@ -117,6 +121,13 @@ public class SubsetMarkingError {
 
 		}
 		// printlist(pe);
+
+	}
+
+	@Override
+	public void check(List<Document> documents) throws GerbilException {
+		// TODO Auto-generated method stub
+		this.subsetmark(documents);
 
 	}
 

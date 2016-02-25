@@ -20,15 +20,15 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 
-public class LongDescriptionError {
+public class LongDescriptionError implements ErrorChecker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ErraticEntityError.class);
 
-	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
-			"gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
+	/*private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
+			"gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);*/
 	static DocumentProcessor dp = new DocumentProcessor();
 
-	public static void LongDescription() throws GerbilException {
-		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
+	public void LongDescription(List<Document> documents ) throws GerbilException {
+		//List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 		LOGGER.info("LONG DESCRIPTION MODULE RUNNING");
 
 		for (Document doc : documents) {
@@ -60,6 +60,12 @@ public class LongDescriptionError {
 
 		}
 
+	}
+
+	@Override
+	public void check(List<Document> documents) throws GerbilException {
+		// TODO Auto-generated method stub
+		this.LongDescription(documents);
 	}
 
 }

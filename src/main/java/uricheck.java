@@ -1,8 +1,8 @@
 import java.util.List;
 
 import org.aksw.gerbil.dataset.DatasetConfiguration;
-import org.aksw.gerbil.dataset.check.EntityCheckerManagerImpl;
-import org.aksw.gerbil.dataset.check.HttpBasedEntityChecker;
+//import org.aksw.gerbil.dataset.check.EntityCheckerManagerImpl;
+//import org.aksw.gerbil.dataset.check.HttpBasedEntityChecker;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
@@ -18,9 +18,9 @@ public class uricheck {
 			ExperimentType.A2KB);
 
 	public static void main(String[] args) throws GerbilException {
-		EntityCheckerManagerImpl manager = new EntityCheckerManagerImpl();
-		HttpBasedEntityChecker checker = new HttpBasedEntityChecker();
-		manager.registerEntityChecker("http://dbpedia.org/resource", checker);
+		//EntityCheckerManagerImpl manager = new EntityCheckerManagerImpl();
+		//HttpBasedEntityChecker checker = new HttpBasedEntityChecker();
+		//manager.registerEntityChecker("http://dbpedia.org/resource", checker);
 		
 
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
@@ -29,7 +29,7 @@ public class uricheck {
 			for (NamedEntity entity : entities) 
 			{
 				Meaning m = new Annotation(entity.getUri());
-				manager.checkMeaning(m);
+				//manager.checkMeaning(m);
 				
 				
 			}

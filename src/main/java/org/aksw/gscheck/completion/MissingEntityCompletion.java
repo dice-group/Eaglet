@@ -12,9 +12,10 @@ import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gscheck.corrections.NamedEntityCorrections;
 import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
+import org.aksw.gscheck.error.ErrorChecker;
 import org.aksw.gscheck.errorutils.AnnotatorResult;
 
-public class MissingEntityCompletion {
+public class MissingEntityCompletion implements ErrorChecker  {
 	public ArrayList<NamedEntityCorrections> completeDataset() throws GerbilException {
 		File folder = new File("C:/Users/Kunal/workspace/gerbil/Results_anontator_dbpedia");
 		File[] listOfFiles = folder.listFiles();
@@ -59,5 +60,11 @@ public class MissingEntityCompletion {
 		}
 
 		return result_set;
+	}
+
+	@Override
+	public void check(List<Document> documents) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -16,11 +16,14 @@ import org.aksw.gscheck.errorutils.Problem_Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ErraticEntityError {
+public class ErraticEntityError implements ErrorChecker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ErraticEntityError.class);
-	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
-			"C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
-			ExperimentType.A2KB);
+	/*
+	 * private static final DatasetConfiguration DATASET = new
+	 * NIFFileDatasetConfig("DBpedia",
+	 * "C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl",
+	 * false, ExperimentType.A2KB);
+	 */
 
 	static Set<Problem_Entity> entity_set = new HashSet<Problem_Entity>();
 	static Set<Problem_Entity> lemma_set = new HashSet<Problem_Entity>();
@@ -30,9 +33,10 @@ public class ErraticEntityError {
 	static Set<Problem_Entity> missedentity_set = new HashSet<Problem_Entity>();
 	static DocumentProcessor dp = new DocumentProcessor();
 
-	public static void ErraticEntityProb() throws GerbilException {
+	public void ErraticEntityProb(List<Document> documents) throws GerbilException {
 		LOGGER.info(" ERRATIC ENTITY MODULE RUNNING");
-		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
+		// List<Document> documents =
+		// DATASET.getDataset(ExperimentType.A2KB).getInstances();
 
 		for (Document doc : documents) {
 			text = doc.getText();
@@ -102,5 +106,11 @@ public class ErraticEntityError {
 			System.out.println("END POS " + x.getEnd_pos());
 			System.out.println("==================================================================");
 		}
+	}
+
+	@Override
+	public void check(List<Document> documents) throws GerbilException {
+		// TODO Auto-generated method stub
+		this.ErraticEntityProb(documents);
 	}
 }

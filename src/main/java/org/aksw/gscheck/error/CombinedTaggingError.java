@@ -24,14 +24,19 @@ import edu.stanford.nlp.ling.CoreLabel;
 public class CombinedTaggingError implements ErrorChecker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CombinedTaggingError.class);
 
-	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
-			"gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
+	/*
+	 * private static final DatasetConfiguration DATASET = new
+	 * NIFFileDatasetConfig("DBpedia",
+	 * "gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
+	 * ExperimentType.A2KB);
+	 */
 	static String substring;
 	static NamedEntityCorrections a, b;
 	static DocumentProcessor dp = new DocumentProcessor();
 
-	public static void CombinedTagger() throws GerbilException {
-		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
+	public void CombinedTagger(List<Document> documents) throws GerbilException {
+		// List<Document> documents =
+		// DATASET.getDataset(ExperimentType.A2KB).getInstances();
 		LOGGER.info(" COMBINED TAGGER MODULE RUNNING");
 
 		for (Document doc : documents) {
@@ -79,9 +84,9 @@ public class CombinedTaggingError implements ErrorChecker {
 
 	}
 
-    @Override
-    public void check(List<Document> documents) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void check(List<Document> documents) throws GerbilException {
+		// TODO Auto-generated method stub
+		this.CombinedTagger(documents);
+	}
 }
