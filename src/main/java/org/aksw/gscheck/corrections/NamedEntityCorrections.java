@@ -13,8 +13,8 @@ public class NamedEntityCorrections extends NamedEntity {
     Check result;
     ArrayList<NamedEntityCorrections> partner;
 
-    public NamedEntityCorrections(int startPosition, int length, Set<String> uris) {
-        super(startPosition, length, uris);
+    public NamedEntityCorrections(int startPosition, int length, String string) {
+        super(startPosition, length, string);
         // TODO Auto-generated constructor stub
         result = Check.GOOD;
         partner = null;

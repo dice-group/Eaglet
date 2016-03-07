@@ -15,7 +15,7 @@ public class EntityTypeChange {
 		List<Marking> new_list = null;
 		for(NamedEntity  entity: original_list)
 		{
-			new_list.add(new NamedEntityCorrections(entity.getStartPosition(), entity.getLength(), entity.getUris()));
+			new_list.add(new NamedEntityCorrections(entity.getStartPosition(), entity.getLength(), entity.getUri()));
 		}
 
 		return new_list;
