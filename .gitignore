@@ -3,3 +3,5 @@
 .settings
 .project
 *.log
+eaglet_data
+gerbil_data
