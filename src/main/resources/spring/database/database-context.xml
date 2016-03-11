@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:c="http://www.springframework.org/schema/c" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-    xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!-- Database Properties -->
-    <!-- <context:property-placeholder location="classpath:config/database.properties"
-        /> -->
-    <context:property-placeholder location="classpath:gerbil.properties" />
+	<!-- Database Properties -->
+	<context:property-placeholder location="classpath:eaglet.properties" />
 
-    <bean id="experimentDAO" class="org.aksw.gerbil.database.ExperimentDAOImpl" destroy-method="close">
-        <constructor-arg name="dataSource" ref="databaseDataSource" />
-        <property name="resultDurability" value="${gerbil.database.resultDurability}" />
-    </bean>
+	<bean id="experimentDAO" class="org.aksw.gscheck.web.DatabaseAdapter"
+		destroy-method="close">
+		<constructor-arg name="dataSource" ref="databaseDataSource" />
+	</bean>
 
-    <!-- Bean providing connection to database -->
-    <bean id="databaseDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${gerbil.jdbc.driverClassName}" />
-        <property name="url" value="jdbc:hsqldb:file:${gerbil.jdbc.file}" />
-    </bean>
-    <!-- Initialize the database -->
-    <jdbc:initialize-database data-source="databaseDataSource">
-        <jdbc:script location="classpath:spring/database/schema/eaglet-schema.sql" />
-    </jdbc:initialize-database>
+	<!-- Bean providing connection to database -->
+	<bean id="databaseDataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${eaglet.jdbc.driverClassName}" />
+		<property name="url" value="jdbc:hsqldb:file:${eaglet.jdbc.file}" />
+	</bean>
+	<!-- Initialize the database -->
+	<jdbc:initialize-database data-source="databaseDataSource">
+		<jdbc:script location="classpath:spring/database/schema/eaglet-schema.sql" />
+	</jdbc:initialize-database>
 
 </beans>

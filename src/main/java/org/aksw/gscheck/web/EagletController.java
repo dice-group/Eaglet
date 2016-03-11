@@ -13,8 +13,8 @@ public class EagletController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-    // @Autowired
-    // private DatabaseAdapter database;
+    @Autowired
+    private DatabaseAdapter database;
 
     @RequestMapping("/service")
     public String service() {
