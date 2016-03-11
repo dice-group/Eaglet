@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS Users (
+id int PRIMARY KEY,
+name VARCHAR(50)
+);
