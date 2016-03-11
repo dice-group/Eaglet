@@ -75,7 +75,7 @@ public class SubsetMarkingErrorTest {
 						(Marking) new NamedEntityCorrections(0, 20, "http://dbpedia.org/resource/Florence_May_Harding"),
 						(Marking) new NamedEntityCorrections(0, 10, "http://dbpedia.org/resource/Sydney"))));
 
-		expectedResults.add(new Check[] { Check.DELETED, Check.DELETED });
+		expectedResults.add(new Check[] { Check.GOOD, Check.DELETED });
 
 
 	}
@@ -97,7 +97,7 @@ public class SubsetMarkingErrorTest {
 			// Assert.assertEquals(partner_list.get(i).length, markings.size());
 
 			for (int j = 0; j < markings.size(); j++) {
-				Assert.assertEquals("Error at marking #" +j, expectedResult[j], markings.get(j).getResult());
+				Assert.assertEquals("Error at marking #" +j +" in doc"+ i, expectedResult[j], markings.get(j).getResult());
 
 				// Assert.assertEquals(partner[j],
 				// markings.get(j).getPartner());

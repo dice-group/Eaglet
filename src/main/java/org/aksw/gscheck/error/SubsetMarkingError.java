@@ -35,43 +35,38 @@ public class SubsetMarkingError implements ErrorChecker {
 		for (Document doc : documents) { // getting list of documents
 			text = doc.getText();
 			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
-			for (NamedEntityCorrections entity : entities) { // getting list of
-																// entity
+			for (NamedEntityCorrections entity : entities) { 
+				
+				if (entity.getStartPosition() > 0) {
 
-				if (entity.getStartPosition() == 0) {
-					if ((text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ' ')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ',')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != '.')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ';')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ':')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != '-')) {
-
-						entity.setResult(Check.DELETED);
-
-					}
-				} else if (entity.getStartPosition() > 0) {
-
-					if (text.charAt(entity.getStartPosition() - 1) != ' ')
+					if (Character.isWhitespace(text.charAt(entity.getStartPosition() - 1)))
 
 					{
 						entity.setResult(Check.DELETED);
+						}
 
+					else if (entity.getStartPosition() + entity.getLength() < text.length()) {
+
+						if (!(Character.isLetterOrDigit(text.charAt(entity.getStartPosition() + entity.getLength()+1)))) {
+
+							entity.setResult(Check.DELETED);
+
+						}
 					}
 
-				} else if (entity.getStartPosition() + entity.getLength() < text.length()) {
-					// check for end condition. Executed only when end condition
-					// of entity are not met
-					if ((text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ' ')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ',')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != '.')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ';')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ':')
-							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != '-')) {
+				}
+
+				
+				else 
+				{   if (entity.getStartPosition() + entity.getLength() < text.length()) {
+
+					if (!(Character.isLetterOrDigit(text.charAt(entity.getStartPosition() + entity.getLength()+1)))) {
 
 						entity.setResult(Check.DELETED);
 
 					}
 				}
+}
 
 			}
 
