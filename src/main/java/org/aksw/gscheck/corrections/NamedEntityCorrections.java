@@ -11,25 +11,23 @@ public class NamedEntityCorrections extends NamedEntity {
     }
 
     Check result;
-    ArrayList<NamedEntityCorrections> partner;
+    NamedEntityCorrections partner;
 
     public NamedEntityCorrections(int startPosition, int length, String string) {
         super(startPosition, length, string);
         // TODO Auto-generated constructor stub
         result = Check.GOOD;
-        partner = null;
+        partner =null;
 
     }
 
-    public ArrayList<NamedEntityCorrections> getPartner() {
+    public NamedEntityCorrections getPartner() {
         return partner;
     }
 
     public void setPartner(NamedEntityCorrections pair_partner) {
-        if (partner == null) {
-            partner = new ArrayList<NamedEntityCorrections>();
-        }
-        this.partner.add(pair_partner);
+       
+        partner= pair_partner;
     }
 
     public Check getResult() {

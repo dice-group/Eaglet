@@ -85,19 +85,19 @@ public class CheckerPipeline {
 		DocumentListWriter writer = new DocumentListWriter();
 		writer.writeDocumentsToModel(nifModel, documents);
 		Resource annotationResource;
-		List<NamedEntityCorrections> partners;
+		NamedEntityCorrections partner;
 		for (Document document : documents) {
 			for (NamedEntityCorrections correction : document.getMarkings(NamedEntityCorrections.class)) {
 				annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
 						correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
 				nifModel.add(annotationResource, EAGLET.hasCheckResult, EAGLET.getCheckResult(correction.getResult()));
-				partners = correction.getPartner();
-				if ((partners != null) && (partners.size() > 0)) {
-					for (NamedEntityCorrections partner : partners) {
-						nifModel.add(annotationResource, EAGLET.hasPairPartner,
-								nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
-										partner.getStartPosition(), partner.getStartPosition() + partner.getLength())));
-					}
+				partner = correction.getPartner();
+				if ((partner != null)) {
+
+					nifModel.add(annotationResource, EAGLET.hasPairPartner,
+							nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
+									partner.getStartPosition(), partner.getStartPosition() + partner.getLength())));
+
 				}
 			}
 		}

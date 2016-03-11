@@ -21,11 +21,8 @@ public class SubsetMarkingError implements ErrorChecker {
 	 * "C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl",
 	 * false, ExperimentType.A2KB);
 	 */
-	static int start_index;
-	static int end_index;
+
 	static String text;
-	static int textstart;
-	static int textend;
 	static String entity_name;
 
 	public void subsetmark(List<Document> documents) throws GerbilException {
@@ -41,86 +38,44 @@ public class SubsetMarkingError implements ErrorChecker {
 			for (NamedEntityCorrections entity : entities) { // getting list of
 																// entity
 
-				start_index = entity.getStartPosition();
-				end_index = entity.getStartPosition() + entity.getLength();
-				if (start_index > 0) {
-					if (text.charAt(start_index - 1) != ' ') // check before
-																// condition
-					// Executed only when start condition of entity are not met
-					{
-
-						entity_name = entity.getUri();
-						entity_name = entity_name.substring(entity.getUri().lastIndexOf("/") + 1);
-						if (entity.getStartPosition() + entity.getLength() + 40 > text.length() - 1) {
-							textend = text.length();
-						} else
-							textend = entity.getStartPosition() + entity.getLength() + 40;
-
-						if ((entity.getStartPosition() - 40) > 0) {
-							textstart = entity.getStartPosition() - 40;
-						} else
-							textstart = 0;
+				if (entity.getStartPosition() == 0) {
+					if ((text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ' ')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ',')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != '.')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ';')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ':')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != '-')) {
 
 						entity.setResult(Check.DELETED);
-						/*
-						 * funny_entity.setDoc(doc.getDocumentURI());
-						 * funny_entity.setEntity_text(text.substring(entity.
-						 * getStartPosition(), entity.getStartPosition() +
-						 * entity.getLength()));
-						 * funny_entity.setEntity_name(entity_name);
-						 * funny_entity.setLength(entity.getLength());
-						 * funny_entity.setProblem_text(text.substring(
-						 * textstart, textend));
-						 * funny_entity.setStart_pos(entity.getStartPosition());
-						 * 
-						 * pe.add(funny_entity);
-						 */
 
 					}
-				}
+				} else if (entity.getStartPosition() > 0) {
 
-				else if (end_index < text.length()) {
+					if (text.charAt(entity.getStartPosition() - 1) != ' ')
+
+					{
+						entity.setResult(Check.DELETED);
+
+					}
+
+				} else if (entity.getStartPosition() + entity.getLength() < text.length()) {
 					// check for end condition. Executed only when end condition
 					// of entity are not met
-					if ((text.charAt(end_index + 1) != ' ') || (text.charAt(end_index + 1) != ',')
-							|| (text.charAt(end_index + 1) != '.') || (text.charAt(end_index + 1) != ';')
-							|| (text.charAt(end_index + 1) != ':') || (text.charAt(end_index + 1) != '-')) {
-
-						entity_name = entity.getUri();
-						entity_name = entity_name.substring(entity.getUri().lastIndexOf("/") + 1);
-						if (entity.getStartPosition() + entity.getLength() + 40 > text.length() - 1) {
-							textend = text.length();
-						} else
-							textend = entity.getStartPosition() + entity.getLength() + 40;
-
-						if ((entity.getStartPosition() - 40) > 0) {
-							textstart = entity.getStartPosition() - 40;
-						} else
-							textstart = 0;
+					if ((text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ' ')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ',')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != '.')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ';')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != ':')
+							|| (text.charAt(entity.getStartPosition() + entity.getLength() + 1) != '-')) {
 
 						entity.setResult(Check.DELETED);
 
-						/*
-						 * funny_entity.setDoc(doc.getDocumentURI());
-						 * funny_entity.setEntity_text(text.substring(entity.
-						 * getStartPosition(), entity.getStartPosition() +
-						 * entity.getLength()));
-						 * funny_entity.setEntity_name(entity_name);
-						 * funny_entity.setLength(entity.getLength());
-						 * funny_entity.setProblem_text(text.substring(
-						 * textstart, textend));
-						 * funny_entity.setStart_pos(entity.getStartPosition());
-						 * // adding the failed entity to list
-						 * 
-						 * pe.add(funny_entity);
-						 */
 					}
 				}
 
 			}
 
 		}
-		// printlist(pe);
 
 	}
 
