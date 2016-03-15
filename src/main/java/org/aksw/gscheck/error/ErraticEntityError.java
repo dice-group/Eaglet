@@ -11,8 +11,8 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 
 import org.aksw.gscheck.corrections.NamedEntityCorrections;
-import org.aksw.gscheck.errorutils.DocumentProcessor;
-import org.aksw.gscheck.errorutils.Problem_Entity;
+import org.aksw.gscheck.errorutils.NamedEntityCorrections;
+import org.aksw.simba.gscheck.documentprocessor.DocumentProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,12 +25,12 @@ public class ErraticEntityError implements ErrorChecker {
 	 * false, ExperimentType.A2KB);
 	 */
 
-	static Set<Problem_Entity> entity_set = new HashSet<Problem_Entity>();
-	static Set<Problem_Entity> lemma_set = new HashSet<Problem_Entity>();
+	static Set<NamedEntityCorrections> entity_set = new HashSet<NamedEntityCorrections>();
+	static Set<NamedEntityCorrections> lemma_set = new HashSet<NamedEntityCorrections>();
 	static String entity_name;
 
 	static String text;
-	static Set<Problem_Entity> missedentity_set = new HashSet<Problem_Entity>();
+	static Set<NamedEntityCorrections> missedentity_set = new HashSet<NamedEntityCorrections>();
 	static DocumentProcessor dp = new DocumentProcessor();
 
 	public void ErraticEntityProb(List<Document> documents) throws GerbilException {
@@ -42,27 +42,12 @@ public class ErraticEntityError implements ErrorChecker {
 			text = doc.getText();
 
 			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
-			for (NamedEntityCorrections entity : entities) {
+			
 				// creating the entity set for all documents.
-				entity_name = dp.lemmatize_entity(
-						text.substring(entity.getStartPosition(), entity.getStartPosition() + entity.getLength()));
-				// lc.lemmatize_entity(text.substring(entity.getStartPosition(),
-				// entity.getStartPosition() + entity.getLength()));
-				// ystem.out.println( entity_name+"\n" +"]]]]]] ");
-				Problem_Entity dummy_entity = new Problem_Entity(entity.getStartPosition(), entity.getLength(),
-						entity.getUris());
-
-				dummy_entity.setEntity_name(entity_name);
-
-				dummy_entity.setEnd_pos(entity.getStartPosition() + entity.getLength());
-
-				entity_set.add(dummy_entity);
-
-			}
-			List<Problem_Entity> dummy = dp.lemmatize(doc);
+				List<NamedEntityCorrections> dummy = dp.lemmatize(doc);
 			lemma_set.addAll(dummy);
 
-		}
+		
 		/*
 		 * for (Problem_Entity le : entity_set) {
 		 * System.out.println(le.getEntity_name());
@@ -74,12 +59,13 @@ public class ErraticEntityError implements ErrorChecker {
 
 		// check for each member in lemma set with all the members of the entity
 		// set.
-		for (Problem_Entity le : lemma_set) {
+		for (NamedEntityCorrections le : lemma_set) {
 			if (entity_set.contains(le)) {
 				break;
 			}
 			// System.out.println(le.getEntity_name());
-			for (Problem_Entity es : entity_set) {
+			for (NamedEntityCorrections es : entities) 
+			{
 				if ((le.getEntity_name().equals(es.getEntity_name())) && (le.getDoc().equals(es.getDoc()))) {
 
 					if ((le.getStartPosition() >= es.getStartPosition() && (le.getEnd_pos() <= es.getEnd_pos()))) {
@@ -96,7 +82,7 @@ public class ErraticEntityError implements ErrorChecker {
 
 	}
 
-	public static void printlist(Set<Problem_Entity> list) {
+	/*public static void printlist(Set<Problem_Entity> list) {
 
 		System.out.println("The missing entities are:");
 		for (Problem_Entity x : list) {
@@ -107,7 +93,7 @@ public class ErraticEntityError implements ErrorChecker {
 			System.out.println("==================================================================");
 		}
 	}
-
+*/
 	@Override
 	public void check(List<Document> documents) throws GerbilException {
 		// TODO Auto-generated method stub

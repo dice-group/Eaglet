@@ -4,8 +4,8 @@ import java.util.Set;
 
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 
-public class Problem_Entity extends NamedEntity {
-	public Problem_Entity(int startPosition, int length, Set<String> uris) {
+public class NamedEntityCorrections extends NamedEntity {
+	public NamedEntityCorrections(int startPosition, int length, Set<String> uris) {
 		super(startPosition, length, uris);
 		// TODO Auto-generated constructor stub
 	}

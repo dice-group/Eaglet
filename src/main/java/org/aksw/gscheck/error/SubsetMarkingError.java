@@ -1,15 +1,11 @@
 package org.aksw.gscheck.error;
 
 import java.util.*;
-import org.aksw.gerbil.dataset.DatasetConfiguration;
-import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
-import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
-import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gscheck.corrections.NamedEntityCorrections;
 import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
-import org.aksw.gscheck.errorutils.Problem_Entity;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,46 +26,23 @@ public class SubsetMarkingError implements ErrorChecker {
 
 		// DATASET.getDataset(ExperimentType.A2KB).getInstances();
 
-		Set<Problem_Entity> pe = new HashSet<Problem_Entity>();
-
 		for (Document doc : documents) { // getting list of documents
 			text = doc.getText();
 			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
-			for (NamedEntityCorrections entity : entities) { 
-				
+			for (NamedEntityCorrections entity : entities) {
+				// If there are letters in front check for a whitespace
 				if (entity.getStartPosition() > 0) {
-
-					if (Character.isWhitespace(text.charAt(entity.getStartPosition() - 1)))
-
-					{
+					if (!Character.isWhitespace(text.charAt(entity.getStartPosition() - 1))) {
 						entity.setResult(Check.DELETED);
-						}
-
-					else if (entity.getStartPosition() + entity.getLength() < text.length()) {
-
-						if (!(Character.isLetterOrDigit(text.charAt(entity.getStartPosition() + entity.getLength()+1)))) {
-
+					}
+				}
+				// If there are letters behind check for letters or digits
+					if (entity.getStartPosition() + entity.getLength() < text.length()) {
+						if (Character.isLetterOrDigit(text.charAt(entity.getStartPosition() + entity.getLength()))) {
 							entity.setResult(Check.DELETED);
-
 						}
 					}
-
-				}
-
-				
-				else 
-				{   if (entity.getStartPosition() + entity.getLength() < text.length()) {
-
-					if (!(Character.isLetterOrDigit(text.charAt(entity.getStartPosition() + entity.getLength()+1)))) {
-
-						entity.setResult(Check.DELETED);
-
-					}
-				}
-}
-
 			}
-
 		}
 
 	}

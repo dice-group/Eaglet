@@ -1,4 +1,4 @@
-package org.aksw.gscheck.errorutils;
+package org.aksw.simba.gscheck.documentprocessor;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Properties;
 
 import org.aksw.gerbil.transfer.nif.Document;
+import org.aksw.gscheck.errorutils.NamedEntityCorrections;
 
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -33,9 +34,13 @@ public class DocumentProcessor {
 
 	}
 
-	public List<Problem_Entity> lemmatize(Document doc) {
-		String documentText = doc.getText();
-		List<Problem_Entity> lemma_list = new LinkedList<Problem_Entity>();
+	public void process(List<Document> docs)
+	{String documentText = doc.getText();
+	
+		
+	}
+	public List<NamedEntityCorrections> lemmatize(Document doc) {
+		List<NamedEntityCorrections> lemma_list = new LinkedList<NamedEntityCorrections>();
 		// Create an empty Annotation just with the given text
 		Annotation document = new Annotation(documentText);
 		// run all Annotators on this text
@@ -47,7 +52,7 @@ public class DocumentProcessor {
 			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
 				// Retrieve and add the lemma for each word into the
 				// list of lemmas
-				Problem_Entity dummy = new Problem_Entity(token.beginPosition(),
+				NamedEntityCorrections dummy = new NamedEntityCorrections(token.beginPosition(),
 						token.endPosition() - token.beginPosition(), null);
 				dummy.setEntity_name(token.get(LemmaAnnotation.class));
 
@@ -66,7 +71,7 @@ public class DocumentProcessor {
 
 	public String lemmatize_entity(String entity) {
 
-		List<Problem_Entity> lemma_list = new LinkedList<Problem_Entity>();
+		List<NamedEntityCorrections> lemma_list = new LinkedList<NamedEntityCorrections>();
 		// Create an empty Annotation just with the given text
 		String result = null;
 		Annotation document = new Annotation(entity);

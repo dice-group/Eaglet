@@ -12,7 +12,7 @@ import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.gscheck.corrections.NamedEntityCorrections;
 import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
-import org.aksw.gscheck.errorutils.DocumentProcessor;
+import org.aksw.simba.gscheck.documentprocessor.DocumentProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

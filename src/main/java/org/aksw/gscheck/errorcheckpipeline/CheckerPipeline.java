@@ -33,14 +33,8 @@ public class CheckerPipeline {
 	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
 			"gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
 
-	/*
-	 * public static void PiPeStructure() throws GerbilException {
-	 * CombinedTaggingError.CombinedTagger();
-	 * ErraticEntityError.ErraticEntityProb();
-	 * LongDescriptionError.LongDescription(); OverLappingError.overlapcheck();
-	 * SubsetMarkingError.subsetmark(); }
-	 */
-	public void PreProcessor() throws GerbilException {
+	
+	public void PrePipeProcessor() throws GerbilException {
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 
 		for (Document doc : documents) {
