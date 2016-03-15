@@ -16,27 +16,14 @@
  */
 package org.aksw.gscheck.web;
 
-import java.io.File;
-import java.util.List;
-
-import org.aksw.gerbil.config.GerbilConfiguration;
-import org.aksw.gerbil.dataset.check.EntityCheckerManager;
-import org.aksw.gerbil.dataset.check.impl.EntityCheckerManagerImpl;
-import org.aksw.gerbil.dataset.check.impl.FileBasedCachingEntityCheckerManager;
-import org.aksw.gerbil.dataset.check.impl.HttpBasedEntityChecker;
-import org.aksw.gerbil.dataset.check.impl.InMemoryCachingEntityCheckerManager;
 import org.aksw.gerbil.utils.ConsoleLogger;
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 /**
  * This is the root {@link Configuration} class that is processed by the Spring
@@ -77,15 +64,15 @@ public class RootConfig {
 //        return p;
 //    }
     
-//    @Bean
-//    public DatabaseAdapter experimentDAO() {
-//        LOGGER.debug("Setting up database.");
-//        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-//                "/spring/database/database-context.xml");
-//        DatabaseAdapter database = context.getBean(DatabaseAdapter.class);
-//        context.close();
-//        return database;
-//    }
+    @Bean
+    public DatabaseAdapter experimentDAO() {
+        LOGGER.debug("Setting up database.");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                "/spring/database/database-context.xml");
+        DatabaseAdapter database = context.getBean(DatabaseAdapter.class);
+        context.close();
+        return database;
+    }
 
 //    public static @Bean EntityCheckerManager getEntityCheckerManager() {
 //        EntityCheckerManager manager = null;
