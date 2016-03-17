@@ -13,12 +13,13 @@ import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.gscheck.corrections.NamedEntityCorrections;
 import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
 import org.aksw.gscheck.error.CombinedTaggingError;
+import org.aksw.gscheck.error.ErraticEntityError;
 import org.aksw.simba.gscheck.documentprocessor.DocumentProcessor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CombinedTaggingErrorTest {
+public class ErraticMarkingErrorTest {
 	private static final String TEXTS[] = new String[] {
 			"Florence May Harding studied at a school in Sydney that is in Australia, and with Douglas Robert Dundas , but in effect had no formal training in either botany or art.",
 			"Such notables include James Carville, who was the senior political adviser to Bill Clinton, and Donna Brazile, the campaign manager of the 2000 presidential campaign of Vice-President Al Gore.",
@@ -36,22 +37,17 @@ public class CombinedTaggingErrorTest {
 				new ArrayList<Marking>(Arrays.asList(
 						(Marking) new NamedEntityCorrections(0, 12,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Florence_May_Harding"),
-						(Marking) new NamedEntityCorrections(13, 7,
-								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Harding"),
 						(Marking) new NamedEntityCorrections(34, 6,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/National_Art_School"),
 						(Marking) new NamedEntityCorrections(44, 6,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Sydney"),
 						(Marking) new NamedEntityCorrections(61, 21,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas")))));
-		expectedResults.add(new Check[] { Check.GOOD, Check.NEED_TO_PAIR, Check.GOOD, Check.GOOD, Check.GOOD });
-		partner_list.add(new NamedEntityCorrections[] { null,
-				new NamedEntityCorrections(0, 12,
-						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Florence_May_Harding"),
-				null, null, null });
+		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD });
+		partner_list.add(new NamedEntityCorrections[] { null,null, null, null });
 
 		// Multiple entity combine
-		doc.add(new DocumentImpl(TEXTS[1], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-2",
+		/*doc.add(new DocumentImpl(TEXTS[1], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-2",
 				new ArrayList<Marking>(Arrays.asList(
 						(Marking) new NamedEntityCorrections(22, 14,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/James_Carville"),
@@ -78,7 +74,7 @@ public class CombinedTaggingErrorTest {
 						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Political"),
 
 				null, null, null, null });
-
+*/
 		// No error
 		doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
 				new ArrayList<Marking>(Arrays.asList(
@@ -86,7 +82,7 @@ public class CombinedTaggingErrorTest {
 						(Marking) new NamedEntityCorrections(45, 6, "http://dbpedia.org/resource/Sydney")))));
 		partner_list.add(new NamedEntityCorrections[] { null, null });
 
-		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD });
+		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.INSERTED,Check.INSERTED });
 
 		// Multiple overlap
 		/*
@@ -127,7 +123,7 @@ public class CombinedTaggingErrorTest {
 		DocumentProcessor preprocessor = new DocumentProcessor();
 		preprocessor.process(doc);
 
-		CombinedTaggingError test_var = new CombinedTaggingError();
+		ErraticEntityError test_var = new ErraticEntityError();
 		test_var.check(doc);
 
 		List<NamedEntityCorrections> markings;
@@ -138,9 +134,9 @@ public class CombinedTaggingErrorTest {
 			expectedResult = expectedResults.get(i);
 			NamedEntityCorrections[] partner = partner_list.get(i);
 
-			Assert.assertEquals(expectedResult.length, markings.size());
+			//Assert.assertEquals(expectedResult.length, markings.size());
 
-			for (int j = 0; j < markings.size(); j++) {
+			for (int j = 0; j < expectedResult.length; j++) {
 				Assert.assertEquals(expectedResult[j], markings.get(j).getResult());
 				Assert.assertEquals(partner[j], markings.get(j).getPartner());
 

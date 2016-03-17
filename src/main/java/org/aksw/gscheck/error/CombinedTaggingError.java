@@ -49,9 +49,9 @@ public class CombinedTaggingError implements ErrorChecker {
 							for (String x : arr) {
 								for (CoreLabel z : eligible_makrings) {
 									if (z.get(TextAnnotation.class).equals(x)) {
-										System.out.println(
+										/*System.out.println(
 												z.get(TextAnnotation.class) + " " + z.get(PartOfSpeechAnnotation.class)
-														+ " " + z.beginPosition() + " " + z.endPosition());
+														+ " " + z.beginPosition() + " " + z.endPosition());*/
 									}
 								}
 							}
