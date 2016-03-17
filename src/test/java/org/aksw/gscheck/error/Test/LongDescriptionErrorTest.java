@@ -13,6 +13,7 @@ import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.gscheck.corrections.NamedEntityCorrections;
 import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
 import org.aksw.gscheck.error.LongDescriptionError;
+import org.aksw.simba.gscheck.documentprocessor.DocumentProcessor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class LongDescriptionErrorTest {
 	public void setUp() throws Exception {
 
 		doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
-				Arrays.asList(
+				new ArrayList<Marking>(Arrays.asList(
 						(Marking) new NamedEntityCorrections(0, 20,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Florence_May_Harding"),
 						(Marking) new NamedEntityCorrections(34, 6,
@@ -44,11 +45,11 @@ public class LongDescriptionErrorTest {
 						(Marking) new NamedEntityCorrections(44, 27,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Sydney"),
 						(Marking) new NamedEntityCorrections(61, 21,
-								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas"))));
+								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas")))));
 		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.DELETED, Check.GOOD });
 
 		doc.add(new DocumentImpl(TEXTS[1], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-2",
-				Arrays.asList(
+				new ArrayList<Marking>(Arrays.asList(
 						(Marking) new NamedEntityCorrections(22, 36,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/James_Carville"),
 						(Marking) new NamedEntityCorrections(78, 12,
@@ -58,13 +59,14 @@ public class LongDescriptionErrorTest {
 						(Marking) new NamedEntityCorrections(115, 16,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7,
-								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore"))));
-		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD});
+								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore")))));
+		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD });
 		// NO error
 		doc.add(new DocumentImpl(TEXTS[2], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-3",
-				Arrays.asList((Marking) new NamedEntityCorrections(4, 7, "http://aksws.org/notInWiki/Senator_1"),
+				new ArrayList<Marking>(Arrays.asList(
+						(Marking) new NamedEntityCorrections(4, 7, "http://aksws.org/notInWiki/Senator_1"),
 						(Marking) new NamedEntityCorrections(49, 19,
-								"http://dbpedia.org/resource/Columbia_University"))));
+								"http://dbpedia.org/resource/Columbia_University")))));
 		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD });
 
 	}
@@ -72,6 +74,9 @@ public class LongDescriptionErrorTest {
 	@Test
 	public void test() throws GerbilException {
 		// fail("Not yet implemented");
+		DocumentProcessor preprocessor = new DocumentProcessor();
+		preprocessor.process(doc);
+
 		LongDescriptionError test_var = new LongDescriptionError();
 		test_var.check(doc);
 
