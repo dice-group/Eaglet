@@ -1,52 +1,39 @@
 package org.aksw.gscheck.error;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.aksw.gerbil.dataset.DatasetConfiguration;
-import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
-import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
-import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.gscheck.corrections.NamedEntityCorrections;
 import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
-import org.aksw.simba.gscheck.documentprocessor.DocumentProcessor;
+import org.aksw.simba.gscheck.documentprocessor.StanfordParsedMarking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
-
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 
 public class CombinedTaggingError implements ErrorChecker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CombinedTaggingError.class);
 
-	/*
-	 * private static final DatasetConfiguration DATASET = new
-	 * NIFFileDatasetConfig("DBpedia",
-	 * "gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
-	 * ExperimentType.A2KB);
-	 */
-	static DocumentProcessor dp = new DocumentProcessor();
-
 	public void CombinedTagger(List<Document> documents) throws GerbilException {
-		// List<Document> documents =
-		// DATASET.getDataset(ExperimentType.A2KB).getInstances();
+
 		LOGGER.info(" COMBINED TAGGER MODULE RUNNING");
 
 		for (Document doc : documents) {
 			String text = doc.getText();
 
-			List<CoreLabel> eligible_makrings = dp.Noun_Ad_Extracter(text);
+			List<CoreLabel> eligible_makrings = Noun_Ad_Extracter(doc);
 			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			Collections.sort(entities, new StartPosBasedComparator());
-			if (entities.size() > 0) 
-			{
+			if (entities.size() > 0) {
 				for (int i = 1; i < entities.size(); ++i) {
-					 String substring;
+					String substring;
 					// make sure that the entities are not
 					// overlapping
 					if ((entities.get(i - 1).getStartPosition() + entities.get(i - 1).getLength()) <= entities.get(i)
@@ -79,6 +66,30 @@ public class CombinedTaggingError implements ErrorChecker {
 			eligible_makrings.clear();
 		}
 
+	}
+
+	public List<CoreLabel> Noun_Ad_Extracter(Document doc) {
+		List<CoreLabel> eligible_makrings = new ArrayList<CoreLabel>();
+
+		List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
+		StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
+		List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
+		if (stanfordAnns.size() != 1) {
+			// TODO PANIC!!!!
+			LOGGER.error(" Parser not working ");
+		}
+
+		for (CoreLabel token : tokens) {
+			// we can get the token that has been marked inside the text
+			if (token.get(PartOfSpeechAnnotation.class).startsWith("N")
+					&& (!token.get(PartOfSpeechAnnotation.class).equals("NP"))
+					|| (token.get(PartOfSpeechAnnotation.class).startsWith("JJ"))) {
+				eligible_makrings.add(token);
+
+			}
+		}
+
+		return eligible_makrings;
 	}
 
 	@Override

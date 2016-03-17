@@ -22,6 +22,7 @@ import org.aksw.gscheck.error.LongDescriptionError;
 import org.aksw.gscheck.error.OverLappingError;
 import org.aksw.gscheck.error.SubsetMarkingError;
 import org.aksw.gscheck.vocab.EAGLET;
+import org.aksw.simba.gscheck.documentprocessor.DocumentProcessor;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -33,7 +34,6 @@ public class CheckerPipeline {
 	private static final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
 			"gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
 
-	
 	public void PrePipeProcessor() throws GerbilException {
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 
@@ -59,13 +59,16 @@ public class CheckerPipeline {
 			List<Marking> list = EntityTypeChange.changeType(doc);
 			doc.setMarkings(list);
 		}
-		// TODO preprocess documents
+		// preprocess documents
+		DocumentProcessor dp = new DocumentProcessor();
+		dp.process(documents);
+		// start pipeline
 
 		for (ErrorChecker checker : checkers) {
 			checker.check(documents);
 		}
 
-		// TODO write documents
+		// write documents
 		Model nifModel = generateModel(documents);
 		FileOutputStream fout = new FileOutputStream(
 				"C:/Users/Kunal/workspace/gs_check/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl");
