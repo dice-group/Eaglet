@@ -13,6 +13,7 @@ import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.gscheck.corrections.NamedEntityCorrections;
 import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
 import org.aksw.gscheck.error.CombinedTaggingError;
+import org.aksw.simba.gscheck.documentprocessor.DocumentProcessor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,7 @@ public class CombinedTaggingErrorTest {
 			"Florence May Harding studied at a school in Sydney that is in Australia, and with Douglas Robert Dundas , but in effect had no formal training in either botany or art.",
 			"Such notables include James Carville, who was the senior political adviser to Bill Clinton, and Donna Brazile, the campaign manager of the 2000 presidential campaign of Vice-President Al Gore.",
 			"The senator received a Bachelor of Laws from the Columbia University." };
+	
 	List<Document> doc = new ArrayList<Document>();
 	List<Check[]> expectedResults = new ArrayList<Check[]>();
 	List<NamedEntityCorrections[]> partner_list = new ArrayList<NamedEntityCorrections[]>();
@@ -30,7 +32,7 @@ public class CombinedTaggingErrorTest {
 	public void setUp() throws Exception {
 		// NO error
 		doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
-				Arrays.asList(
+				new ArrayList<Marking>(Arrays.asList(
 						(Marking) new NamedEntityCorrections(0, 12,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Florence_May_Harding"),
 						(Marking) new NamedEntityCorrections(13,7,
@@ -40,14 +42,14 @@ public class CombinedTaggingErrorTest {
 						(Marking) new NamedEntityCorrections(44, 6,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Sydney"),
 						(Marking) new NamedEntityCorrections(61, 21,
-								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas"))));
+								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas")))));
 		expectedResults.add(new Check[] { Check.GOOD,Check.NEED_TO_PAIR ,Check.GOOD, Check.GOOD, Check.GOOD });
 		partner_list.add(new NamedEntityCorrections[] { null,new NamedEntityCorrections(0, 12,
 				"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Florence_May_Harding"), null, null, null });
 		// Complete subset overlap
 
 	/*	doc.add(new DocumentImpl(TEXTS[1], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-2",
-				Arrays.asList(
+				new ArrayList<Marking>(Arrays.asList(
 						(Marking) new NamedEntityCorrections(22, 14,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/James_Carville"),
 						(Marking) new NamedEntityCorrections(57, 17,
@@ -59,7 +61,7 @@ public class CombinedTaggingErrorTest {
 						(Marking) new NamedEntityCorrections(115, 16,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7,
-								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore"))));
+								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore")))));
 		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD });
 
 		partner_list.add(new NamedEntityCorrections[] { null, null, null, null, null, null });
@@ -102,6 +104,9 @@ public class CombinedTaggingErrorTest {
 	@Test
 	public void test() throws GerbilException {
 		// fail("Not yet implemented");
+	    DocumentProcessor preprocessor = new DocumentProcessor();
+	    preprocessor.process(doc);
+	    
 		CombinedTaggingError test_var = new CombinedTaggingError();
 		test_var.check(doc);
 
