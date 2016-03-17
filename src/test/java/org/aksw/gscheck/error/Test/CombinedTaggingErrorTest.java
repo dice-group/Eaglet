@@ -81,9 +81,9 @@ public class CombinedTaggingErrorTest {
 
 		// No error
 		doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
-				Arrays.asList(
+		        new ArrayList<Marking>(Arrays.asList(
 						(Marking) new NamedEntityCorrections(0, 20, "http://dbpedia.org/resource/Florence_May_Harding"),
-						(Marking) new NamedEntityCorrections(45, 6, "http://dbpedia.org/resource/Sydney"))));
+						(Marking) new NamedEntityCorrections(45, 6, "http://dbpedia.org/resource/Sydney")))));
 		partner_list.add(new NamedEntityCorrections[] { null, null });
 
 		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD });
