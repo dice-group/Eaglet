@@ -1,6 +1,7 @@
 package org.aksw.gscheck.error;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -16,66 +17,25 @@ import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 
-
-
 public class ErraticEntityError implements ErrorChecker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ErraticEntityError.class);
-	
-	List<NamedEntityCorrections> entity_set = new ArrayList<NamedEntityCorrections>();
-	String entity_name;
-	List<NamedEntityCorrections> lemma_set = new ArrayList<NamedEntityCorrections>();
 
-	
-	
-	public void ErraticEntityProb(List<Document> documents) throws GerbilException 
-	{
+	HashMap<String, List<NamedEntityCorrections>> hm = new HashMap<String, List<NamedEntityCorrections>>();
+
+	public void ErraticEntityProb(List<Document> documents) throws GerbilException {
 		LOGGER.info(" ERRATIC ENTITY MODULE RUNNING");
 		for (Document doc : documents) {
-			List<NamedEntityCorrections> dummy_list = lemmatize(doc);
-			lemma_set.addAll(dummy_list);
-
-		}
-
-		for (Document doc : documents) {
-
 			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
-
-			for (NamedEntityCorrections le : lemma_set) {
-				// same entity
-				for (NamedEntityCorrections es : entities) {
-					if ((le.getEntity_name().equals(es.getEntity_name())) && (le.getDoc().equals(doc.getDocumentURI()))
-							&& ((le.getStartPosition() >= es.getStartPosition() && ((le.getStartPosition()
-									+ le.getLength()) <= (es.getStartPosition() + es.getLength()))))) {
-						break;
-					}
-					// missing in the same document
-					if (le.getEntity_name().equals(es.getEntity_name()) && (le.getDoc().equals(doc.getDocumentURI()))) {
-						if ((le.getStartPosition() >= es.getStartPosition() && ((le.getStartPosition()
-								+ le.getLength()) <= (es.getStartPosition() + es.getLength())))) {
-							break;
-						}
-						// same doc but positions dont match
-						else {
-							le.setResult(Check.INSERTED);
-							doc.addMarking(le);
-						}
-					}
-					// missing from different doc
-					if ((le.getEntity_name().equals(es.getEntity_name())) && (!(le.getDoc().equals(es.getDoc())))) {
-						le.setResult(Check.INSERTED);
-						doc.addMarking(le);
-					}
-
-				}
+			entities = nameEntity(doc, entities);
+			for(NamedEntityCorrections entity :entities)
+			{
+				hm.put(entity.getEntity_name(), value)
 			}
-
 		}
 
 	}
-	
 
-	public List<NamedEntityCorrections> lemmatize(Document doc) {
-		List<NamedEntityCorrections> lemma_list = new ArrayList<NamedEntityCorrections>();
+	public List<NamedEntityCorrections> nameEntity(Document doc, List<NamedEntityCorrections> entities) {
 		List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
 		StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
 		List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
@@ -83,19 +43,26 @@ public class ErraticEntityError implements ErrorChecker {
 			// TODO PANIC!!!!
 			LOGGER.error(" Parser not working ");
 		}
+		for (NamedEntityCorrections entity : entities) {
+			for (CoreLabel token : tokens) {
+				if (entity.getStartPosition() == token.beginPosition()
+						&& ((token.endPosition() - token.beginPosition()) == entity.getLength())) {
 
-		for (CoreLabel token : tokens) {
-			NamedEntityCorrections dummy = new NamedEntityCorrections(token.beginPosition(),
-					token.endPosition() - token.beginPosition(), null);
-			dummy.setEntity_name((token.get(LemmaAnnotation.class)));
-			dummy.setDoc(doc.getDocumentURI());
+					if (token.get(LemmaAnnotation.class).contains(" ")) {
+						String[] name = token.get(LemmaAnnotation.class).split(" ");
 
-			if (dummy.getLength() != 0)
-				lemma_list.add(dummy);
+						entity.setEntity_name(name[0]);
+						entity.setDoc(doc.getDocumentURI());
+					}
 
+					else {
+						entity.setEntity_name(token.get(LemmaAnnotation.class));
+						entity.setDoc(doc.getDocumentURI());
+					}
+				}
+			}
 		}
-		return lemma_list;
-
+		return entities;
 	}
 
 	@Override

@@ -50,30 +50,7 @@ public class DocumentProcessor {
 	}
 
 /*
-	public String lemmatize_entity(String entity) {
-
-		List<NamedEntityCorrections> lemma_list = new LinkedList<NamedEntityCorrections>();
-		// Create an empty Annotation just with the given text
-		String result = null;
-		Annotation document = new Annotation(entity);
-		// run all Annotators on this text
-		this.pipeline.annotate(document);
-		// Iterate over all of the sentences found
-		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-		for (CoreMap sentence : sentences) {
-			// Iterate over all tokens in a sentence
-			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
-				// Retrieve and add the lemma for each word into the
-				// list of lemmas
-				result += token.get(LemmaAnnotation.class);
-				// position.add(token.beginPosition());
-			}
-
-		}
-		result = result.replaceAll("null", "");
-		return result;
-	}
-
+	
 
 */
 }
