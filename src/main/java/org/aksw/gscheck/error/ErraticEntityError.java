@@ -1,6 +1,7 @@
 package org.aksw.gscheck.error;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,6 +17,7 @@ import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.gscheck.corrections.NamedEntityCorrections;
 import org.aksw.gscheck.corrections.NamedEntityCorrections.Check;
 import org.aksw.gscheck.errorutils.Entity_LengthBasedComparator;
+import org.aksw.gscheck.errorutils.NamedEntitySurfaceForm;
 import org.aksw.gscheck.errorutils.Token_StartposbasedComparator;
 import org.aksw.simba.gscheck.documentprocessor.StanfordParsedMarking;
 import org.slf4j.Logger;
@@ -26,188 +28,184 @@ import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 
 public class ErraticEntityError implements ErrorChecker {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ErraticEntityError.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ErraticEntityError.class);
 
-    Map<String, List<NamedEntityCorrections>> map = new HashMap<String, List<NamedEntityCorrections>>();
+	Map<String, List<NamedEntitySurfaceForm>> map = new HashMap<String, List<NamedEntitySurfaceForm>>();
 
-    public void ErraticEntityProb(List<Document> documents) throws GerbilException {
-        LOGGER.info(" ERRATIC ENTITY MODULE RUNNING");
-        // implement search
-        generate_map(documents);
-        for (Document doc : documents) {
-            List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
-            StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
-            List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
-            if (stanfordAnns.size() != 1) {
-                // TODO PANIC!!!!
-                LOGGER.error(" Parser not working ");
-            }
-            boolean found = false;
-            // actual search
-            int i = 0;
-            
-            Map<String,List<NamedEntitySurfaceForm>>
-            
-            class NamedEntitySurfaceForm {
-                private String surfaceForm[];
-                private List<NamedEntityCorrections> nes;
-            }
+	public void ErraticEntityProb(List<Document> documents) throws GerbilException {
+		LOGGER.info(" ERRATIC ENTITY MODULE RUNNING");
+		// implement search
+		generate_map(documents);
+		for (Document doc : documents) {
+			List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
+			StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
+			List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
+			if (stanfordAnns.size() != 1) {
+				// TODO PANIC!!!!
+				LOGGER.error(" Parser not working ");
+			}
+			boolean found = false;
+			// actual search
+			int i = 0;
 
-            while (i < tokens.size())
+			while (i < tokens.size())
 
-            {
-                if (map.containsKey(tokens.get(i))) {
-                    NamedEntityCorrections match = null;
-                    for (int j = 0; j < map.get(tokens.get(i)).size(); j++) {
-                        NamedEntityCorrections dummy = map.get(tokens.get(i)).get(j);
-                        int k = 0;
-                        while (dummy.entity_text[k].equals(tokens.get(i + k)) && (k < dummy.entity_text.length)) {
-                            k++;
-                        }
-                        if (k == dummy.entity_text.length) {
-                            found = true;
-                            match = dummy;
-                            i += k;
-                            break;
-                        }
-                    }
-                    if (found == false) {
-                        NamedEntityCorrections newentity = new NamedEntityCorrections(tokens.get(i).beginPosition(),
-                                tokens.get(i).endPosition() - tokens.get(i).beginPosition() + 1, " ", Check.INSERTED);
-                        doc.addMarking(newentity);
+			{
+				if (map.containsKey(tokens.get(i))) {
 
-                    } else if ((found == true) && (match != null)) {
+					List<NamedEntitySurfaceForm> current_list = map.get(tokens.get(i));
+					for (int j = 0; j < current_list.size(); j++) {
+						NamedEntitySurfaceForm surfaceformvar = current_list.get(j);
 
-                        if (doc.getDocumentURI().equals(match.getDoc())) {
-                            if (tokens.get(i).beginPosition() == match.getStartPosition()) {
-                                break;
-                            } else {
-                                NamedEntityCorrections newentity = new NamedEntityCorrections(
-                                        tokens.get(i).beginPosition(),
-                                        tokens.get(i).endPosition() - tokens.get(i).beginPosition() + 1, " ",
-                                        Check.INSERTED);
-                                doc.addMarking(newentity);
-                            }
-                        } else {
-                            NamedEntityCorrections newentity = new NamedEntityCorrections(tokens.get(i).beginPosition(),
-                                    tokens.get(i).endPosition() - tokens.get(i).beginPosition() + 1, " ",
-                                    Check.INSERTED);
-                            doc.addMarking(newentity);
-                        }
+						int k = 0;
+						while (surfaceformvar.surfaceForm[k].equals(tokens.get(i + k))
+								&& (k < surfaceformvar.surfaceForm[k].length())) {
+							k++;
+						}
+						if (k == surfaceformvar.surfaceForm[k].length()) {
+							for (NamedEntityCorrections iter : surfaceformvar.nes) {
+								if (doc.getDocumentURI().equals(iter.getDoc())) {
+									if (tokens.get(i).beginPosition() == iter.getStartPosition()) {
+										found = true;
+										break;
+									}
 
-                    } else {
-                        LOGGER.error(" Something is terribly wrong ");
-                    }
+								}
 
-                }
+							}
 
-            }
+							if (found == false) {
+								NamedEntityCorrections newentity = new NamedEntityCorrections(
+										tokens.get(i).beginPosition(),
+										tokens.get(i).endPosition() - tokens.get(i).beginPosition() + 1, " ",
+										Check.INSERTED);
+								doc.addMarking(newentity);
+							}
 
-        }
+						}
 
-    }
+					}
 
-    public void generate_map(List<Document> documents) {
-        for (Document doc : documents) {
-            List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
+				}
 
-            entities = nameEntity(doc, entities);
+			}
 
-            for (NamedEntityCorrections entity : entities) {
-                entity.setDoc(doc.getDocumentURI());
-                if (map.containsKey(entity.getEntity_name())) {
-                    map.get(entity.getEntity_name()).add(entity);
-                }
+		}
 
-                else {
-                    List<NamedEntityCorrections> sub = new ArrayList<NamedEntityCorrections>();
-                    sub.add(entity);
-                    map.put(entity.getEntity_name(), sub);
-                }
-            }
+	}
 
-        }
+	public void generate_map(List<Document> documents) {
+		for (Document doc : documents) {
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 
-        // sorting the entries in descending order of the number od lemma ib the
-        // text
-        for (Map.Entry<String, List<NamedEntityCorrections>> list : map.entrySet()) {
-            Collections.sort(list.getValue(), new Entity_LengthBasedComparator());
-        }
+			entities = nameEntity(doc, entities);
 
-    }
+			for (NamedEntityCorrections entity : entities) {
+				entity.setDoc(doc.getDocumentURI());
+				if (map.containsKey(entity.getEntity_name())) {
+					for (NamedEntitySurfaceForm ns : map.get(entity.getEntity_name())) {
+						if (Arrays.equals(ns.surfaceForm, entity.entity_text)) {
+							ns.nes.add(entity);
+						}
+					}
 
-    public List<NamedEntityCorrections> nameEntity(Document doc, List<NamedEntityCorrections> entities) {
+				}
 
-        List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
+				else {
+					List<NamedEntitySurfaceForm> sub = new ArrayList<NamedEntitySurfaceForm>();
+					List<NamedEntityCorrections> sub_entity = new ArrayList<NamedEntityCorrections>();
+					NamedEntitySurfaceForm nesf = new NamedEntitySurfaceForm();
+					nesf.surfaceForm = entity.entity_text;
+					sub_entity.add(entity);
+					nesf.nes = sub_entity;
+					sub.add(nesf);
+					map.put(entity.getEntity_name(), sub);
+				}
+			}
 
-        StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
+		}
 
-        List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
-        if (stanfordAnns.size() != 1) {
-            // TODO PANIC!!!!
-            LOGGER.error(" Parser not working ");
-        }
-        String text = doc.getText();
-        // 1. create Bitset containing the ne positions and gather ne positions
-        BitSet nePositions = new BitSet(text.length());
-        int start[] = new int[entities.size()];
-        int end[] = new int[entities.size()];
+		// sorting the entries in descending order of the number od lemma ib the
+		// text
+		/*
+		 * for (Map.Entry<String, List<NamedEntityCorrections>> list :
+		 * map.entrySet()) { Collections.sort(list.getValue(), new
+		 * Entity_LengthBasedComparator()); }
+		 */
+	}
 
-        Collections.sort(entities, new StartPosBasedComparator());
-        for (int i = 0; i < entities.size(); ++i) {
-            start[i] = entities.get(i).getStartPosition();
-            end[i] = entities.get(i).getStartPosition() + entities.get(i).getLength();
-            nePositions.set(start[i], end[i]);
-        }
-        // 2. Iterate over the tokens and search for tokens that are inside of
-        // ne boarders
-        @SuppressWarnings("unchecked")
-        List<CoreLabel> entityTokens[] = new List[entities.size()];
-        for (CoreLabel token : tokens) {
-            if (nePositions.get(token.beginPosition()) || nePositions.get(token.endPosition() - 1)) {
-                // search for matching named entities
-                int pos = 0;
-                while ((pos < start.length) && (start[pos] <= token.endPosition())) {
-                    // if the token and the
-                    if ((start[pos] <= token.beginPosition()) && (end[pos] >= token.endPosition())) {
-                        // nes.get(pos) is the matching ne
-                        // add the token to the list of tokens of ne
-                        if (entityTokens[pos] == null) {
-                            entityTokens[pos] = new ArrayList<CoreLabel>();
-                        }
-                        entityTokens[pos].add(token);
-                    }
-                    ++pos;
-                }
-            }
-        }
-        Token_StartposbasedComparator comparator = new Token_StartposbasedComparator();
+	public List<NamedEntityCorrections> nameEntity(Document doc, List<NamedEntityCorrections> entities) {
 
-        // setting text for entity
-        NamedEntityCorrections currentNamedEntity;
-        for (int i = 0; i < entities.size(); i++) {
-            if (entityTokens[i] == null) {
-                // TODO print error because the entities has got no tokens :(
-            } else {
-                // sorting the token list
-                Collections.sort(entityTokens[i], comparator);
-                currentNamedEntity = entities.get(i);
-                currentNamedEntity.setEntity_name(entityTokens[i].get(0).get(LemmaAnnotation.class));
-                currentNamedEntity.entity_text = new String[entityTokens[i].size()];
-                for (int j = 0; j < entityTokens[i].size(); ++j) {
-                    currentNamedEntity.entity_text[j] = entityTokens[i].get(j).get(LemmaAnnotation.class);
-                }
-                currentNamedEntity.setNumber_of_lemma(entityTokens[i].size());
-            }
-        }
+		List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
 
-        return entities;
-    }
+		StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
 
-    @Override
-    public void check(List<Document> documents) throws GerbilException {
-        // TODO Auto-generated method stub
-        this.ErraticEntityProb(documents);
-    }
+		List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
+		if (stanfordAnns.size() != 1) {
+			// TODO PANIC!!!!
+			LOGGER.error(" Parser not working ");
+		}
+		String text = doc.getText();
+		// 1. create Bitset containing the ne positions and gather ne positions
+		BitSet nePositions = new BitSet(text.length());
+		int start[] = new int[entities.size()];
+		int end[] = new int[entities.size()];
+
+		Collections.sort(entities, new StartPosBasedComparator());
+		for (int i = 0; i < entities.size(); ++i) {
+			start[i] = entities.get(i).getStartPosition();
+			end[i] = entities.get(i).getStartPosition() + entities.get(i).getLength();
+			nePositions.set(start[i], end[i]);
+		}
+		// 2. Iterate over the tokens and search for tokens that are inside of
+		// ne boarders
+		@SuppressWarnings("unchecked")
+		List<CoreLabel> entityTokens[] = new List[entities.size()];
+		for (CoreLabel token : tokens) {
+			if (nePositions.get(token.beginPosition()) || nePositions.get(token.endPosition() - 1)) {
+				// search for matching named entities
+				int pos = 0;
+				while ((pos < start.length) && (start[pos] <= token.endPosition())) {
+					// if the token and the
+					if ((start[pos] <= token.beginPosition()) && (end[pos] >= token.endPosition())) {
+						// nes.get(pos) is the matching ne
+						// add the token to the list of tokens of ne
+						if (entityTokens[pos] == null) {
+							entityTokens[pos] = new ArrayList<CoreLabel>();
+						}
+						entityTokens[pos].add(token);
+					}
+					++pos;
+				}
+			}
+		}
+		Token_StartposbasedComparator comparator = new Token_StartposbasedComparator();
+
+		// setting text for entity
+		NamedEntityCorrections currentNamedEntity;
+		for (int i = 0; i < entities.size(); i++) {
+			if (entityTokens[i] == null) {
+				// TODO print error because the entities has got no tokens :(
+			} else {
+				// sorting the token list
+				Collections.sort(entityTokens[i], comparator);
+				currentNamedEntity = entities.get(i);
+				currentNamedEntity.setEntity_name(entityTokens[i].get(0).get(LemmaAnnotation.class));
+				currentNamedEntity.entity_text = new String[entityTokens[i].size()];
+				for (int j = 0; j < entityTokens[i].size(); ++j) {
+					currentNamedEntity.entity_text[j] = entityTokens[i].get(j).get(LemmaAnnotation.class);
+				}
+				currentNamedEntity.setNumber_of_lemma(entityTokens[i].size());
+			}
+		}
+
+		return entities;
+	}
+
+	@Override
+	public void check(List<Document> documents) throws GerbilException {
+		// TODO Auto-generated method stub
+		this.ErraticEntityProb(documents);
+	}
 
 }
