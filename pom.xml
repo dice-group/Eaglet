@@ -50,6 +50,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.aksw</groupId>
+			<artifactId>gerbil.nif.transfer</artifactId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
 		<!-- Stanford NLP -->
 		<dependency>
 			<groupId>edu.stanford.nlp</groupId>
