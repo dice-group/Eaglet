@@ -2,7 +2,7 @@ package org.aksw.gscheck.completion.Test;
 
 import static org.junit.Assert.*;
 
-import org.aksw.gscheck.completion.MissingEntityCompletion;
+import org.aksw.simba.eaglet.completion.MissingEntityCompletion;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
