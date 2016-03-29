@@ -4,14 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aksw.gerbil.annotator.Annotator;
 import org.aksw.gerbil.dataset.DatasetConfiguration;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
-import org.aksw.simba.eaglet.corrections.NamedEntityCorrections;
-import org.aksw.simba.eaglet.corrections.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
 import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.aksw.simba.eaglet.errorutils.AnnotatorResult;
 
@@ -25,8 +26,10 @@ public class MissingEntityCompletion implements ErrorChecker  {
 				String annotatorFilenName = file.getParent() + "/" + file.getName();
 				// System.out.println(annotatorFilenName);
 				System.out.println(file.getName());
-				ArrayList<NamedEntityCorrections> result_annotator = AnnotatorResult.loadAnnotator(annotatorFilenName,
+				//Annotator alias_annotator = AnnotatorResult.loadAnnotator(annotatorFilenName,file.getName());
+				List<NamedEntityCorrections> result_annotator = AnnotatorResult.loadAnnotator(annotatorFilenName,
 						file.getName());
+				//alias_annotator.docue
 				result_set = CompareWithGS(result_annotator);
 
 				// AnnotatorResult.printlist(result_set);
@@ -38,7 +41,7 @@ public class MissingEntityCompletion implements ErrorChecker  {
 
 	}
 
-	public static ArrayList<NamedEntityCorrections> CompareWithGS(ArrayList<NamedEntityCorrections> annotator_entity)
+	public static ArrayList<NamedEntityCorrections> CompareWithGS(List<NamedEntityCorrections> result_annotator)
 			throws GerbilException {
 		ArrayList<NamedEntityCorrections> result_set = new ArrayList<NamedEntityCorrections>();
 		final DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia",
@@ -52,7 +55,7 @@ public class MissingEntityCompletion implements ErrorChecker  {
 
 		}
 
-		for (NamedEntityCorrections en : annotator_entity) {
+		for (NamedEntityCorrections en : result_annotator) {
 			if (!(gs_entity_set).contains(en)) {
 				en.setResult(Check.INSERTED);
 				result_set.add(en);

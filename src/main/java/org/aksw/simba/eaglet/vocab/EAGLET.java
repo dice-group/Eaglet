@@ -16,7 +16,7 @@
  */
 package org.aksw.simba.eaglet.vocab;
 
-import org.aksw.simba.eaglet.corrections.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,7 +2,7 @@ package org.aksw.simba.eaglet.errorutils;
 
 import java.util.Comparator;
 
-import org.aksw.simba.eaglet.corrections.NamedEntityCorrections;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 
 import edu.stanford.nlp.ling.CoreLabel;
 

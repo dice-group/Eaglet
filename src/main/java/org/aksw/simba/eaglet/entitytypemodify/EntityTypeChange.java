@@ -1,4 +1,4 @@
-package org.aksw.simba.eaglet.corrections;
+package org.aksw.simba.eaglet.entitytypemodify;
 
 import java.util.List;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;

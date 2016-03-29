@@ -11,10 +11,10 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
-import org.aksw.simba.eaglet.corrections.NamedEntityCorrections;
-import org.aksw.simba.eaglet.corrections.NamedEntityCorrections.Check;
 import org.aksw.simba.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.simba.eaglet.documentprocessor.StanfordParsedMarking;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
