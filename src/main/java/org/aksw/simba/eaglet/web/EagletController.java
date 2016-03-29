@@ -33,4 +33,15 @@ public class EagletController {
         return "";
     }
 
+    @RequestMapping("/service/submit")
+    public void nextDocument(@RequestParam(value = "document") String document,
+            @RequestParam(value = "user") String user) {
+        int userId = Integer.parseInt(user);
+        // TODO parse document from JSON
+        
+        // TODO generate file name
+        // TODO serialize the document into a file
+        // TODO  store the user ID - file name - document URI triple into the database
+    }
+
 }
