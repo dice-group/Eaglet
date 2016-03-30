@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.gerbil.annotator.A2KBAnnotator;
-import org.aksw.gerbil.annotator.AbstractTestAnnotator;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;

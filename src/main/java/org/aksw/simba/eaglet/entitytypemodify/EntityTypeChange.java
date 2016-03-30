@@ -1,35 +1,41 @@
 package org.aksw.simba.eaglet.entitytypemodify;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.gerbil.transfer.nif.MeaningSpan;
 
 public class EntityTypeChange {
 
-	
-	
-	public static List<Marking> changeType(Document d) {
-		List<NamedEntity> original_list = d.getMarkings(NamedEntity.class);
-		
-		List<Marking> new_list = null;
-		for(NamedEntity  entity: original_list)
-		{
-			new_list.add(new NamedEntityCorrections(entity.getStartPosition(), entity.getLength(), entity.getUri()));
-		}
+    public static List<Marking> changeType(Document d) {
+        List<MeaningSpan> original_list = d.getMarkings(MeaningSpan.class);
+        List<Marking> new_list = new ArrayList<Marking>(original_list.size());
+        changeListType(original_list, new_list);
+        // List<Marking> new_list = null;
+        // for (NamedEntity entity : original_list) {
+        // new_list.add(new NamedEntityCorrections(entity.getStartPosition(),
+        // entity.getLength(), entity.getUris()));
+        // }
+        return new_list;
+    }
 
-		return new_list;
-	}
-	public List<NamedEntityCorrections> changeListType(List<MeaningSpan> original_list) {
-		//List<NamedEntity> original_list = d.getMarkings(NamedEntity.class);
-		
-		List<NamedEntityCorrections> new_list = null;
-		for(MeaningSpan entity: original_list)
-		{
-			new_list.add(new NamedEntityCorrections(entity.getStartPosition(), entity.getLength(), entity.getUri()));
-		}
+    public static List<NamedEntityCorrections> changeListType(List<MeaningSpan> original_list) {
+        List<NamedEntityCorrections> new_list = new ArrayList<NamedEntityCorrections>(original_list.size());
+        changeListType(original_list, new_list);
+        // for (MeaningSpan entity : original_list) {
+        // new_list.add(new NamedEntityCorrections(entity.getStartPosition(),
+        // entity.getLength(), entity.getUris()));
+        // }
+        return new_list;
+    }
 
-		return new_list;
-	}
+    @SuppressWarnings("unchecked")
+    public static <T extends Marking> void changeListType(List<MeaningSpan> original_list, List<T> newList) {
+        for (MeaningSpan entity : original_list) {
+            newList.add(
+                    (T) new NamedEntityCorrections(entity.getStartPosition(), entity.getLength(), entity.getUris()));
+        }
+    }
 }
