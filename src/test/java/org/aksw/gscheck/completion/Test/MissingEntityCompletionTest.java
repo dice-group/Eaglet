@@ -118,7 +118,7 @@ public class MissingEntityCompletionTest {
             expectedMarkings = expectedDocuments.get(i).getMarkings(NamedEntityCorrections.class);
 
             Assert.assertEquals(
-                    "The number of markings (" + markings.toString()
+                    "The number of markings in document " + i + " (" + markings.toString()
                             + ") does not match the number of expected markings (" + expectedMarkings.toString() + ")",
                     expectedMarkings.size(), markings.size());
             Set<NamedEntityCorrections> result = new HashSet<NamedEntityCorrections>(markings);
