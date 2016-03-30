@@ -22,51 +22,58 @@ import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 
 public class AnnotatorResult {
 
-    /*
-     * private static final DatasetConfiguration GOLD_STD = new
-     * NIFFileDatasetConfig("DBpedia",
-     * "C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl",
-     * false, ExperimentType.A2KB);
-     * 
-     * private static final UriKBClassifier URI_KB_CLASSIFIER = new
-     * SimpleWhiteListBasedUriKBClassifier( "http://dbpedia.org/resource/");
-     */
-    private static final ExperimentType EXPERIMENT_TYPE = ExperimentType.A2KB;
+	private static final ExperimentType EXPERIMENT_TYPE = ExperimentType.A2KB;
+	private List<A2KBAnnotator> annotators;
+	String filename;
 
-    /*
-     * public static void printlist(ArrayList<NamedEntity> result_set) { for
-     * (NamedEntity x : result_set) { System.out.println("Entity ID " +
-     * x.getUri()); System.out.println("ENTITY START POS " +
-     * x.getStartPosition()); System.out.println(
-     * "=================================================================="); }
-     * 
-     * }
-     */
+	public AnnotatorResult(String Filename) throws GerbilException {
+		// TODO Auto-generated constructor stub
+		this.filename = Filename;
+		readannotatorlist();
 
-    public static List<NamedEntityCorrections> loadAnnotatorResult(String annotatorFileName, String AnnotatorName)
-            throws GerbilException {
-        Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
-                .getDataset(EXPERIMENT_TYPE);
-        ArrayList<NamedEntityCorrections> entity_set = new ArrayList<NamedEntityCorrections>();
+	}
 
-        List<Document> documents = dataset.getInstances();
-        A2KBAnnotator alias_annotator = new TestA2KBAnnotator(documents);
-        // System.out.println(documents.get(0).getDocumentURI());
-        for (Document doc : documents) {
-            List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
+	public List<A2KBAnnotator> getAnnotators() {
+		return annotators;
+	}
 
-            entity_set.addAll(entities);
-        }
+	public void setAnnotators(List<A2KBAnnotator> annotators) {
+		this.annotators = annotators;
+	}
 
-        return entity_set;
-        // return alias_annotator;
-    }
+	public void readannotatorlist() throws GerbilException {
+		File folder = new File(filename);
+		File[] listOfFiles = folder.listFiles();
+		for (File file : listOfFiles) {
+			if (file.isFile()) {
+				String annotatorFilenName = file.getParent() + "/" + file.getName();
+				System.out.println(file.getName());
+				annotators.add(AnnotatorResult.loadAnnotator(annotatorFilenName, file.getName()));
+			}
+		}
+	}
 
-    public static A2KBAnnotator loadAnnotator(String annotatorFileName, String AnnotatorName) throws GerbilException {
-        Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
-                .getDataset(EXPERIMENT_TYPE);
-        List<Document> documents = dataset.getInstances();
-        return new TestA2KBAnnotator(documents);
-    }
+	@Deprecated
+	public static List<NamedEntityCorrections> loadAnnotatorResult(String annotatorFileName, String AnnotatorName)
+			throws GerbilException {
+		Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
+				.getDataset(EXPERIMENT_TYPE);
+		ArrayList<NamedEntityCorrections> entity_set = new ArrayList<NamedEntityCorrections>();
+		List<Document> documents = dataset.getInstances();
+		A2KBAnnotator alias_annotator = new TestA2KBAnnotator(documents);
+		// System.out.println(documents.get(0).getDocumentURI());
+		for (Document doc : documents) {
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
+			entity_set.addAll(entities);
+		}
+		return entity_set;
+	}
+
+	public static A2KBAnnotator loadAnnotator(String annotatorFileName, String AnnotatorName) throws GerbilException {
+		Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
+				.getDataset(EXPERIMENT_TYPE);
+		List<Document> documents = dataset.getInstances();
+		return new TestA2KBAnnotator(documents);
+	}
 
 }

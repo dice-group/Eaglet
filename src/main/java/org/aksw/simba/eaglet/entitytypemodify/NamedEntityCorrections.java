@@ -6,7 +6,7 @@ import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 
 public class NamedEntityCorrections extends NamedEntity {
     public enum Check {
-        INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS
+        COMPLETED,INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS
     }
 
     private Check result;

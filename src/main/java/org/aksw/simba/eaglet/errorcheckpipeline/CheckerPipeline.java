@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aksw.gerbil.annotator.A2KBAnnotator;
 import org.aksw.gerbil.dataset.DatasetConfiguration;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
 import org.aksw.gerbil.datatypes.ExperimentType;
@@ -13,7 +14,10 @@ import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
+import org.aksw.gerbil.transfer.nif.MeaningSpan;
 import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
+import org.aksw.simba.eaglet.completion.GoldStandardCompletion;
+import org.aksw.simba.eaglet.completion.MissingEntityCompletion;
 import org.aksw.simba.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
@@ -22,6 +26,7 @@ import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.aksw.simba.eaglet.error.LongDescriptionError;
 import org.aksw.simba.eaglet.error.OverLappingError;
 import org.aksw.simba.eaglet.error.SubsetMarkingError;
+import org.aksw.simba.eaglet.errorutils.AnnotatorResult;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -46,6 +51,9 @@ public class CheckerPipeline {
 
 	public static void main(String[] args) throws GerbilException, IOException {
 		// TODO init pipeline
+		AnnotatorResult ar= new AnnotatorResult("C:/Users/Kunal/workspace/gerbil/Results_anontator_dbpedia");
+		List<A2KBAnnotator> annotators = ar.getAnnotators();
+		GoldStandardCompletion  Complete=  new MissingEntityCompletion(annotators);
 		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
 		checkers.add(new CombinedTaggingError());
 		checkers.add(new OverLappingError());
@@ -53,7 +61,9 @@ public class CheckerPipeline {
 		checkers.add(new OverLappingError());
 		checkers.add(new SubsetMarkingError());
 		// PiPeStructure();
-
+		
+		//TODO: Switch Case for both modules
+		
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 		for (Document doc : documents) {
 			List<Marking> list = EntityTypeChange.changeType(doc);
