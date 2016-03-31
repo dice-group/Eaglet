@@ -52,6 +52,7 @@ public class EAGLET {
     public static final Resource Good = resource("GOOD");
     public static final Resource NeedToPair = resource("NEED_TO_PAIR");
     public static final Resource Overlaps = resource("OVERLAPS");
+    public static final Resource Completed = resource("COMPLETED");
 
     public static final Property hasCheckResult = property("hasCheckResult");
     public static final Property hasPairPartner = property("hasPairPartner");
@@ -68,6 +69,8 @@ public class EAGLET {
             return NeedToPair;
         case OVERLAPS:
             return Overlaps;
+        case COMPLETED:
+            return Completed;
         }
         LOGGER.error("Got an unknown matching type: " + checkResult.name());
         return null;

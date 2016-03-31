@@ -1,5 +1,6 @@
 package org.aksw.simba.eaglet.errorcheckpipeline;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import org.aksw.gerbil.annotator.A2KBAnnotator;
 import org.aksw.gerbil.exceptions.GerbilException;
+import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -24,7 +26,7 @@ import org.aksw.simba.eaglet.vocab.EAGLET;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 public class CheckerPipeline {
@@ -88,6 +90,16 @@ public class CheckerPipeline {
 			}
 		}
 		return nifModel;
+
+        // Read the RDF MOdel
+        Model nifModel = ModelFactory.createDefaultModel();
+        nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+        FileInputStream fin = ...;
+        nifModel.read(fin, "", "TTL");
+        fin.close();
+        DocumentListParser parser = new DocumentListParser(new DocumentParser(new MyOwnAnnotationParser()));
+        parser.parseDocuments(nifModel);
+        nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode)null);
 	}
 
 }

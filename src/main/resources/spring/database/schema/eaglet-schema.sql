@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS Users (
-userid int PRIMARY KEY,
+id int PRIMARY KEY,
 name VARCHAR(50)
 );
 CREATE TABLE IF NOT EXISTIS Documents (
