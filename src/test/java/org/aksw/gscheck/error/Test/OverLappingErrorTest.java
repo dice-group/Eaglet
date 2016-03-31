@@ -1,21 +1,13 @@
 package org.aksw.gscheck.error.Test;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.aksw.gerbil.dataset.DatasetConfiguration;
-import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
-import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
-import org.aksw.gerbil.semantic.kb.SimpleWhiteListBasedUriKBClassifier;
-import org.aksw.gerbil.semantic.kb.UriKBClassifier;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
-import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
 import org.aksw.simba.eaglet.error.OverLappingError;

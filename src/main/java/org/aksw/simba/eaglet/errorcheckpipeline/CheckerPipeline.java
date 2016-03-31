@@ -91,15 +91,17 @@ public class CheckerPipeline {
 		}
 		return nifModel;
 
-        // Read the RDF MOdel
-        Model nifModel = ModelFactory.createDefaultModel();
-        nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-        FileInputStream fin = ...;
-        nifModel.read(fin, "", "TTL");
-        fin.close();
-        DocumentListParser parser = new DocumentListParser(new DocumentParser(new MyOwnAnnotationParser()));
-        parser.parseDocuments(nifModel);
-        nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode)null);
+       
 	}
-
+public void  ServerRead ()
+{
+	 // Read the RDF MOdel
+    Model nifModel = ModelFactory.createDefaultModel();
+    nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+    FileInputStream fin = ...;
+    nifModel.read(fin, "", "TTL");
+    fin.close();
+    DocumentListParser parser = new DocumentListParser(new DocumentParser(new MyOwnAnnotationParser()));
+    parser.parseDocuments(nifModel);
+    nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode)null);}
 }

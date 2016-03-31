@@ -47,12 +47,12 @@ public class EAGLET {
         return ResourceFactory.createProperty(uri, local);
     }
 
-    public static final Resource Inserted = resource("INSERTED");
-    public static final Resource Deleted = resource("DELETED");
-    public static final Resource Good = resource("GOOD");
-    public static final Resource NeedToPair = resource("NEED_TO_PAIR");
-    public static final Resource Overlaps = resource("OVERLAPS");
-    public static final Resource Completed = resource("COMPLETED");
+    public static final Resource Inserted = resource("Inserted");
+    public static final Resource Deleted = resource("Deleted");
+    public static final Resource Good = resource("Good");
+    public static final Resource NeedToPair = resource("NeedToPair");
+    public static final Resource Overlaps = resource("Overlaps");
+    public static final Resource Completed = resource("Completed");
 
     public static final Property hasCheckResult = property("hasCheckResult");
     public static final Property hasPairPartner = property("hasPairPartner");

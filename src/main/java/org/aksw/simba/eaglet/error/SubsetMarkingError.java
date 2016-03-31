@@ -29,18 +29,25 @@ public class SubsetMarkingError implements ErrorChecker {
 			text = doc.getText();
 			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			for (NamedEntityCorrections entity : entities) {
-				// If there are letters in front check for a whitespace
-				if (entity.getStartPosition() > 0) {
-					if (!Character.isWhitespace(text.charAt(entity.getStartPosition() - 1))) {
-						entity.setResult(Check.DELETED);
+				if (entity.getResult().equals(Check.GOOD)|| (entity.getResult().equals(Check.INSERTED))) {
+					if (entity.getStartPosition() > 0) {
+						if (!Character.isWhitespace(text.charAt(entity.getStartPosition() - 1))) {
+							entity.setResult(Check.DELETED);
+						}
 					}
-				}
-				// If there are letters behind check for letters or digits
+					// If there are letters behind check for letters or digits
 					if (entity.getStartPosition() + entity.getLength() < text.length()) {
 						if (Character.isLetterOrDigit(text.charAt(entity.getStartPosition() + entity.getLength()))) {
 							entity.setResult(Check.DELETED);
 						}
 					}
+				}
+				/*if (!) {
+					break;
+				}*/
+				// If there are letters in front check for a whitespace
+
+				
 			}
 		}
 

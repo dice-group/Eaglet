@@ -46,28 +46,31 @@ public class LongDescriptionError implements ErrorChecker {
 			Collections.sort(entities, new StartPosBasedComparator());
 
 			for (NamedEntityCorrections entity : entities) {
-				String entity_text = text.substring(entity.getStartPosition(),
-						entity.getLength() + entity.getStartPosition());
-				String[] arr = entity_text.split(" ");
-				for (String dummy : arr) {
-					for (CoreLabel bentity : POSBlackList) {
-						if (bentity.get(TextAnnotation.class).equals(dummy)) {
-							/*
-							 * System.out.println(dummy + "-----> " +
-							 * text.substring(entity.getStartPosition(),
-							 * entity.getLength() + entity.getStartPosition()) +
-							 * " " + bentity.get(TextAnnotation.class) + " " +
-							 * entity.getStartPosition() + " " +
-							 * entity.getLength());
-							 */
-							entity.setResult(Check.DELETED);
+				if (entity.getResult().equals(Check.GOOD) || (entity.getResult().equals(Check.INSERTED))) {
+					String entity_text = text.substring(entity.getStartPosition(),
+							entity.getLength() + entity.getStartPosition());
+					String[] arr = entity_text.split(" ");
+					for (String dummy : arr) {
+						for (CoreLabel bentity : POSBlackList) {
+							if (bentity.get(TextAnnotation.class).equals(dummy)) {
+								/*
+								 * System.out.println(dummy + "-----> " +
+								 * text.substring(entity.getStartPosition(),
+								 * entity.getLength() +
+								 * entity.getStartPosition()) + " " +
+								 * bentity.get(TextAnnotation.class) + " " +
+								 * entity.getStartPosition() + " " +
+								 * entity.getLength());
+								 */
+								entity.setResult(Check.DELETED);
 
+							}
 						}
 					}
+
 				}
 
 			}
-
 		}
 
 	}
