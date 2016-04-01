@@ -53,8 +53,8 @@ public class EagletDatabaseStatements {
 			return null;
 		}
 	}
-	public List<String> getDocumentUser(int userId ) 
-	{
+
+	public List<String> getDocumentUser(int userId) {
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("userId", userId);
 		List<String> result = this.template.query(GET_DOCUMENTS_REVIEWED_BY_USER, parameters, new StringRowMapper());
@@ -64,9 +64,23 @@ public class EagletDatabaseStatements {
 			return null;
 		}
 	}
-	public void addUser()
-	{
-		
+
+	public void addUser(int id, String name) {
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("id", id);
+		parameters.addValue("name", name);
+		this.template.update(INSERT_USER, parameters);
+
+	}
+
+	public void addDocument(int userid, String documentUri, String fileName) {
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("userid", userid);
+		parameters.addValue("documentUri", documentUri);
+		parameters.addValue("fileName", fileName);
+
+		this.template.update(INSERT_DOCUMENT, parameters);
+
 	}
 
 }

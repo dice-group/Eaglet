@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with NIF transfer library for the General Entity Annotator Benchmark.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.aksw.simba.eaglet.nifmodifier;
+package org.aksw.simba.eaglet.annotator;
 
 import java.util.HashSet;
 import java.util.List;

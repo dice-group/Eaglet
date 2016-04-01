@@ -1,6 +1,8 @@
 package org.aksw.simba.eaglet.errorcheckpipeline;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,9 +12,11 @@ import org.aksw.gerbil.annotator.A2KBAnnotator;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
+import org.aksw.gerbil.io.nif.DocumentParser;
 import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
+import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.completion.GoldStandardCompletion;
 import org.aksw.simba.eaglet.completion.MissingEntityCompletion;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
@@ -62,9 +66,10 @@ public class CheckerPipeline {
 		// write documents
 		Model nifModel = generateModel(documents);
 		FileOutputStream fout = new FileOutputStream(
-				"C:/Users/Kunal/workspace/gs_check/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl");
+				"C:/Users/Kunal/workspace/gs_check/gerbil_data/datasets/spotlight/dbpedia-spotlight-result-nif.ttl");
 		nifModel.write(fout, "TTL");
 		fout.close();
+		// TODO: Send to server
 	}
 
 	public static Model generateModel(List<Document> documents) {
@@ -91,17 +96,20 @@ public class CheckerPipeline {
 		}
 		return nifModel;
 
-       
 	}
-public void  ServerRead ()
-{
-	 // Read the RDF MOdel
-    Model nifModel = ModelFactory.createDefaultModel();
-    nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-    FileInputStream fin = ...;
-    nifModel.read(fin, "", "TTL");
-    fin.close();
-    DocumentListParser parser = new DocumentListParser(new DocumentParser(new MyOwnAnnotationParser()));
-    parser.parseDocuments(nifModel);
-    nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode)null);}
+
+	public static Model readFromDocument() throws IOException {
+		// Read the RDF MOdel
+		Model nifModel = ModelFactory.createDefaultModel();
+		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+		FileInputStream fin = new FileInputStream(new File(
+				"C:/Users/Kunal/workspace/gs_check/gerbil_data/datasets/spotlight/dbpedia-spotlight-result-nif.ttl"));
+		nifModel.read(fin, "", "TTL");
+
+		DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
+		parser.parseDocuments(nifModel);
+		nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode) null);
+		fin.close();
+		return nifModel;
+	}
 }
