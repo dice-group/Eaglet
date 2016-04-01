@@ -57,13 +57,16 @@ public class RootConfig {
     private static final String ENTITY_CHECKING_MANAGER_IN_MEM_CACHE_DURATION_KEY = "org.aksw.gerbil.dataset.check.InMemoryCachingEntityCheckerManager.cacheDuration";
     private static final String HTTP_BASED_ENTITY_CHECKING_NAMESPACE_KEY = "org.aksw.gerbil.dataset.check.HttpBasedEntityChecker.namespace";
 
-//    static @Bean public PropertySourcesPlaceholderConfigurer myPropertySourcesPlaceholderConfigurer() {
-//        PropertySourcesPlaceholderConfigurer p = new PropertySourcesPlaceholderConfigurer();
-//        Resource[] resourceLocations = new Resource[] { new ClassPathResource("gerbil.properties"), };
-//        p.setLocations(resourceLocations);
-//        return p;
-//    }
-    
+    // static @Bean public PropertySourcesPlaceholderConfigurer
+    // myPropertySourcesPlaceholderConfigurer() {
+    // PropertySourcesPlaceholderConfigurer p = new
+    // PropertySourcesPlaceholderConfigurer();
+    // Resource[] resourceLocations = new Resource[] { new
+    // ClassPathResource("gerbil.properties"), };
+    // p.setLocations(resourceLocations);
+    // return p;
+    // }
+
     @Bean
     public DatabaseAdapter experimentDAO() {
         LOGGER.debug("Setting up database.");
@@ -74,45 +77,61 @@ public class RootConfig {
         return database;
     }
 
-//    public static @Bean EntityCheckerManager getEntityCheckerManager() {
-//        EntityCheckerManager manager = null;
-//        Configuration config = GerbilConfiguration.getInstance();
-//        if (config.containsKey(ENTITY_CHECKING_MANAGER_USE_PERSISTENT_CACHE_KEY)
-//                && config.getBoolean(ENTITY_CHECKING_MANAGER_USE_PERSISTENT_CACHE_KEY)
-//                && config.containsKey(ENTITY_CHECKING_MANAGER_PERSISTENT_CACHE_DURATION_KEY)) {
-//            LOGGER.info("Using file based cache for entity checking.");
-//            try {
-//                long duration = config.getLong(ENTITY_CHECKING_MANAGER_PERSISTENT_CACHE_DURATION_KEY);
-//                String cacheFile = config.getString(ENTITY_CHECKING_MANAGER_PERSISTENT_CACHE_FILE_NAME_KEY);
-//                manager = FileBasedCachingEntityCheckerManager.create(duration, new File(cacheFile));
-//            } catch (ConversionException e) {
-//                LOGGER.error("Exception while parsing parameter.", e);
-//            }
-//        }
-//        if ((manager == null) && config.containsKey(ENTITY_CHECKING_MANAGER_IN_MEM_CACHE_SIZE_KEY)
-//                && config.containsKey(ENTITY_CHECKING_MANAGER_IN_MEM_CACHE_DURATION_KEY)) {
-//            LOGGER.info("Using in-memory based cache for entity checking.");
-//            try {
-//                int cacheSize = config.getInt(ENTITY_CHECKING_MANAGER_IN_MEM_CACHE_SIZE_KEY);
-//                long duration = config.getLong(ENTITY_CHECKING_MANAGER_IN_MEM_CACHE_DURATION_KEY);
-//                manager = new InMemoryCachingEntityCheckerManager(cacheSize, duration);
-//            } catch (Exception e) {
-//                LOGGER.error("Exception while parsing parameter. Creating default EntityCheckerManagerImpl.", e);
-//                manager = new EntityCheckerManagerImpl();
-//            }
-//        }
-//        if (manager == null) {
-//            manager = new EntityCheckerManagerImpl();
-//        }
-//        @SuppressWarnings("unchecked")
-//        List<String> namespaces = config.getList(HTTP_BASED_ENTITY_CHECKING_NAMESPACE_KEY);
-//        if (!namespaces.isEmpty()) {
-//            HttpBasedEntityChecker checker = new HttpBasedEntityChecker();
-//            for (String namespace : namespaces) {
-//                manager.registerEntityChecker(namespace.toString(), checker);
-//            }
-//        }
-//        return manager;
-//    }
+    @Bean
+    public EagletController controller() {
+        return new EagletController(EagletController.loadDocuments());
+    }
+
+    // public static @Bean EntityCheckerManager getEntityCheckerManager() {
+    // EntityCheckerManager manager = null;
+    // Configuration config = GerbilConfiguration.getInstance();
+    // if (config.containsKey(ENTITY_CHECKING_MANAGER_USE_PERSISTENT_CACHE_KEY)
+    // && config.getBoolean(ENTITY_CHECKING_MANAGER_USE_PERSISTENT_CACHE_KEY)
+    // &&
+    // config.containsKey(ENTITY_CHECKING_MANAGER_PERSISTENT_CACHE_DURATION_KEY))
+    // {
+    // LOGGER.info("Using file based cache for entity checking.");
+    // try {
+    // long duration =
+    // config.getLong(ENTITY_CHECKING_MANAGER_PERSISTENT_CACHE_DURATION_KEY);
+    // String cacheFile =
+    // config.getString(ENTITY_CHECKING_MANAGER_PERSISTENT_CACHE_FILE_NAME_KEY);
+    // manager = FileBasedCachingEntityCheckerManager.create(duration, new
+    // File(cacheFile));
+    // } catch (ConversionException e) {
+    // LOGGER.error("Exception while parsing parameter.", e);
+    // }
+    // }
+    // if ((manager == null) &&
+    // config.containsKey(ENTITY_CHECKING_MANAGER_IN_MEM_CACHE_SIZE_KEY)
+    // && config.containsKey(ENTITY_CHECKING_MANAGER_IN_MEM_CACHE_DURATION_KEY))
+    // {
+    // LOGGER.info("Using in-memory based cache for entity checking.");
+    // try {
+    // int cacheSize =
+    // config.getInt(ENTITY_CHECKING_MANAGER_IN_MEM_CACHE_SIZE_KEY);
+    // long duration =
+    // config.getLong(ENTITY_CHECKING_MANAGER_IN_MEM_CACHE_DURATION_KEY);
+    // manager = new InMemoryCachingEntityCheckerManager(cacheSize, duration);
+    // } catch (Exception e) {
+    // LOGGER.error("Exception while parsing parameter. Creating default
+    // EntityCheckerManagerImpl.", e);
+    // manager = new EntityCheckerManagerImpl();
+    // }
+    // }
+    // if (manager == null) {
+    // manager = new EntityCheckerManagerImpl();
+    // }
+    // @SuppressWarnings("unchecked")
+    // List<String> namespaces =
+    // config.getList(HTTP_BASED_ENTITY_CHECKING_NAMESPACE_KEY);
+    // if (!namespaces.isEmpty()) {
+    // HttpBasedEntityChecker checker = new HttpBasedEntityChecker();
+    // for (String namespace : namespaces) {
+    // manager.registerEntityChecker(namespace.toString(), checker);
+    // }
+    // }
+    // return manager;
+    // }
 
 }

@@ -2,7 +2,6 @@ package org.aksw.simba.eaglet.errorcheckpipeline;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +31,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class CheckerPipeline {
 
@@ -98,18 +99,30 @@ public class CheckerPipeline {
 
 	}
 
-	public static Model readFromDocument() throws IOException {
+	public static List<Document> readFromDocument(String fileName) throws IOException {
 		// Read the RDF MOdel
 		Model nifModel = ModelFactory.createDefaultModel();
 		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-		FileInputStream fin = new FileInputStream(new File(
-				"C:/Users/Kunal/workspace/gs_check/gerbil_data/datasets/spotlight/dbpedia-spotlight-result-nif.ttl"));
+		FileInputStream fin = new FileInputStream(new File(fileName));
 		nifModel.read(fin, "", "TTL");
+        fin.close();
 
 		DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
-		parser.parseDocuments(nifModel);
-		nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode) null);
-		fin.close();
-		return nifModel;
+		List<Document> documents = parser.parseDocuments(nifModel);
+		StmtIterator iterator = nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode) null);
+		Statement s;
+		String subjectUri, objectUri, documentUri;
+		NamedEntityCorrections subject, object;
+		while(iterator.hasNext()) {
+		    s = iterator.next();
+		    subjectUri = s.getSubject().getURI();
+		    objectUri = s.getObject().asResource().getURI();
+		    documentUri = NIFUriHelper.getDocumentUriFromNifUri(subjectUri);
+		    // TODO search the document from the list
+		    // TODO search the two NamedEntityCorrections object of this document by using 
+		    // subjectUri -> #char=s,e -> subject from document.getMarkings;
+		    subject.setPartner(object);
+		}
+		return documents;
 	}
 }
