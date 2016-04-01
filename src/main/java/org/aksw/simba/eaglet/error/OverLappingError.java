@@ -37,14 +37,13 @@ public class OverLappingError implements ErrorChecker {
 					if ((entities.get(i).getStartPosition() + entities.get(i).getLength()) >= entities.get(i + 1)
 							.getStartPosition()) {
 
-						if (entities.get(i).getResult() != Check.OVERLAPS) {
+						
 							entities.get(i).setResult(Check.OVERLAPS);
 
 							entities.get(i).setPartner(entities.get(i + 1));
-						}
+						
 
-						entities.get(i + 1).setResult(Check.OVERLAPS);
-						entities.get(i + 1).setPartner(entities.get(i));
+						
 
 					}
 				}

@@ -28,7 +28,7 @@ public class CombinedTaggingError implements ErrorChecker {
 		for (Document doc : documents) {
 			String text = doc.getText();
 
-			//List<CoreLabel> eligible_makrings = Noun_Ad_Extracter(doc);
+			// List<CoreLabel> eligible_makrings = Noun_Ad_Extracter(doc);
 			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			Collections.sort(entities, new StartPosBasedComparator());
 			if (entities.size() > 0) {
@@ -40,68 +40,69 @@ public class CombinedTaggingError implements ErrorChecker {
 						// make sure that the entities are not
 						// overlapping
 						if ((entities.get(i - 1).getStartPosition() + entities.get(i - 1).getLength()) <= entities
-								.get(i).getStartPosition()) 
-						{
+								.get(i).getStartPosition()) {
 							substring = text.substring(
 									entities.get(i - 1).getStartPosition() + entities.get(i - 1).getLength(),
 									entities.get(i).getStartPosition());
 							if (substring.matches("[\\s]*")) {
-								/*String[] arr = text
-										.substring(entities.get(i - 1).getStartPosition(),
-												entities.get(i).getStartPosition() + entities.get(i).getLength())
-										.split(" ");
-								
-								 
-									for (CoreLabel z : eligible_makrings) {
-										if (z.get(TextAnnotation.class).equals(x)) {
-											/*
-											 * System.out.println(
-											 * z.get(TextAnnotation.class) + " "
-											 * + z.get(PartOfSpeechAnnotation.
-											 * class) + " " + z.beginPosition()
-											 * + " " + z.endPosition());
-											 
-											
-										}
-									}
+								/*
+								 * String[] arr = text .substring(entities.get(i
+								 * - 1).getStartPosition(),
+								 * entities.get(i).getStartPosition() +
+								 * entities.get(i).getLength()) .split(" ");
+								 * 
+								 * 
+								 * for (CoreLabel z : eligible_makrings) { if
+								 * (z.get(TextAnnotation.class).equals(x)) { /*
+								 * System.out.println(
+								 * z.get(TextAnnotation.class) + " " +
+								 * z.get(PartOfSpeechAnnotation. class) + " " +
+								 * z.beginPosition() + " " + z.endPosition());
+								 * 
+								 * 
+								 * } }
+								 * 
+								 * }
+								 */
 									
-								}
-*/
-								entities.get(i).setResult(Check.NEED_TO_PAIR);
-								entities.get(i).setPartner(entities.get(i - 1));
+								
+									entities.get(i).setResult(Check.NEED_TO_PAIR);
+									entities.get(i).setPartner(entities.get(i -1));
+								//	entities.get(i-1).setResult(Check.NEED_TO_PAIR);
+								
+
 							}
 
 						}
 					}
 				}
-				
+
 			}
 		}
 	}
 
-	/*public List<CoreLabel> Noun_Ad_Extracter(Document doc) {
-		List<CoreLabel> eligible_makrings = new ArrayList<CoreLabel>();
-
-		List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
-		StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
-		List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
-		if (stanfordAnns.size() != 1) {
-			// TODO PANIC!!!!
-			LOGGER.error(" Parser not working ");
-		}
-
-		for (CoreLabel token : tokens) {
-			// we can get the token that has been marked inside the text
-			if (token.get(PartOfSpeechAnnotation.class).startsWith("N")
-					&& (!token.get(PartOfSpeechAnnotation.class).equals("NP"))
-					|| (token.get(PartOfSpeechAnnotation.class).startsWith("JJ"))) {
-				eligible_makrings.add(token);
-
-			}
-		}
-
-		return eligible_makrings;
-	}*/
+	/*
+	 * public List<CoreLabel> Noun_Ad_Extracter(Document doc) { List<CoreLabel>
+	 * eligible_makrings = new ArrayList<CoreLabel>();
+	 * 
+	 * List<StanfordParsedMarking> stanfordAnns =
+	 * doc.getMarkings(StanfordParsedMarking.class); StanfordParsedMarking
+	 * stanfordAnn = stanfordAnns.get(0); List<CoreLabel> tokens =
+	 * stanfordAnn.getAnnotation().get(TokensAnnotation.class); if
+	 * (stanfordAnns.size() != 1) { // TODO PANIC!!!! LOGGER.error(
+	 * " Parser not working "); }
+	 * 
+	 * for (CoreLabel token : tokens) { // we can get the token that has been
+	 * marked inside the text if
+	 * (token.get(PartOfSpeechAnnotation.class).startsWith("N") &&
+	 * (!token.get(PartOfSpeechAnnotation.class).equals("NP")) ||
+	 * (token.get(PartOfSpeechAnnotation.class).startsWith("JJ"))) {
+	 * eligible_makrings.add(token);
+	 * 
+	 * } }
+	 * 
+	 * return eligible_makrings; }
+	 */
 
 	@Override
 	public void check(List<Document> documents) throws GerbilException {

@@ -22,7 +22,7 @@ public class EagletDatabaseStatements {
 	private final static String GET_DOCUMENT_FILES = "SELECT fileName FROM Documents WHERE documentUri=:documenturi";
 	// private final static String GET_DOCUMENT_REVIEW_COUNT = "SELECT COUNT(*)
 	// FROM Documents GROUP BY documentUri";
-	private final static String GET_DOCUMENTS_REVIEWED_BY_USER = "SELECT documentUri,fileName FROM Documents WHERE userId= userid";
+	private final static String GET_DOCUMENTS_REVIEWED_BY_USER = "SELECT documentUri FROM Documents WHERE userId= userid";
 
 	public static final int USER_NOT_FOUND = -1;
 
@@ -52,6 +52,21 @@ public class EagletDatabaseStatements {
 		} else {
 			return null;
 		}
+	}
+	public List<String> getDocumentUser(int userId ) 
+	{
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("userId", userId);
+		List<String> result = this.template.query(GET_DOCUMENTS_REVIEWED_BY_USER, parameters, new StringRowMapper());
+		if (result.size() >= 1) {
+			return result;
+		} else {
+			return null;
+		}
+	}
+	public void addUser()
+	{
+		
 	}
 
 }

@@ -63,26 +63,22 @@ public class OverLappingErrorTest {
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore"))));
-		expectedResults
-				.add(new Check[] { Check.GOOD, Check.GOOD, Check.OVERLAPS, Check.OVERLAPS, Check.GOOD, Check.GOOD });
+		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.OVERLAPS, Check.GOOD, Check.GOOD, Check.GOOD });
 
 		partner_list.add(new NamedEntityCorrections[] { null, null,
 				new NamedEntityCorrections(78, 13,
 						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Donna_Brazile"),
-				new NamedEntityCorrections(78, 12,
-						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Bill_Clinton"),
-				null, null });
+				null, null, null });
 
 		// Partial Overlap
 		doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
 				Arrays.asList(
 						(Marking) new NamedEntityCorrections(0, 20, "http://dbpedia.org/resource/Florence_May_Harding"),
 						(Marking) new NamedEntityCorrections(10, 24, "http://dbpedia.org/resource/Sydney"))));
-		partner_list.add(
-				new NamedEntityCorrections[] { new NamedEntityCorrections(10, 24, "http://dbpedia.org/resource/Sydney"),
-						new NamedEntityCorrections(0, 20, "http://dbpedia.org/resource/Florence_May_Harding") });
+		partner_list.add(new NamedEntityCorrections[] {
+				new NamedEntityCorrections(10, 24, "http://dbpedia.org/resource/Sydney"), null });
 
-		expectedResults.add(new Check[] { Check.OVERLAPS, Check.OVERLAPS });
+		expectedResults.add(new Check[] { Check.OVERLAPS, Check.GOOD });
 
 		// Multiple overlap
 		doc.add(new DocumentImpl(TEXTS[1], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-2",
@@ -95,13 +91,13 @@ public class OverLappingErrorTest {
 						(Marking) new NamedEntityCorrections(115, 16, "http://dbpedia.org/resource/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7, "http://dbpedia.org/resource/Al_Gore"))));
 
-		expectedResults.add(
-				new Check[] { Check.OVERLAPS, Check.OVERLAPS, Check.OVERLAPS, Check.GOOD, Check.GOOD, Check.GOOD });
+		expectedResults
+				.add(new Check[] { Check.OVERLAPS, Check.OVERLAPS, Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD });
 
 		partner_list.add(new NamedEntityCorrections[] {
-				new NamedEntityCorrections(26, 17, "http://dbpedia.org/resource/Political_consulting"),
-				new NamedEntityCorrections(22, 14, "http://dbpedia.org/resource/James_Carville"),
-				new NamedEntityCorrections(26, 17, "http://dbpedia.org/resource/Political_consulting"), null, null,
+				new NamedEntityCorrections(26, 17, "http://dbpedia.org/resource/Political_consulting", Check.OVERLAPS,
+						new NamedEntityCorrections(29, 12, "http://dbpedia.org/resource/Bill_Clinton")),
+				new NamedEntityCorrections(29, 12, "http://dbpedia.org/resource/Bill_Clinton"), null, null, null,
 				null });
 
 		/*
@@ -123,19 +119,19 @@ public class OverLappingErrorTest {
 
 		List<NamedEntityCorrections> markings;
 		Check[] expectedResult;
-		
+
 		for (int i = 0; i < doc.size(); i++) {
 			markings = doc.get(i).getMarkings(NamedEntityCorrections.class);
 			expectedResult = expectedResults.get(i);
-			NamedEntityCorrections[] partner = partner_list.get(i); 
+			NamedEntityCorrections[] partner = partner_list.get(i);
 			Assert.assertEquals(expectedResult.length, markings.size());
 			Assert.assertEquals(partner_list.get(i).length, markings.size());
 
 			for (int j = 0; j < markings.size(); j++) {
 				Assert.assertEquals(expectedResult[j], markings.get(j).getResult());
-				
+
 				Assert.assertEquals(partner[j], markings.get(j).getPartner());
-			
+
 			}
 		}
 	}

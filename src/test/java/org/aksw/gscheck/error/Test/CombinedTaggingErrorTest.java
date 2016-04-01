@@ -63,27 +63,28 @@ public class CombinedTaggingErrorTest {
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/adviser"),
 						(Marking) new NamedEntityCorrections(78, 12,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Bill_Clinton"),
-						(Marking) new NamedEntityCorrections(78, 13,
-								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Donna_Brazile"),
+
 						(Marking) new NamedEntityCorrections(115, 16,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore")))));
 		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.NEED_TO_PAIR, Check.NEED_TO_PAIR, Check.GOOD,
-				Check.GOOD, Check.GOOD, Check.GOOD });
+				Check.GOOD, Check.GOOD });
 		partner_list.add(new NamedEntityCorrections[] { null, null,
 				new NamedEntityCorrections(50, 6,
 						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/senior"),
 				new NamedEntityCorrections(57, 9,
-						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Political"),
+						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Political", Check.NEED_TO_PAIR,
+						new NamedEntityCorrections(50, 6,
+								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/senior")),
 
-				null, null, null, null });
+				null, null, null });
 
 		// No error
 		doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
 
-
-		        new ArrayList<Marking>(Arrays.asList((Marking) new NamedEntityCorrections(0, 20, "http://dbpedia.org/resource/Florence_May_Harding"),
+				new ArrayList<Marking>(Arrays.asList(
+						(Marking) new NamedEntityCorrections(0, 20, "http://dbpedia.org/resource/Florence_May_Harding"),
 						(Marking) new NamedEntityCorrections(45, 6, "http://dbpedia.org/resource/Sydney")))));
 		partner_list.add(new NamedEntityCorrections[] { null, null });
 
