@@ -1,12 +1,13 @@
 package org.aksw.simba.eaglet.entitytypemodify;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 
 public class NamedEntityCorrections extends NamedEntity {
     public enum Check {
-        COMPLETED,INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS
+        COMPLETED, INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS
     }
 
     private Check result;
@@ -108,6 +109,31 @@ public class NamedEntityCorrections extends NamedEntity {
         if (result != other.result)
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append('(');
+        builder.append(startPosition);
+        builder.append(", ");
+        builder.append(length);
+        builder.append(", ");
+        builder.append(Arrays.toString(uris.toArray()));
+        builder.append(", ");
+        builder.append(result);
+        builder.append(", ");
+        if(partner == null) {
+            builder.append("null");
+        } else {
+            builder.append('(');
+            builder.append(partner.startPosition);
+            builder.append(", ");
+            builder.append(partner.length);
+            builder.append(')');
+        }
+        builder.append(')');
+        return builder.toString();
     }
 
 }
