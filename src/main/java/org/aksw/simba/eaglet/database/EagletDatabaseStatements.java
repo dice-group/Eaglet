@@ -65,9 +65,9 @@ public class EagletDatabaseStatements {
 		}
 	}
 
-	public void addUser(int id, String name) {
+	public void addUser(String name) {
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
-		parameters.addValue("id", id);
+
 		parameters.addValue("name", name);
 		this.template.update(INSERT_USER, parameters);
 

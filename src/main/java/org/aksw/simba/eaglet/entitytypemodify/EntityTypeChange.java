@@ -12,30 +12,23 @@ public class EntityTypeChange {
     public static List<Marking> changeType(Document d) {
         List<MeaningSpan> original_list = d.getMarkings(MeaningSpan.class);
         List<Marking> new_list = new ArrayList<Marking>(original_list.size());
-        changeListType(original_list, new_list);
-        // List<Marking> new_list = null;
-        // for (NamedEntity entity : original_list) {
-        // new_list.add(new NamedEntityCorrections(entity.getStartPosition(),
-        // entity.getLength(), entity.getUris()));
-        // }
+        changeListType(original_list, new_list,d.getDocumentURI());
+        
         return new_list;
     }
 
     public static List<NamedEntityCorrections> changeListType(List<MeaningSpan> original_list) {
         List<NamedEntityCorrections> new_list = new ArrayList<NamedEntityCorrections>(original_list.size());
-        changeListType(original_list, new_list);
-        // for (MeaningSpan entity : original_list) {
-        // new_list.add(new NamedEntityCorrections(entity.getStartPosition(),
-        // entity.getLength(), entity.getUris()));
-        // }
+        changeListType(original_list, new_list, null);
         return new_list;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Marking> void changeListType(List<MeaningSpan> original_list, List<T> newList) {
+    public static <T extends Marking> void changeListType(List<MeaningSpan> original_list, List<T> newList, String d) {
         for (MeaningSpan entity : original_list) {
             newList.add(
-                    (T) new NamedEntityCorrections(entity.getStartPosition(), entity.getLength(), entity.getUris()));
+                    (T) new NamedEntityCorrections(entity.getStartPosition(), entity.getLength(), entity.getUris(),d));
         }
     }
 }
+	

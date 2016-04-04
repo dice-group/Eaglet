@@ -48,7 +48,14 @@ public class NamedEntityCorrections extends NamedEntity {
 		partner = null;
 
 	}
+	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, String document) {
+		super(startPosition, length, uris);
+		// TODO Auto-generated constructor stub
+		result = Check.GOOD;
+		doc=document;
+		partner = null;
 
+	}
 	public NamedEntityCorrections(int startPosition, int length, String uri, Check result,
 			NamedEntityCorrections partner) {
 		super(startPosition, length, uri);

@@ -99,29 +99,51 @@ public class CheckerPipeline {
 
 	}
 
-	public static List<Document> readFromDocument(String fileName) throws IOException {
+	public static List<Document> readDocuments(String fileName) throws IOException {
 		// Read the RDF MOdel
 		Model nifModel = ModelFactory.createDefaultModel();
 		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
 		FileInputStream fin = new FileInputStream(new File(fileName));
 		nifModel.read(fin, "", "TTL");
-        fin.close();
+		fin.close();
 
 		DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
 		List<Document> documents = parser.parseDocuments(nifModel);
 		StmtIterator iterator = nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode) null);
 		Statement s;
 		String subjectUri, objectUri, documentUri;
-		NamedEntityCorrections subject, object;
-		while(iterator.hasNext()) {
-		    s = iterator.next();
-		    subjectUri = s.getSubject().getURI();
-		    objectUri = s.getObject().asResource().getURI();
-		    documentUri = NIFUriHelper.getDocumentUriFromNifUri(subjectUri);
-		    // TODO search the document from the list
-		    // TODO search the two NamedEntityCorrections object of this document by using 
-		    // subjectUri -> #char=s,e -> subject from document.getMarkings;
-		    subject.setPartner(object);
+		NamedEntityCorrections subject = null, object = null;
+		while (iterator.hasNext()) {
+			s = iterator.next();
+			subjectUri = s.getSubject().getURI();
+			objectUri = s.getObject().asResource().getURI();
+			documentUri = NIFUriHelper.getDocumentUriFromNifUri(subjectUri);
+			// TODO search the document from the list
+			for (Document doc : documents) {
+				if (documentUri.equals(doc.getDocumentURI())) {
+					int startsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 3));
+					int endsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 1));
+					int startobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 3));
+					int endobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 1));
+
+					List<NamedEntityCorrections> entity_set = doc.getMarkings(NamedEntityCorrections.class);
+					for (NamedEntityCorrections entity : entity_set) {
+						if ((entity.getStartPosition() == startsbj)
+								&& (entity.getStartPosition() + entity.getLength() == endsbj)) 
+						{
+							subject=entity;
+						}
+						if ((entity.getStartPosition() == startobj)
+								&& (entity.getStartPosition() + entity.getLength() == endobj)) 
+						{
+							object=entity;
+						}
+					}
+					subject.setPartner(object);
+
+				}
+			}
+			
 		}
 		return documents;
 	}
