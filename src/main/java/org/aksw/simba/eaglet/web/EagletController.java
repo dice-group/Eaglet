@@ -3,6 +3,7 @@ package org.aksw.simba.eaglet.web;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,8 +12,12 @@ import org.aksw.gerbil.dataset.DatasetConfiguration;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
+import org.aksw.gerbil.io.nif.NIFWriter;
+import org.aksw.gerbil.io.nif.impl.TurtleNIFWriter;
 import org.aksw.gerbil.transfer.nif.Document;
+import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
+import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.errorcheckpipeline.CheckerPipeline;
@@ -30,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 @Controller
 public class EagletController {
 
@@ -42,6 +49,10 @@ public class EagletController {
 
 	private List<Document> documents;
 
+	public EagletController() {
+		this.documents = loadDocuments();
+	}
+
 	public EagletController(List<Document> documents) {
 		this.documents = documents;
 	}
@@ -52,29 +63,23 @@ public class EagletController {
 		return "";
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/loginpage")
-	public String login(@RequestParam(value = "username") String userName) throws Exception {
+	@RequestMapping(value = "/service/next", produces = "application/json;charset=utf-8")
+	public ResponseEntity<String> nextDocument(@RequestParam(value = "username") String userName) {
+		int userId;
 		if (database.getUser(userName) == -1) {
 			database.addUser(userName);
+			userId = database.getUser(userName);
 		} else {
-			// TODO: To show what user needs to review (Load documents)
+			userId = database.getUser(userName);
 		}
-		return "/loginpage";
-	}
-
-	@RequestMapping(value = "/service/next", produces = "application/json;charset=utf-8")
-	public ResponseEntity<String> nextDocument(@RequestParam(value = "user") String user) {
-		int userId = Integer.parseInt(user);
 		// get the next document
 		Document document = getNextDocument(userId);
 		if (document == null) {
 			// TODO return that this was the last document
-
 		}
 		// transform the document and its markings into a JSON String
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-		// TODO send also the marking
 		return new ResponseEntity<String>(transformDocToJson(document), responseHeaders, HttpStatus.OK);
 	}
 
@@ -92,11 +97,6 @@ public class EagletController {
 		JSONObject doc = new JSONObject();
 		doc.append("text", document.getText());
 		doc.append("uri", document.getDocumentURI());
-		return doc.toString();
-	}
-
-	private String transformMarkingToJson(Document document) {
-
 		JSONArray array = new JSONArray();
 		JSONObject ne;
 		for (NamedEntityCorrections nec : document.getMarkings(NamedEntityCorrections.class)) {
@@ -108,15 +108,16 @@ public class EagletController {
 			ne.append("Uris", nec.getUris());
 			array.put(ne);
 		}
-		return array.toString();
+		doc.append("Markings", array);
+		return doc.toString();
 	}
 
-	private List<NamedEntityCorrections> transformEntityFromJson(JSONArray userInput) {
-		List<NamedEntityCorrections> userAcceptedEntities = new ArrayList<NamedEntityCorrections>();
+	private List<Marking> transformEntityFromJson(JSONArray userInput) {
+		List<Marking> userAcceptedEntities = new ArrayList<Marking>();
 
 		for (int i = 0; i < userInput.length(); i++) {
-			NamedEntityCorrections entity = new NamedEntityCorrections(userInput.getJSONObject(i).getInt("start"),
-					userInput.getJSONObject(i).getInt("length"), null, userInput.getJSONObject(i).getString("Doc"));
+			Marking entity = new NamedEntity(userInput.getJSONObject(i).getInt("start"),
+					userInput.getJSONObject(i).getInt("length"), userInput.getJSONObject(i).getString("uri"));
 			userAcceptedEntities.add(entity);
 		}
 		return userAcceptedEntities;
@@ -128,17 +129,29 @@ public class EagletController {
 			throws IOException {
 		int userId = Integer.parseInt(user);
 		// TODO parse document from JSON
-		List<NamedEntityCorrections> changes = transformEntityFromJson(userInput);
+		List<Marking> changes = transformEntityFromJson(userInput);
 		// TODO generate file name
-		String filename = "result_" + userId + "_";
+		Document result = null;
+		String filename = null;
+		for (Document doc : documents) {
+			if (doc.getDocumentURI().equals(document)) {
+				result = doc;
+			}
 
-		// TODO serialize the document into a file
-
+		}
+		if (result != null) {
+			String name = result.getDocumentURI().replaceAll("http://", "");
+			name = name.replaceAll("/", "-");
+			filename = "result_" + userId + "_" + name;
+		}
+		Document newdoc = new DocumentImpl(result.getText(), result.getDocumentURI(), changes);
 		FileOutputStream fout = new FileOutputStream(
-				"C:/Users/Kunal/workspace/gs_check/gerbil_data/datasets/spotlight/dbpedia-spotlight-result-nif.ttl");
-		// nifModel.write(fout, "TTL");
-
+				"C:/Users/Kunal/workspace/gs_check/gerbil_data/datasets/spotlight/" + filename + "-nif.ttl");
+		// serialize the document into a file
+		NIFWriter nif = new TurtleNIFWriter();
+		nif.writeNIF(Arrays.asList(newdoc), fout);
 		fout.close();
+
 		// store the user ID - file name - document URI triple into the
 		// database
 		database.addDocument(userId, document, filename);

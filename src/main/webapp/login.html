@@ -1,49 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<meta charset="utf-8">
-		<title>Login Form</title>
-		<meta name="generator" content="Bootply" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<!--[if lt IE 9]>
-			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-		<![endif]-->
-		<link href="css/styles.css" rel="stylesheet">
-	</head>
-	<body>
-<!--login modal-->
-<div id="loginModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-  <div class="modal-content">
-      <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-          <h1 class="text-center">Login</h1>
-      </div>
-      <div class="modal-body">
-          <form class="form col-md-12 center-block">
-            <div class="form-group">
-              <input type="text" class="form-control input-lg" placeholder="username">
-            </div>
-            <div class="form-group">
-              <!-- <input type="password" class="form-control input-lg" placeholder="Password"> -->
-            </div>
-            <div class="form-group">
-              <button class="btn btn-primary btn-lg btn-block">Sign In</button>
-                   </div>
-          </form>
-      </div>
-      <div class="modal-footer">
-          <div class="col-md-12">
-          <!-- can add other stuff -->
-          		  </div>	
-      </div>
-  </div>
-  </div>
+<head>
+<title>EAGLET</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="css/smoothness/jquery-ui-1.10.0.custom.css" rel="stylesheet" />
+<link href="css/main.css" rel="stylesheet">
+<script src="js/jquery-1.9.0.js"></script>
+<script src="js/jquery-ui-1.10.0.custom.js"></script>
+<meta name="generator" content="Bootply" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body unselectable="on">
+
+	<div class="container">
+		<h2>Login</h2>
+			<div class="form-group">
+				<label for="user">Username</label> <input type="text"
+					class="form-control" id="user" placeholder="Enter Username">
+			</div>
+			<button type="submit" class="btn btn-primary" onclick="uservalidation()">Submit</button>
+	</div>
+	<div id="anotherSection">
+		<div id="title">
+			<h1>Tool to annotate Texts</h1>
+		</div>
+		<div id="outerContainer">
+			<form id="searchForm" action="/getData" method="post">
+				<input type="hidden" value="" name="textID" /> <input type="hidden"
+					value="" name="userID" />
+				<div id="left-sidebar">
+					<div class="subtitle">Text to be annotated</div>
+					<div class="innerContainer">
+						<div id="sidebar-content" unselectable="off">Subjects to ecstatic children he. Could ye leave up as built match. Dejection agreeable attention set suspected led offending. Admitting an performed supposing by. Garden agreed matter are should formed temper had. Full held gay now roof whom such next was. Ham pretty our people moment put excuse narrow. Spite mirth money six above get going great own. Started now shortly had for assured hearing expense. Led juvenile his laughing speedily put pleasant relation offering. 
+Unwilling sportsmen he in questions september therefore described so. Attacks may set few believe moments was. Reasonably how possession shy way introduced age inquietude. Missed he engage no exeter of. Still tried means we aware order among on. Eldest father can design tastes did joy settle. Roused future he ye an marked. Arose mr rapid in so vexed words. Gay welcome led add lasting chiefly say looking. 
 </div>
-	<!-- script references -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-	</body>
+					</div>
+					<div class="buttonContainer">
+
+						<button class="btn btn-primary btn-lg btn-block" input
+							type="button" id="newEntity">Mark selected text as new
+							Entity</button>
+					</div>
+				</div>
+				<div id="main-content">
+					<div class="subtitle">Entity candidates</div>
+					<div class="innerContainer">
+						<div id="item" class="items">
+							<input type="radio" id="OTHER_ENTITY_CANDIDATE_ID"
+								class="candidateRadioButton" value="OTHER_ENTITY_CANDIDATE_ID"
+								name="OTHER_ENTITY_CANDIDATE_ID"></input><label
+								for="OTHER_ENTITY_CANDIDATE_ID">This is another Named
+								Entity not listed here:</label>
+							<div class="entityDesc">
+								<textarea name="${label.textHasLabelId},otherDesc"
+									unselectable="off"></textarea>
+							</div>
+							<hr />
+							<input type="radio" id="NO_ENTITY_CANDIDATE_ID"
+								class="candidateRadioButton" value="NO_ENTITY_CANDIDATE_ID"
+								name="NO_ENTITY_CANDIDATE_ID" /> <label
+								for="NO_ENTITY_CANDIDATE_ID">This is no Named Entity.</label>
+							<div class="entityDesc">Click here if you think this is no
+								Named Entity.</div>
+							<hr />
+							<input type="radio" class="candidateRadioButton" id="candidate"
+								value="candidate" name="candidate" 'checked=checked ' /> <label
+								for="candidate"> <span class="italic">candidate.url</span>
+							</label>
+							<div class="entityDesc selectable" unselectable="off">candidate.description
+							</div>
+							<hr />
+						</div>
+					</div>
+				</div>
+				<div id="right-sidebar">
+					<div class="subtitle">Potential entites</div>
+					<div class="innerContainer"></div>
+					<div class="buttonContainer">
+
+						<button class="btn btn-primary btn-block" input type="submit"
+							id="button">Next Document</button>
+
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="js/main.js" type="text/javascript"></script>
+<script src="js/interaction.js" type="text/javascript"></script>
+
+
+</body>
 </html>
