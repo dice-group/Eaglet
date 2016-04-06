@@ -2,22 +2,15 @@ package org.aksw.simba.eaglet.errorutils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.aksw.gerbil.annotator.A2KBAnnotator;
-import org.aksw.gerbil.annotator.Annotator;
-import org.aksw.gerbil.annotator.TestA2KBAnnotator;
 import org.aksw.gerbil.dataset.Dataset;
-import org.aksw.gerbil.dataset.DatasetConfiguration;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
-import org.aksw.gerbil.semantic.kb.SimpleWhiteListBasedUriKBClassifier;
-import org.aksw.gerbil.semantic.kb.UriKBClassifier;
 import org.aksw.gerbil.transfer.nif.Document;
-import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.aksw.simba.eaglet.annotator.TestA2KBAnnotator;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 
 public class AnnotatorResult {

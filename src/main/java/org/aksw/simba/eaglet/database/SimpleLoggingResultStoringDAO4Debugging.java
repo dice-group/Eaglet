@@ -19,7 +19,6 @@ package org.aksw.simba.eaglet.database;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aksw.gerbil.database.SimpleLoggingDAO4Debugging;
 import org.aksw.gerbil.datatypes.ExperimentTaskResult;
 
 import com.carrotsearch.hppc.IntIntOpenHashMap;

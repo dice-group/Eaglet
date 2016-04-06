@@ -40,132 +40,127 @@ import com.hp.hpl.jena.rdf.model.Model;
 @Controller
 public class EagletController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "" };
+    private static final String DATASET_FILES[] = new String[] { "" };
 
-	@Autowired
-	private EagletDatabaseStatements database;
+    @Autowired
+    private EagletDatabaseStatements database;
 
-	private List<Document> documents;
+    private List<Document> documents;
 
-	public EagletController() {
-		this.documents = loadDocuments();
-	}
+    public EagletController() {
+        this.documents = loadDocuments();
+    }
 
-	public EagletController(List<Document> documents) {
-		this.documents = documents;
-	}
+    public EagletController(List<Document> documents) {
+        this.documents = documents;
+    }
 
-	@RequestMapping("/service")
-	public String service() {
-		LOGGER.info("Got a message to /service!");
-		return "";
-	}
+    @RequestMapping(value = "/next", produces = "application/json;charset=utf-8")
+    public ResponseEntity<String> nextDocument(@RequestParam(value = "username") String userName) {
+        LOGGER.info("Got a message to /next!");
+        int userId;
+        if (database.getUser(userName) == -1) {
+            database.addUser(userName);
+            userId = database.getUser(userName);
+        } else {
+            userId = database.getUser(userName);
+        }
+        // get the next document
+        Document document = getNextDocument(userId);
+        if (document == null) {
+            // TODO return that this was the last document
+        }
+        // transform the document and its markings into a JSON String
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("Content-Type", "application/json;charset=utf-8");
+        return new ResponseEntity<String>(transformDocToJson(document), responseHeaders, HttpStatus.OK);
+    }
 
-	@RequestMapping(value = "/service/next", produces = "application/json;charset=utf-8")
-	public ResponseEntity<String> nextDocument(@RequestParam(value = "username") String userName) {
-		int userId;
-		if (database.getUser(userName) == -1) {
-			database.addUser(userName);
-			userId = database.getUser(userName);
-		} else {
-			userId = database.getUser(userName);
-		}
-		// get the next document
-		Document document = getNextDocument(userId);
-		if (document == null) {
-			// TODO return that this was the last document
-		}
-		// transform the document and its markings into a JSON String
-		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-		return new ResponseEntity<String>(transformDocToJson(document), responseHeaders, HttpStatus.OK);
-	}
+    private Document getNextDocument(int userId) {
+        Set<String> alreadySeenDocuments = new HashSet<String>(database.getDocumentUser(userId));
+        for (Document document : documents) {
+            if (!alreadySeenDocuments.contains(document.getDocumentURI())) {
+                return document;
+            }
+        }
+        return null;
+    }
 
-	private Document getNextDocument(int userId) {
-		Set<String> alreadySeenDocuments = new HashSet<String>(database.getDocumentUser(userId));
-		for (Document document : documents) {
-			if (!alreadySeenDocuments.contains(document.getDocumentURI())) {
-				return document;
-			}
-		}
-		return null;
-	}
+    private String transformDocToJson(Document document) {
+        JSONObject doc = new JSONObject();
+        doc.append("text", document.getText());
+        doc.append("uri", document.getDocumentURI());
+        JSONArray array = new JSONArray();
+        JSONObject ne;
+        for (NamedEntityCorrections nec : document.getMarkings(NamedEntityCorrections.class)) {
+            ne = new JSONObject();
+            ne.append("start", nec.getStartPosition());
+            ne.append("length", nec.getLength());
+            ne.append("partner", nec.getPartner());
+            ne.append("doc", nec.getDoc());
+            ne.append("uris", nec.getUris());
+            array.put(ne);
+        }
+        doc.append("markings", array);
+        return doc.toString();
+    }
 
-	private String transformDocToJson(Document document) {
-		JSONObject doc = new JSONObject();
-		doc.append("text", document.getText());
-		doc.append("uri", document.getDocumentURI());
-		JSONArray array = new JSONArray();
-		JSONObject ne;
-		for (NamedEntityCorrections nec : document.getMarkings(NamedEntityCorrections.class)) {
-			ne = new JSONObject();
-			ne.append("start", nec.getStartPosition());
-			ne.append("length", nec.getLength());
-			ne.append("partner", nec.getPartner());
-			ne.append("Doc", nec.getDoc());
-			ne.append("Uris", nec.getUris());
-			array.put(ne);
-		}
-		doc.append("Markings", array);
-		return doc.toString();
-	}
+    private List<Marking> transformEntityFromJson(JSONArray userInput) {
+        List<Marking> userAcceptedEntities = new ArrayList<Marking>();
 
-	private List<Marking> transformEntityFromJson(JSONArray userInput) {
-		List<Marking> userAcceptedEntities = new ArrayList<Marking>();
+        for (int i = 0; i < userInput.length(); i++) {
+            Marking entity = new NamedEntity(userInput.getJSONObject(i).getInt("start"),
+                    userInput.getJSONObject(i).getInt("length"), userInput.getJSONObject(i).getString("uri"));
+            userAcceptedEntities.add(entity);
+        }
+        return userAcceptedEntities;
+    }
 
-		for (int i = 0; i < userInput.length(); i++) {
-			Marking entity = new NamedEntity(userInput.getJSONObject(i).getInt("start"),
-					userInput.getJSONObject(i).getInt("length"), userInput.getJSONObject(i).getString("uri"));
-			userAcceptedEntities.add(entity);
-		}
-		return userAcceptedEntities;
-	}
+    @RequestMapping("/service/submitResults")
+    public void submitResults(@RequestParam(value = "documenturi") String document,
+            @RequestParam(value = "document") JSONArray userInput, @RequestParam(value = "user") String user)
+                    throws IOException {
+        int userId = Integer.parseInt(user);
+        // TODO parse document from JSON
+        List<Marking> changes = transformEntityFromJson(userInput);
+        // TODO generate file name
+        Document result = null;
+        String filename = null;
+        for (Document doc : documents) {
+            if (doc.getDocumentURI().equals(document)) {
+                result = doc;
+            }
 
-	@RequestMapping("/service/submitResults")
-	public void submitResults(@RequestParam(value = "documenturi") String document,
-			@RequestParam(value = "document") JSONArray userInput, @RequestParam(value = "user") String user)
-			throws IOException {
-		int userId = Integer.parseInt(user);
-		// TODO parse document from JSON
-		List<Marking> changes = transformEntityFromJson(userInput);
-		// TODO generate file name
-		Document result = null;
-		String filename = null;
-		for (Document doc : documents) {
-			if (doc.getDocumentURI().equals(document)) {
-				result = doc;
-			}
+        }
+        if (result != null) {
+            String name = result.getDocumentURI().replaceAll("http://", "");
+            name = name.replaceAll("/", "-");
+            filename = "result_" + userId + "_" + name;
+        }
+        Document newdoc = new DocumentImpl(result.getText(), result.getDocumentURI(), changes);
+        FileOutputStream fout = new FileOutputStream(
+                "C:/Users/Kunal/workspace/gs_check/gerbil_data/datasets/spotlight/" + filename + "-nif.ttl");
+        // serialize the document into a file
+        NIFWriter nif = new TurtleNIFWriter();
+        nif.writeNIF(Arrays.asList(newdoc), fout);
+        fout.close();
 
-		}
-		if (result != null) {
-			String name = result.getDocumentURI().replaceAll("http://", "");
-			name = name.replaceAll("/", "-");
-			filename = "result_" + userId + "_" + name;
-		}
-		Document newdoc = new DocumentImpl(result.getText(), result.getDocumentURI(), changes);
-		FileOutputStream fout = new FileOutputStream(
-				"C:/Users/Kunal/workspace/gs_check/gerbil_data/datasets/spotlight/" + filename + "-nif.ttl");
-		// serialize the document into a file
-		NIFWriter nif = new TurtleNIFWriter();
-		nif.writeNIF(Arrays.asList(newdoc), fout);
-		fout.close();
+        // store the user ID - file name - document URI triple into the
+        // database
+        database.addDocument(userId, document, filename);
+    }
 
-		// store the user ID - file name - document URI triple into the
-		// database
-		database.addDocument(userId, document, filename);
-	}
-
-	protected static List<Document> loadDocuments() {
-		List<Document> loadedDocuments = new ArrayList<Document>();
-		for (int i = 0; i < DATASET_FILES.length; ++i) {
-			try {
-				loadedDocuments.addAll(CheckerPipeline.readDocuments(DATASET_FILES[i]));
-			} catch (Exception e) {
-				LOGGER.error("Couldn't load the dataset!", e);
-			}
-		}
-		return loadedDocuments;
-	}
+    protected static List<Document> loadDocuments() {
+        List<Document> loadedDocuments = new ArrayList<Document>();
+        for (int i = 0; i < DATASET_FILES.length; ++i) {
+            try {
+                loadedDocuments.addAll(CheckerPipeline.readDocuments(DATASET_FILES[i]));
+            } catch (Exception e) {
+                LOGGER.error("Couldn't load the dataset!", e);
+            }
+        }
+        return loadedDocuments;
+    }
 }

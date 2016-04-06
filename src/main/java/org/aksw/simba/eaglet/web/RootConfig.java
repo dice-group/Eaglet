@@ -17,6 +17,7 @@
 package org.aksw.simba.eaglet.web;
 
 import org.aksw.gerbil.utils.ConsoleLogger;
+import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  */
 @org.springframework.context.annotation.Configuration
-@ComponentScan(basePackages = "org.aksw.gscheck.web")
+@ComponentScan(basePackages = "org.aksw.simba.eaglet.web")
 @PropertySource("gerbil.properties")
 public class RootConfig {
 
@@ -68,19 +69,19 @@ public class RootConfig {
     // }
 
     @Bean
-    public DatabaseAdapter experimentDAO() {
+    public EagletDatabaseStatements experimentDAO() {
         LOGGER.debug("Setting up database.");
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "/spring/database/database-context.xml");
-        DatabaseAdapter database = context.getBean(DatabaseAdapter.class);
+        EagletDatabaseStatements database = context.getBean(EagletDatabaseStatements.class);
         context.close();
         return database;
     }
 
-    @Bean
-    public EagletController controller() {
-        return new EagletController(EagletController.loadDocuments());
-    }
+//    @Bean
+//    public EagletController controller() {
+//        return new EagletController(EagletController.loadDocuments());
+//    }
 
     // public static @Bean EntityCheckerManager getEntityCheckerManager() {
     // EntityCheckerManager manager = null;
