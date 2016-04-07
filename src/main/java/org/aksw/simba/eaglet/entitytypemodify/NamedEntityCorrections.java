@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.w3c.dom.Document;
 
 public class NamedEntityCorrections extends NamedEntity {
 	public enum Check {
@@ -48,14 +49,16 @@ public class NamedEntityCorrections extends NamedEntity {
 		partner = null;
 
 	}
-	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, String document) {
+	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, org.aksw.gerbil.transfer.nif.Document d) {
 		super(startPosition, length, uris);
 		// TODO Auto-generated constructor stub
 		result = Check.GOOD;
-		doc=document;
+		doc=d.getDocumentURI();
 		partner = null;
+		this.setEntity_name(d.getText().substring(startPosition,startPosition+length));
 
 	}
+	
 	public NamedEntityCorrections(int startPosition, int length, String uri, Check result,
 			NamedEntityCorrections partner) {
 		super(startPosition, length, uri);

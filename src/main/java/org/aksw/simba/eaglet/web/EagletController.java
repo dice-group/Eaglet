@@ -101,6 +101,7 @@ public class EagletController {
             ne.append("partner", nec.getPartner());
             ne.append("doc", nec.getDoc());
             ne.append("uris", nec.getUris());
+            ne.append("name", nec.getEntity_name());
             array.put(ne);
         }
         doc.append("markings", array);
