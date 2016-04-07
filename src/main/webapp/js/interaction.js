@@ -15,18 +15,19 @@ function uservalidation() {
 			})
 			.done(
 					function(data) {
-						if (data.success) {
-							var json_x = JSON.parse(data);
-							text = json_x.text;
-							markings = json_x.markings;
+						console.log(data);
+							text = data.text[0];
+							console.log(text);
+							markings = data.markings[0];
+							console.log(markings);
 							var counter = 1;
-							$("#sidebar-content").html = generateText(text,
-									markings);
-							content += '<div id="accordion">';
+							$("#sidebar-content").html(text);
+							var content = '<div id="accordion">';
 							jQuery
 									.each(
 											markings,
 											function(i, v) {
+												console.log(v);
 												content += '<h3>' + v.name
 														+ '</h3>';
 												content += '<div onclick="dropdown()" id=' + counter
@@ -40,16 +41,16 @@ function uservalidation() {
 												content += '<l1> Uris::'
 														+ v.uris + '</l1>';
 												content += '</ul> <button onclick="removeelement(counter)">Delete</button> </br>'
-													+'<button onclick="edittext()">Edit</button> </div>';
+													+'<button onclick="edittext(counter)">Edit</button> </div>';
 												counter += 1;
 											});
 
 							content += '</div>';
+							console.log(content);
 							/* like this the results won't cummulate */
-							jQuery("#OTHER_ENTITY_CANDIDATE_ID").html(content);
+							$("#markings-list").html(content);
 
 							// $(text).appendTo("#sidebar-content");
-						}
 					}).fail(function(e) {
 				// handle error
 			});
@@ -58,8 +59,8 @@ function removeelement(divid) {
 	$('#' + divid)
 	remove();
 };
-function edittext() {
-	$('#username').editable({
+function edittext(divid) {
+	$('#'+divid).editable({
 	    type: 'text',
 	    url: '/post',    
 	    pk: 1,    

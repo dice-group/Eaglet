@@ -1,5 +1,7 @@
 package org.aksw.simba.eaglet.web;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,13 +14,18 @@ import org.aksw.gerbil.dataset.DatasetConfiguration;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
+import org.aksw.gerbil.io.nif.DocumentListParser;
+import org.aksw.gerbil.io.nif.DocumentParser;
 import org.aksw.gerbil.io.nif.NIFWriter;
 import org.aksw.gerbil.io.nif.impl.TurtleNIFWriter;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
+import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
+import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.errorcheckpipeline.CheckerPipeline;
 import org.json.JSONArray;
@@ -36,13 +43,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 @Controller
 public class EagletController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-    private static final String DATASET_FILES[] = new String[] { "" };
+    private static final String DATASET_FILES[] = new String[] { "eaglet_data/gerbil_data/datasets/oke-challenge/example_data/task1.ttl" };
 
     @Autowired
     private EagletDatabaseStatements database;
@@ -157,7 +165,18 @@ public class EagletController {
         List<Document> loadedDocuments = new ArrayList<Document>();
         for (int i = 0; i < DATASET_FILES.length; ++i) {
             try {
-                loadedDocuments.addAll(CheckerPipeline.readDocuments(DATASET_FILES[i]));
+                Model nifModel = ModelFactory.createDefaultModel();
+                nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+                FileInputStream fin = new FileInputStream(new File(DATASET_FILES[i]));
+                nifModel.read(fin, "", "TTL");
+                fin.close();
+                DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
+                List<Document> documents = parser.parseDocuments(nifModel);
+                for (Document document : documents) {
+                    loadedDocuments.add(new DocumentImpl(document.getText(), document.getDocumentURI(), EntityTypeChange.changeType(document)));
+                }
+                
+//                loadedDocuments.addAll(CheckerPipeline.readDocuments(DATASET_FILES[i]));
             } catch (Exception e) {
                 LOGGER.error("Couldn't load the dataset!", e);
             }

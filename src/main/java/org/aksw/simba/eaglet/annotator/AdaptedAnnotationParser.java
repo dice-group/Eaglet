@@ -33,6 +33,7 @@ import org.aksw.gerbil.transfer.nif.data.SpanImpl;
 import org.aksw.gerbil.transfer.nif.data.TypedNamedEntity;
 import org.aksw.gerbil.transfer.nif.vocabulary.ITSRDF;
 import org.aksw.gerbil.transfer.nif.vocabulary.NIF;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.slf4j.Logger;
@@ -95,11 +96,7 @@ public class AdaptedAnnotationParser extends AnnotationParser {
                         nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasCheckResult);
                         if (nodeIter.hasNext()) {
                             Check result = parseCheckResult(nodeIter.next().asResource());
-                            nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasPairPartner);
-                            confidence = nodeIter.next().asLiteral().getDouble();
-                            markings.add(addTypeInformation(
-                                    new ScoredTypedNamedEntity(start, end - start, entityUris, types, confidence),
-                                    nifModel));
+                            markings.add(new NamedEntityCorrections(start, end - start, entityUris, result));
                         } else {
                             // It has been typed without a confidence
                             markings.add(addTypeInformation(new TypedNamedEntity(start, end - start, entityUris, types),
