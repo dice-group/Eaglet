@@ -50,7 +50,7 @@ public class EagletController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-    private static final String DATASET_FILES[] = new String[] { "eaglet_data/gerbil_data/datasets/oke-challenge/example_data/task1.ttl" };
+    private static final String DATASET_FILES[] = new String[] {"C:/Users/Kunal/workspace/gscheck/gerbil_data/datasets/oke-challenge/example_data/task1.ttl" };
 
     @Autowired
     private EagletDatabaseStatements database;

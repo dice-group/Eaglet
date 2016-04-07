@@ -16,126 +16,56 @@ function uservalidation() {
 			.done(
 					function(data) {
 						console.log(data);
-							text = data.text[0];
-							console.log(text);
-							markings = data.markings[0];
-							console.log(markings);
-							var counter = 1;
-							$("#sidebar-content").html(text);
-							var content = '<div id="accordion">';
-							jQuery
-									.each(
-											markings,
-											function(i, v) {
-												console.log(v);
-												content += '<h3>' + v.name
-														+ '</h3>';
-												content += '<div onclick="dropdown()" id=' + counter
-														+ 'on><ul>';
-												content += '<l1> Start:'
-														+ v.start + '</l1>';
-												content += '<l1> Length:'
-														+ v.length + '</l1>';
-												content += '<l1> Start:'
-														+ v.doc + '</l1>';
-												content += '<l1> Uris::'
-														+ v.uris + '</l1>';
-												content += '</ul> <button onclick="removeelement(counter)">Delete</button> </br>'
-													+'<button onclick="edittext(counter)">Edit</button> </div>';
-												counter += 1;
-											});
+						text = data.text[0];
+						console.log(text);
+						markings = data.markings[0];
+						console.log(markings);
+						var counter = 1;
+						$("#sidebar-content").html(text);
+						var content = '<div id="marking">';
 
-							content += '</div>';
-							console.log(content);
-							/* like this the results won't cummulate */
-							$("#markings-list").html(content);
+						jQuery
+								.each(
+										markings,
+										function(i, v) {
 
-							// $(text).appendTo("#sidebar-content");
+											content += '<div " id="' + counter
+													+ '" ><ul>';
+											content += '<h3>' + v.name
+													+ '</h3>';
+											content += '<l1 > Start: '
+													+ v.start + '</l1></br>';
+											content += '<l1> Length: '
+													+ v.length + '</l1></br>';
+											content += '<l1> Doc : ' + v.doc
+													+ '</l1></br>';
+											content += '<l1 > Uris : '
+													+ '<p id= "uri">' + v.uris
+													+ '</p></l1></br>';
+											content += '</ul> <button onclick="removeelement('
+													+ counter
+													+ ')">Delete</button> </br></div>';
+											counter += 1;
+										});
+
+						content += '</div>';
+						content += '<script type="text/javascript"> var replaceWith = $(\'<input name="temp" type="text" />\'), connectWith = $(\'input[name="hiddenField"]\');$(\'#uri\').inlineEdit(replaceWith, connectWith);</script>'
+
+						console.log(content);
+						/* like this the results won't cummulate */
+						$("#markings-list").html(content);
+
+						// $(text).appendTo("#sidebar-content");
 					}).fail(function(e) {
 				// handle error
 			});
 };
+
 function removeelement(divid) {
-	$('#' + divid)
-	remove();
+	$('#' + divid).remove();
 };
 function edittext(divid) {
-	$('#'+divid).editable({
-	    type: 'text',
-	    url: '/post',    
-	    pk: 1,    
-	    title: 'Enter Text',
-	    ajaxOptions: {
-	        type: 'put'
-	    }        
-	});
 
-	//ajax emulation
-	$.mockjax({
-	    url: '/post',
-	    responseTime: 200,
-	    response: function(settings) {
-	        console.log(settings);
-	    }
-	}); 
+	$("#uri" + divid).contentEditable = "true";
 
 }
-
-
-function dropdown () {
-	$("#accordion").accordion({
-		event : "click hoverintent"
-	});
-};
-$.event.special.hoverintent = {
-	setup : function() {
-		$(this).bind("mouseover", jQuery.event.special.hoverintent.handler);
-	},
-	teardown : function() {
-		$(this).unbind("mouseover", jQuery.event.special.hoverintent.handler);
-	},
-	handler : function(event) {
-		var currentX, currentY, timeout, args = arguments, target = $(event.target), previousX = event.pageX, previousY = event.pageY;
-
-		function track(event) {
-			currentX = event.pageX;
-			currentY = event.pageY;
-		}
-		;
-
-		function clear() {
-			target.unbind("mousemove", track).unbind("mouseout", clear);
-			clearTimeout(timeout);
-		}
-
-		function handler() {
-			var prop, orig = event;
-
-			if ((Math.abs(previousX - currentX) + Math
-					.abs(previousY - currentY)) < 7) {
-				clear();
-
-				event = $.Event("hoverintent");
-				for (prop in orig) {
-					if (!(prop in event)) {
-						event[prop] = orig[prop];
-					}
-				}
-
-				delete event.originalEvent;
-
-				target.trigger(event);
-			} else {
-				previousX = currentX;
-				previousY = currentY;
-				timeout = setTimeout(handler, 100);
-			}
-		}
-
-		timeout = setTimeout(handler, 100);
-		target.bind({
-			mousemove : track,
-			mouseout : clear
-		});
-	}
-};
