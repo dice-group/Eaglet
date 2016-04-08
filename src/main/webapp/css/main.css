@@ -12,7 +12,20 @@
 
 	font-family: 'Libre Baskerville', Verdana, sans-serif;
 }
-
+.overlay {
+    position: absolute;
+    border: 1px solid red;
+    background: #dff;
+    margin: -1px;
+    z-index: -1;
+}
+p {
+    width: 250px;
+    margin: 24px 65px;
+}
+p.span {
+    font-weight: bold;
+}
 body {
 	background-color: #eee;
 	margin: 0px;

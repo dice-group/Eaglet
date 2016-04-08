@@ -55,7 +55,7 @@ public class NamedEntityCorrections extends NamedEntity {
 		result = Check.GOOD;
 		doc=d.getDocumentURI();
 		partner = null;
-		this.setEntity_name(d.getText().substring(startPosition,startPosition+length));
+		this.setEntity_name(d.getText().substring(startPosition,startPosition+length).toUpperCase());
 
 	}
 	

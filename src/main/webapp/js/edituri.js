@@ -8,7 +8,7 @@ $.fn.inlineEdit = function(replaceWith, connectWith) {
 
     $(this).click(function() {
 
-        var elem = $("#uri");
+        var elem = $(this);
 
         elem.hide();
         elem.after(replaceWith);

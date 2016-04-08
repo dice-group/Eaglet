@@ -107,6 +107,7 @@ public class EagletController {
             ne.append("start", nec.getStartPosition());
             ne.append("length", nec.getLength());
             ne.append("partner", nec.getPartner());
+            ne.append("result", nec.getResult());
             ne.append("doc", nec.getDoc());
             ne.append("uris", nec.getUris());
             ne.append("name", nec.getEntity_name());
