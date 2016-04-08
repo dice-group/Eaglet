@@ -71,9 +71,9 @@ function uservalidation() {
 											content += '<l1> Result : '
 													+ v.result + '</l1></br>';
 											content += '<l1 > Uris : '
-													+ '<p id="uri' + counter
-													+ '">' + v.uris
-													+ '</p></l1></br>';
+													+ '<span id="uri' + counter
+													+ '" class="uri">' + v.uris
+													+ '</span></l1></br>';
 											content += '</ul> <button onclick="removeelement('
 													+ counter
 													+ ')">Delete</button> </br></div>';
@@ -81,16 +81,23 @@ function uservalidation() {
 										});
 
 						content += '</div>';
-						content += '<script type="text/javascript"> var replaceWith = $(\'<input name="temp" type="text" />\'), connectWith = $(\'input[name="hiddenField"]\');$(\'p\').inlineEdit(replaceWith, connectWith);</script>'
 
 						/* like this the results won't cummulate */
 						$("#markings-list").html(content);
+						// make the URIs editable
+						makeUrisEditable();
 
 						// $(text).appendTo("#sidebar-content");
 					}).fail(function(e) {
 				// handle error
 			});
 };
+
+function makeUrisEditable() {
+	var replaceWith = $('<input name="temp" type="text" value="" />');
+	$('span.uri').inlineEdit(replaceWith);
+}
+
 function senddata() {
 	var txt = $('#markings-list').text();
 }
