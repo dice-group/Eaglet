@@ -73,12 +73,12 @@ textarea {
 }
 
 #left-sidebar {
-	width: 45%;
+	width: 60%;
 	float: left;
 }
 
 #main-content {
-	width: 30%;
+	width: 40%;
 	float: left;
 }
 
@@ -87,10 +87,10 @@ textarea {
 	width: 100%;
 }
 
-#right-sidebar {
+/*#right-sidebar {
 	width: 25%;
 	float: left;
-}
+}*/
 
 #sidebar-content {
 	-webkit-user-select: auto; /* Chrome/Safari */

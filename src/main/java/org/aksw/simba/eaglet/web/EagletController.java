@@ -23,6 +23,7 @@ import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
+import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
 import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
@@ -50,7 +51,7 @@ public class EagletController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-    private static final String DATASET_FILES[] = new String[] {"C:/Users/Kunal/workspace/gscheck/gerbil_data/datasets/oke-challenge/example_data/task1.ttl" };
+    private static final String DATASET_FILES[] = new String[] {"eaglet_data/gerbil_data/datasets/oke-challenge/example_data/task1.ttl" };
 
     @Autowired
     private EagletDatabaseStatements database;
@@ -102,7 +103,9 @@ public class EagletController {
         doc.append("uri", document.getDocumentURI());
         JSONArray array = new JSONArray();
         JSONObject ne;
-        for (NamedEntityCorrections nec : document.getMarkings(NamedEntityCorrections.class)) {
+        List<NamedEntityCorrections> necs = document.getMarkings(NamedEntityCorrections.class);
+        necs.sort(new StartPosBasedComparator());
+        for (NamedEntityCorrections nec : necs) {
             ne = new JSONObject();
             ne.append("start", nec.getStartPosition());
             ne.append("length", nec.getLength());
