@@ -40,9 +40,9 @@ function uservalidation() {
 											var length = v.length;
 											var entity = text.slice(startpos,
 													startpos + length);
-											var rem_text = text.slice(startpos,
-													startpos + length);
-											text_content += remrem_text
+											var rem_text = text.slice(lastpos,
+													startpos);
+											text_content += rem_text
 													+ '<p style="font-size:14px; color:#538b01; font-weight:bold; font-style:italic;">'
 													+ entity + '</p>';
 											lastpos = startpos + length;
