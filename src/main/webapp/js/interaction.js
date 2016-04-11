@@ -53,32 +53,28 @@ function uservalidation() {
 						$("#sidebar-content").html(text_content);
 						var content = '<div id="marking">';
 
-						$
-								.each(
-										markings,
-										function(i, v) {
+						$.each(markings, function(i, v) {
 
-											content += '<div " id="' + counter
-													+ '" ><ul>';
-											content += '<a href="#"><h3>'
-													+ v.name + '</h3></a>';
-											content += '<l1 > Start: '
-													+ v.start + '</l1></br>';
-											content += '<l1> Length: '
-													+ v.length + '</l1></br>';
-											// content += '<l1> Doc : ' + v.doc
-											// + '</l1></br>';
-											content += '<l1> Result : '
-													+ v.result + '</l1></br>';
-											content += '<l1 > Uris : '
-													+ '<span id="uri' + counter
-													+ '" class="uri">' + v.uris
-													+ '</span></l1></br>';
-											content += '</ul> <button onclick="removeelement('
-													+ counter
-													+ ')">Delete</button> </br></div>';
-											counter += 1;
-										});
+							content += '<div " id="' + counter
+									+ '" class="marking"><ul>';
+							content += '<a href="#">' + '<span class="name">'
+									+ v.name + '</span></a>';
+							content += '<l1 > Start: ' + '<span class="start">'
+									+ v.start + '</span></l1></br>';
+							content += '<l1> Length: '
+									+ '<span class="length">' + v.length
+									+ '</span></l1></br>';
+							content += '<l1> Result : '
+									+ '<span class="result">' + v.result
+									+ '</span></l1></br>';
+							content += '<l1 > Uris : ' + '<span id="uri'
+									+ counter + '" class="uri">' + v.uris
+									+ '</span></l1></br>';
+							content += '</ul> <button onclick="removeelement('
+									+ counter
+									+ ')">Delete</button> </br></div>';
+							counter += 1;
+						});
 
 						content += '</div>';
 
@@ -99,7 +95,34 @@ function makeUrisEditable() {
 }
 
 function senddata() {
-	var txt = $('#markings-list').text();
+	var content_html = $('#markings-list').html();
+	var marking_list = [];
+
+	$('.innerContainer').each(function() {
+		var attributes = {};
+		$('.marking', this).each(function() {
+
+			attributes["name"] = $('.name', this).text();
+			attributes["length"] = $('.length', this).text();
+
+			attributes["start"] = $('.start', this).text();
+			attributes["result"] = $('.result', this).text();
+			attributes["uri"] = $('.uri', this).text();
+
+		});
+		marking_list.push(attributes);
+	});
+	Console.log(marking_list);
+	$.ajax({
+		url : '/submitResults',
+		data : {
+			'string' : marking_list
+		},
+		type : 'GET',
+		cache : false,
+	}).done(function(result) {
+		Console.log("Sent")
+	});
 }
 
 function removeelement(divid) {
@@ -158,18 +181,20 @@ Selector.mouseup = function() {
 	console.log(selection);
 	if (st != '') {
 		var content = '<div " id="' + counter + '" ><ul>';
-		content += '<a href="#"><h3>' + st + '</h3></a>';
-		content += '<l1 > Start: ' + selection.start + '</l1></br>';
-		content += '<l1> Length: ' + (selection.end - selection.start)
-				+ '</l1></br>';
-		content += '<l1 > Uris : ' + '<p id="uri' + counter
-				+ '">ADD_URI</p></l1></br>';
+		content += '<a href="#"><span class="name"><h3>' + st
+				+ '</h3></span></a>';
+		content += '<l1 >  Start: ' + '<span class="start">' + selection.start
+				+ '</span></l1></br>';
+		content += '<l1> Length: ' + '<span class="length">'
+				+ (selection.end - selection.start) + '</span></l1></br>';
+		content += '<l1 > Uris : ' + '<span class="uri" id="uri' + counter
+				+ '">ADD_URI</span></l1></br>';
 		content += '</ul> <button onclick="removeelement(' + counter
 				+ ')">Delete</button> </br></div>';
-		content += '<script type="text/javascript"> var replaceWith = $(\'<input name="temp" type="text" />\'), connectWith = $(\'input[name="hiddenField"]\');$(\'p\').inlineEdit(replaceWith, connectWith);</script>';
 		$('#main-content .innerContainer').append($(content));
 
 		counter += 1;
+		makeUrisEditable();
 
 		// $container.append([ $('<span class="ui-icon ui-icon-circle-close"
 		// />')

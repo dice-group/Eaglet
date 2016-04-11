@@ -131,7 +131,7 @@ public class EagletController {
         return userAcceptedEntities;
     }
 
-    @RequestMapping("/service/submitResults")
+    @RequestMapping("/submitResults")
     public void submitResults(@RequestParam(value = "documenturi") String document,
             @RequestParam(value = "document") JSONArray userInput, @RequestParam(value = "user") String user)
                     throws IOException {
