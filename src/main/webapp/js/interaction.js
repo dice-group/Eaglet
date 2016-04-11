@@ -58,18 +58,18 @@ function uservalidation() {
 							content += '<div " id="' + counter
 									+ '" class="marking"><ul>';
 							content += '<a href="#">' + '<span class="name">'
-									+ v.name + '</span></a>';
-							content += '<l1 > Start: ' + '<span class="start">'
-									+ v.start + '</span></l1></br>';
-							content += '<l1> Length: '
+									+ v.name + '</span></a><br />';
+							content += '<li> Start: ' + '<span class="start">'
+									+ v.start + '</span></li></br>';
+							content += '<li> Length: '
 									+ '<span class="length">' + v.length
-									+ '</span></l1></br>';
-							content += '<l1> Result : '
+									+ '</span></li></br>';
+							content += '<li> Result : '
 									+ '<span class="result">' + v.result
-									+ '</span></l1></br>';
-							content += '<l1 > Uris : ' + '<span id="uri'
+									+ '</span></li></br>';
+							content += '<li > Uris : ' + '<span id="uri'
 									+ counter + '" class="uri">' + v.uris
-									+ '</span></l1></br>';
+									+ '</span></li></br>';
 							content += '</ul> <button onclick="removeelement('
 									+ counter
 									+ ')">Delete</button> </br></div>';
@@ -95,33 +95,30 @@ function makeUrisEditable() {
 }
 
 function senddata() {
-	var content_html = $('#markings-list').html();
 	var marking_list = [];
+	var attributes = {};
 
-	$('.innerContainer').each(function() {
-		var attributes = {};
-		$('.marking', this).each(function() {
-
-			attributes["name"] = $('.name', this).text();
-			attributes["length"] = $('.length', this).text();
-
-			attributes["start"] = $('.start', this).text();
-			attributes["result"] = $('.result', this).text();
-			attributes["uri"] = $('.uri', this).text();
-
-		});
+	$('.innerContainer .marking').each(function() {
+		attributes = {};
+		attributes["name"] = $('.name', this).text();
+		attributes["length"] = $('.length', this).text();
+		attributes["start"] = $('.start', this).text();
+		attributes["result"] = $('.result', this).text();
+		attributes["uri"] = $('.uri', this).text();
+		console.log(attributes);
 		marking_list.push(attributes);
 	});
-	Console.log(marking_list);
+	console.log(marking_list);
 	$.ajax({
 		url : '/submitResults',
 		data : {
-			'string' : marking_list
+			'documentUri' : 
+			'markings' : marking_list
 		},
-		type : 'GET',
+		type : 'POST',
 		cache : false,
 	}).done(function(result) {
-		Console.log("Sent")
+		console.log("Sent")
 	});
 }
 
@@ -180,15 +177,14 @@ Selector.mouseup = function() {
 	console.log(st);
 	console.log(selection);
 	if (st != '') {
-		var content = '<div " id="' + counter + '" ><ul>';
-		content += '<a href="#"><span class="name"><h3>' + st
-				+ '</h3></span></a>';
-		content += '<l1 >  Start: ' + '<span class="start">' + selection.start
-				+ '</span></l1></br>';
-		content += '<l1> Length: ' + '<span class="length">'
-				+ (selection.end - selection.start) + '</span></l1></br>';
-		content += '<l1 > Uris : ' + '<span class="uri" id="uri' + counter
-				+ '">ADD_URI</span></l1></br>';
+		var content = '<div " id="' + counter + '" class="marking"><ul>';
+		content += '<a href="#"><span class="name">' + st + '</span></a><br />';
+		content += '<li >  Start: ' + '<span class="start">' + selection.start
+				+ '</span></li></br>';
+		content += '<li> Length: ' + '<span class="length">'
+				+ (selection.end - selection.start) + '</span></li></br>';
+		content += '<li > Uris : ' + '<span class="uri" id="uri' + counter
+				+ '">ADD_URI</span></li></br>';
 		content += '</ul> <button onclick="removeelement(' + counter
 				+ ')">Delete</button> </br></div>';
 		$('#main-content .innerContainer').append($(content));
