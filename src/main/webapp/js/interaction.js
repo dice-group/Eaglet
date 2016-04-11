@@ -9,10 +9,11 @@ $(document).ready(function() {
 });
 
 var counter = 1;
-
+var document;
+var loginName
 function uservalidation() {
 	// get the form data using another method
-	var loginName = $("input#user").val();
+	loginName = $("input#user").val();
 
 	$
 			.ajax({
@@ -38,6 +39,7 @@ function uservalidation() {
 								.each(
 										markings,
 										function(i, v) {
+											document=v.doc;
 											var startpos = parseInt(v.start);
 											var length = parseInt(v.length);
 											var entity = text.slice(startpos,
@@ -72,7 +74,7 @@ function uservalidation() {
 									+ '</span></li></br>';
 							content += '</ul> <button onclick="removeelement('
 									+ counter
-									+ ')">Delete</button> </br></div>';
+									+ ')">Delete</button> </br></div><hr>';
 							counter += 1;
 						});
 
@@ -112,11 +114,12 @@ function senddata() {
 	$.ajax({
 		url : '/submitResults',
 		data : {
-			'documentUri' : 
-			'markings' : marking_list
+			'document' : document,
+			'markings' : marking_list,
+			'user' : loginName
 		},
 		type : 'POST',
-		cache : false,
+		
 	}).done(function(result) {
 		console.log("Sent")
 	});
@@ -186,7 +189,7 @@ Selector.mouseup = function() {
 		content += '<li > Uris : ' + '<span class="uri" id="uri' + counter
 				+ '">ADD_URI</span></li></br>';
 		content += '</ul> <button onclick="removeelement(' + counter
-				+ ')">Delete</button> </br></div>';
+				+ ')">Delete</button> </br></div><hr>';
 		$('#main-content .innerContainer').append($(content));
 
 		counter += 1;
