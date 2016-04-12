@@ -10,244 +10,85 @@ $(document).ready(function() {
 
 var counter = 1;
 var documentUri;
-var loginName ;
+var loginName;
+
+function printDocument(data) {
+	console.log(data);
+	text = data.text[0];
+	documentUri = data.uri[0];
+
+	markings = data.markings[0];
+	var lastpos = 0;
+	var text_content = '';
+	// loop for all the markings and call
+	// mark function
+	$
+			.each(
+					markings,
+					function(i, v) {
+						var startpos = parseInt(v.start);
+						var length = parseInt(v.length);
+						var entity = text.slice(startpos, startpos + length);
+						var rem_text = text.slice(lastpos, startpos);
+						text_content += rem_text
+								+ '<span style="font-size:14px; color:#538b01; font-weight:bold; font-style:italic;">'
+								+ entity + '</span>';
+						lastpos = startpos + length;
+					});
+	text_content += text.slice(lastpos, text.length);
+	$("#sidebar-content").html(text_content);
+	var content = '<div id="marking">';
+
+	$.each(markings, function(i, v) {
+
+		content += '<div " id="' + counter + '" class="marking"><ul>';
+		content += '<a href="#">' + '<span class="name">' + v.name
+				+ '</span></a><br />';
+		content += '<li> Start: ' + '<span class="start">' + v.start
+				+ '</span></li></br>';
+		content += '<li> Length: ' + '<span class="length">' + v.length
+				+ '</span></li></br>';
+		content += '<li> Result : ' + '<span class="result">' + v.result
+				+ '</span></li></br>';
+		content += '<li > Uris : ' + '<span id="uri' + counter
+				+ '" class="uri">' + v.uris + '</span></li></br>';
+		content += '</ul> <button onclick="removeelement(' + counter
+				+ ')">Delete</button> </br></div><hr>';
+		counter += 1;
+	});
+
+	content += '</div>';
+
+	/* like this the results won't cummulate */
+	$("#markings-list").html(content);
+	// make the URIs editable
+	makeUrisEditable();
+
+	// $(text).appendTo("#sidebar-content");
+}
+
 function uservalidation() {
 	// get the form data using another method
-	loginName	= $("input#user").val();
+	loginName = $("input#user").val();
 
-	$
-			.ajax({
-				url : "service/next",// servlet URL that gets first option as
-				// parameter and returns JSON of to-be-populated
-				// options
-				type : "GET",// request type, can be GET
-				data : {
-					username : loginName,// data to be sent to the server
-				},
-				dataType : "json"// type of data returned
-			})
-			.done(
-					$
-							.ajax({
-								url : "service/next",// servlet URL that gets
-								// first
-								// option as
-								// parameter and returns JSON of to-be-populated
-								// options
-								type : "GET",// request type, can be GET
-								data : {
-									username : loginName,// data to be sent
-								// to the
-								// server
-								},
-								dataType : "json"// type of data returned
-							})
-							.done(
-									function(data) {
-										console.log(data);
-										text = data.text[0];
-
-										markings = data.markings[0];
-										var lastpos = 0;
-										var text_content = '';
-										// loop for all the markings and call
-										// mark function
-										$
-												.each(
-														markings,
-														function(i, v) {
-															documentUri = v.doc[0];
-															var startpos = parseInt(v.start);
-															var length = parseInt(v.length);
-															var entity = text
-																	.slice(
-																			startpos,
-																			startpos
-																					+ length);
-															var rem_text = text
-																	.slice(
-																			lastpos,
-																			startpos);
-															text_content += rem_text
-																	+ '<span style="font-size:14px; color:#538b01; font-weight:bold; font-style:italic;">'
-																	+ entity
-																	+ '</span>';
-															lastpos = startpos
-																	+ length;
-														});
-										text_content += text.slice(lastpos,
-												text.length);
-										$("#sidebar-content")
-												.html(text_content);
-										var content = '<div id="marking">';
-
-										$
-												.each(
-														markings,
-														function(i, v) {
-
-															content += '<div " id="'
-																	+ counter
-																	+ '" class="marking"><ul>';
-															content += '<a href="#">'
-																	+ '<span class="name">'
-																	+ v.name
-																	+ '</span></a><br />';
-															content += '<li> Start: '
-																	+ '<span class="start">'
-																	+ v.start
-																	+ '</span></li></br>';
-															content += '<li> Length: '
-																	+ '<span class="length">'
-																	+ v.length
-																	+ '</span></li></br>';
-															content += '<li> Result : '
-																	+ '<span class="result">'
-																	+ v.result
-																	+ '</span></li></br>';
-															content += '<li > Uris : '
-																	+ '<span id="uri'
-																	+ counter
-																	+ '" class="uri">'
-																	+ v.uris
-																	+ '</span></li></br>';
-															content += '</ul> <button onclick="removeelement('
-																	+ counter
-																	+ ')">Delete</button> </br></div><hr>';
-															counter += 1;
-														});
-
-										content += '</div>';
-
-										/* like this the results won't cummulate */
-										$("#markings-list").html(content);
-										// make the URIs editable
-										makeUrisEditable();
-
-										// $(text).appendTo("#sidebar-content");
-									}).fail(function(e) {
-								// handle error
-							}));
+	$.ajax({
+		url : "service/next",// servlet URL that gets
+		// first
+		// option as
+		// parameter and returns JSON of to-be-populated
+		// options
+		type : "GET",// request type, can be GET
+		data : {
+			username : loginName,// data to be sent
+		// to the
+		// server
+		},
+		dataType : "json"// type of data returned
+	}).done(printDocument).fail(function(e) {
+		// handle error
+	});
 };
 
-function nextdoc(loginName) {
-	// get the form data using another method
-	//loginName	= $("input#user").val();
-
-	$
-			.ajax({
-				url : "service/next",// servlet URL that gets first option as
-				// parameter and returns JSON of to-be-populated
-				// options
-				type : "GET",// request type, can be GET
-				data : {
-					username : loginName,// data to be sent to the server
-				},
-				dataType : "json"// type of data returned
-			})
-			.done(
-					$
-							.ajax({
-								url : "service/next",// servlet URL that gets
-								// first
-								// option as
-								// parameter and returns JSON of to-be-populated
-								// options
-								type : "GET",// request type, can be GET
-								data : {
-									username : loginName,// data to be sent
-								// to the
-								// server
-								},
-								dataType : "json"// type of data returned
-							})
-							.done(
-									function(data) {
-										console.log(data);
-										text = data.text[0];
-
-										markings = data.markings[0];
-										var lastpos = 0;
-										var text_content = '';
-										// loop for all the markings and call
-										// mark function
-										$
-												.each(
-														markings,
-														function(i, v) {
-															documentUri = v.doc[0];
-															var startpos = parseInt(v.start);
-															var length = parseInt(v.length);
-															var entity = text
-																	.slice(
-																			startpos,
-																			startpos
-																					+ length);
-															var rem_text = text
-																	.slice(
-																			lastpos,
-																			startpos);
-															text_content += rem_text
-																	+ '<span style="font-size:14px; color:#538b01; font-weight:bold; font-style:italic;">'
-																	+ entity
-																	+ '</span>';
-															lastpos = startpos
-																	+ length;
-														});
-										text_content += text.slice(lastpos,
-												text.length);
-										$("#sidebar-content")
-												.html(text_content);
-										var content = '<div id="marking">';
-
-										$
-												.each(
-														markings,
-														function(i, v) {
-
-															content += '<div " id="'
-																	+ counter
-																	+ '" class="marking"><ul>';
-															content += '<a href="#">'
-																	+ '<span class="name">'
-																	+ v.name
-																	+ '</span></a><br />';
-															content += '<li> Start: '
-																	+ '<span class="start">'
-																	+ v.start
-																	+ '</span></li></br>';
-															content += '<li> Length: '
-																	+ '<span class="length">'
-																	+ v.length
-																	+ '</span></li></br>';
-															content += '<li> Result : '
-																	+ '<span class="result">'
-																	+ v.result
-																	+ '</span></li></br>';
-															content += '<li > Uris : '
-																	+ '<span id="uri'
-																	+ counter
-																	+ '" class="uri">'
-																	+ v.uris
-																	+ '</span></li></br>';
-															content += '</ul> <button onclick="removeelement('
-																	+ counter
-																	+ ')">Delete</button> </br></div><hr>';
-															counter += 1;
-														});
-
-										content += '</div>';
-
-										/* like this the results won't cummulate */
-										$("#markings-list").html(content);
-										// make the URIs editable
-										makeUrisEditable();
-
-										// $(text).appendTo("#sidebar-content");
-									}).fail(function(e) {
-								// handle error
-							}));
-};
 function makeUrisEditable() {
 	var replaceWith = $('<input name="temp" type="text" value="" />');
 	$('span.uri').inlineEdit(replaceWith);
@@ -273,14 +114,11 @@ function senddata() {
 		data : {
 			'documenturi' : documentUri,
 			'markings' : JSON.stringify(marking_list),
-			'user' : loginName
+			'username' : loginName
 		},
 		type : 'POST',
 
-	}).done(function() {
-		console.log("SUCCEEESSSS");
-		nextdoc(loginName);
-	});
+	}).done(printDocument);
 }
 
 function removeelement(divid) {
