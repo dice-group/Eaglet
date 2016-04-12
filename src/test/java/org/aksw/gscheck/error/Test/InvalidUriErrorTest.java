@@ -6,7 +6,7 @@ import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
-import org.aksw.simba.eaglet.error.InvalidUriError;
+import org.aksw.simba.eaglet.error.UriError;
 import org.junit.Before;
 
 public class InvalidUriErrorTest extends AbstractErrorTest {
@@ -14,7 +14,7 @@ public class InvalidUriErrorTest extends AbstractErrorTest {
     @Before
     public void setUp() throws Exception {
         preprocessingNeeded = false;
-        errorChecker = new InvalidUriError();
+        errorChecker = new UriError();
         // NO error
         doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
                 Arrays.asList(
