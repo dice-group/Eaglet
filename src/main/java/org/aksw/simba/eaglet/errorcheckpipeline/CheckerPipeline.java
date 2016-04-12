@@ -42,7 +42,7 @@ public class CheckerPipeline {
 		return annotators;
 	}
 
-	public static void startPipe(List<Document> documents, int user) throws GerbilException, IOException {
+	public static void startPipe(List<Document> documents) throws GerbilException, IOException {
 		List<A2KBAnnotator> annotators = callAnnotator("eaglet/Results_anontator_dbpedia");
 
 		GoldStandardCompletion Complete = new MissingEntityCompletion(annotators);
@@ -67,7 +67,7 @@ public class CheckerPipeline {
 		// write documents
 		Model nifModel = generateModel(documents);
 		FileOutputStream fout = new FileOutputStream(
-				"eaglet_data/result_pipe/sample-" +user+"-result-nif.ttl");
+				"eaglet_data/result_pipe/sample-result-nif.ttl");
 		nifModel.write(fout, "TTL");
 		fout.close();
 		// TODO: Send to server

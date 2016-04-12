@@ -139,7 +139,7 @@ public class EagletController {
     }
 
     @RequestMapping("/submitResults")
-    public void submitResults(@RequestParam(value = "documenturi") String document,
+    public void submitResults(@RequestParam(value = "documenturi") String documenturi,
             @RequestParam(value = "markings") String userInput, @RequestParam(value = "user") String userName)
                     throws IOException {
         int userId = getUser(userName);
@@ -149,7 +149,7 @@ public class EagletController {
         Document result = null;
         String filename = null;
         for (Document doc : documents) {
-            if (doc.getDocumentURI().equals(document)) {
+            if (doc.getDocumentURI().equals(documenturi)) {
                 result = doc;
             }
 
@@ -168,7 +168,7 @@ public class EagletController {
 
         // store the user ID - file name - document URI triple into the
         // database
-        database.addDocument(userId, document, filename);
+        database.addDocument(userId, documenturi, filename);
     }
 
     protected static List<Document> loadDocuments() {
