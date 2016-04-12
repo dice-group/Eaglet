@@ -9,7 +9,7 @@ $(document).ready(function() {
 });
 
 var counter = 1;
-var document;
+var documentUri;
 var loginName
 function uservalidation() {
 	// get the form data using another method
@@ -39,7 +39,7 @@ function uservalidation() {
 								.each(
 										markings,
 										function(i, v) {
-											document=v.doc;
+											documentUri=v.doc[0];
 											var startpos = parseInt(v.start);
 											var length = parseInt(v.length);
 											var entity = text.slice(startpos,
@@ -112,10 +112,10 @@ function senddata() {
 	});
 	console.log(marking_list);
 	$.ajax({
-		url : '/submitResults',
+		url : 'service/submitResults',
 		data : {
-			'document' : document,
-			'markings' : marking_list,
+			'documenturi' : documentUri,
+			'markings' : JSON.stringify(marking_list),
 			'user' : loginName
 		},
 		type : 'POST',
