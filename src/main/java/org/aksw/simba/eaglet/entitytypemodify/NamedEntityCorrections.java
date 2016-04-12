@@ -4,11 +4,10 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
-import org.w3c.dom.Document;
 
 public class NamedEntityCorrections extends NamedEntity {
 	public enum Check {
-		COMPLETED, INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS
+		COMPLETED, INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS, INVALID_URI, DISAMBIG_URI
 	}
 
 	private Check result;
