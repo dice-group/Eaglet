@@ -17,10 +17,10 @@ public class InputforPipeline {
 			"C:/Users/Kunal/workspace/gerbil/Results_anontator_dbpedia/WAT-DBpediaSpotlight-s-A2KB.ttl", false,
 			ExperimentType.A2KB);
 
-	public InputforPipeline() throws GerbilException, IOException {
+	public InputforPipeline(int user) throws GerbilException, IOException {
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 		PrePipeProcessor(documents);
-		callPipe(documents);
+		callPipe(documents, user);
 	}
 
 	public void PrePipeProcessor(List<Document> documents) throws GerbilException {
@@ -35,7 +35,7 @@ public class InputforPipeline {
 
 	}
 
-	public void callPipe(List<Document> doc) throws GerbilException, IOException {
-		CheckerPipeline.startPipe(doc);
+	public void callPipe(List<Document> doc, int user) throws GerbilException, IOException {
+		CheckerPipeline.startPipe(doc,user);
 	}
 }
