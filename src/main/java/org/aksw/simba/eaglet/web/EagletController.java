@@ -44,151 +44,151 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 @Controller
 public class EagletController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-    private static final String DATASET_FILES[] = new String[] {
-            "eaglet_data/gerbil_data/datasets/oke-challenge/example_data/task1.ttl" };
+	private static final String DATASET_FILES[] = new String[] {
+			"eaglet_data/gerbil_data/datasets/oke-challenge/example_data/task1.ttl" };
 
-    @Autowired
-    private EagletDatabaseStatements database;
+	@Autowired
+	private EagletDatabaseStatements database;
 
-    private List<Document> documents;
+	private List<Document> documents;
 
-    public EagletController() {
-        this.documents = loadDocuments();
-    }
+	public EagletController() {
+		this.documents = loadDocuments();
+	}
 
-    public EagletController(List<Document> documents) {
-        this.documents = documents;
-    }
+	public EagletController(List<Document> documents) {
+		this.documents = documents;
+	}
 
-    public int getUser(String userName) {
-        int userId;
-        if (database.getUser(userName) == -1) {
-            database.addUser(userName);
-        }
-        userId = database.getUser(userName);
+	public int getUser(String userName) {
+		int userId;
+		if (database.getUser(userName) == -1) {
+			database.addUser(userName);
+		}
+		userId = database.getUser(userName);
 
-        return userId;
-    }
+		return userId;
+	}
 
-    @RequestMapping(value = "/next", produces = "application/json;charset=utf-8")
-    public ResponseEntity<String> nextDocument(@RequestParam(value = "username") String userName) {
-        LOGGER.info("Got a message to /next!");
-        int userId = getUser(userName);
+	@RequestMapping(value = "/next", produces = "application/json;charset=utf-8")
+	public ResponseEntity<String> nextDocument(@RequestParam(value = "username") String userName) {
+		LOGGER.info("Got a message to /next!");
+		int userId = getUser(userName);
 
-        // get the next document
-        Document document = getNextDocument(userId);
-        if (document == null) {
-            // TODO return that this was the last document
-            return null;
-        }
-        // transform the document and its markings into a JSON String
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-        return new ResponseEntity<String>(transformDocToJson(document), responseHeaders, HttpStatus.OK);
-    }
+		// get the next document
+		Document document = getNextDocument(userId);
+		if (document == null) {
+			// TODO return that this was the last document
+			return new ResponseEntity<String>("redirect:thankyou.html", null, HttpStatus.OK);
+		}
+		// transform the document and its markings into a JSON String
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
+		return new ResponseEntity<String>(transformDocToJson(document), responseHeaders, HttpStatus.OK);
+	}
 
-    private Document getNextDocument(int userId) {
-        Set<String> alreadySeenDocuments = new HashSet<String>(database.getDocumentUser(userId));
-        for (Document document : documents) {
-            if (!alreadySeenDocuments.contains(document.getDocumentURI())) {
-                return document;
-            }
-        }
-        return null;
-    }
+	private Document getNextDocument(int userId) {
+		Set<String> alreadySeenDocuments = new HashSet<String>(database.getDocumentUser(userId));
+		for (Document document : documents) {
+			if (!alreadySeenDocuments.contains(document.getDocumentURI())) {
+				return document;
+			}
+		}
+		return null;
+	}
 
-    private String transformDocToJson(Document document) {
-        JSONObject doc = new JSONObject();
-        doc.append("text", document.getText());
-        doc.append("uri", document.getDocumentURI());
-        JSONArray array = new JSONArray();
-        JSONObject ne;
-        List<NamedEntityCorrections> necs = document.getMarkings(NamedEntityCorrections.class);
-        necs.sort(new StartPosBasedComparator());
-        for (NamedEntityCorrections nec : necs) {
-            ne = new JSONObject();
-            ne.append("start", nec.getStartPosition());
-            ne.append("length", nec.getLength());
-            ne.append("partner", nec.getPartner());
-            ne.append("result", nec.getResult());
-            ne.append("doc", nec.getDoc());
-            ne.append("uris", nec.getUris());
-            ne.append("name", nec.getEntity_name());
-            array.put(ne);
-        }
-        doc.append("markings", array);
-        return doc.toString();
-    }
+	private String transformDocToJson(Document document) {
+		JSONObject doc = new JSONObject();
+		doc.append("text", document.getText());
+		doc.append("uri", document.getDocumentURI());
+		JSONArray array = new JSONArray();
+		JSONObject ne;
+		List<NamedEntityCorrections> necs = document.getMarkings(NamedEntityCorrections.class);
+		necs.sort(new StartPosBasedComparator());
+		for (NamedEntityCorrections nec : necs) {
+			ne = new JSONObject();
+			ne.append("start", nec.getStartPosition());
+			ne.append("length", nec.getLength());
+			ne.append("partner", nec.getPartner());
+			ne.append("result", nec.getResult());
+			ne.append("doc", nec.getDoc());
+			ne.append("uris", nec.getUris());
+			ne.append("name", nec.getEntity_name());
+			array.put(ne);
+		}
+		doc.append("markings", array);
+		return doc.toString();
+	}
 
-    private List<Marking> transformEntityFromJson(String userInput) {
-        List<Marking> userAcceptedEntities = new ArrayList<Marking>();
-        JSONArray markings = new JSONArray(userInput);
+	private List<Marking> transformEntityFromJson(String userInput) {
+		List<Marking> userAcceptedEntities = new ArrayList<Marking>();
+		JSONArray markings = new JSONArray(userInput);
 
-        for (int i = 0; i < markings.length(); i++) {
-            Marking entity = new NamedEntity(markings.getJSONObject(i).getInt("start"),
-                    markings.getJSONObject(i).getInt("length"), markings.getJSONObject(i).getString("uri"));
-            userAcceptedEntities.add(entity);
-        }
-        return userAcceptedEntities;
-    }
+		for (int i = 0; i < markings.length(); i++) {
+			Marking entity = new NamedEntity(markings.getJSONObject(i).getInt("start"),
+					markings.getJSONObject(i).getInt("length"), markings.getJSONObject(i).getString("uri"));
+			userAcceptedEntities.add(entity);
+		}
+		return userAcceptedEntities;
+	}
 
-    @RequestMapping(value = "/submitResults", method = RequestMethod.POST)
-    public String submitResults(@RequestParam(value = "documenturi") String document,
-            @RequestParam(value = "markings") String userInput, @RequestParam(value = "username") String userName)
-                    throws IOException {
-        int userId = getUser(userName);
-        // TODO parse document from JSON
-        List<Marking> changes = transformEntityFromJson(userInput);
-        // TODO generate file name
-        Document result = null;
-        String filename = null;
-        for (Document doc : documents) {
-            if (doc.getDocumentURI().equals(document)) {
-                result = doc;
-            }
+	@RequestMapping(value = "/submitResults", method = RequestMethod.POST)
+	public String submitResults(@RequestParam(value = "documenturi") String document,
+			@RequestParam(value = "markings") String userInput, @RequestParam(value = "username") String userName)
+			throws IOException {
+		int userId = getUser(userName);
+		// TODO parse document from JSON
+		List<Marking> changes = transformEntityFromJson(userInput);
+		// TODO generate file name
+		Document result = null;
+		String filename = null;
+		for (Document doc : documents) {
+			if (doc.getDocumentURI().equals(document)) {
+				result = doc;
+			}
 
-        }
-        if (result != null) {
-            String name = result.getDocumentURI().replaceAll("http://", "");
-            name = name.replaceAll("/", "-");
-            filename = "result-" + userId + "-" + name;
-        }
-        Document newdoc = new DocumentImpl(result.getText(), result.getDocumentURI(), changes);
-        FileOutputStream fout = new FileOutputStream("eaglet_data/result_user/" + filename + "-nif.ttl");
-        // serialize the document into a file
-        NIFWriter nif = new TurtleNIFWriter();
-        nif.writeNIF(Arrays.asList(newdoc), fout);
-        fout.close();
+		}
+		if (result != null) {
+			String name = result.getDocumentURI().replaceAll("http://", "");
+			name = name.replaceAll("/", "-");
+			filename = "result-" + userId + "-" + name;
+		}
+		Document newdoc = new DocumentImpl(result.getText(), result.getDocumentURI(), changes);
+		FileOutputStream fout = new FileOutputStream("eaglet_data/result_user/" + filename + "-nif.ttl");
+		// serialize the document into a file
+		NIFWriter nif = new TurtleNIFWriter();
+		nif.writeNIF(Arrays.asList(newdoc), fout);
+		fout.close();
 
-        // store the user ID - file name - document URI triple into the
-        // database
-        database.addDocument(userId, document, filename);
-        return "redirect:next?username=" + userName;
-    }
+		// store the user ID - file name - document URI triple into the
+		// database
+		database.addDocument(userId, document, filename);
+		return "redirect:next?username=" + userName;
+	}
 
-    protected static List<Document> loadDocuments() {
-        List<Document> loadedDocuments = new ArrayList<Document>();
-        for (int i = 0; i < DATASET_FILES.length; ++i) {
-            try {
-                Model nifModel = ModelFactory.createDefaultModel();
-                nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-                FileInputStream fin = new FileInputStream(new File(DATASET_FILES[i]));
-                nifModel.read(fin, "", "TTL");
-                fin.close();
-                DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
-                List<Document> documents = parser.parseDocuments(nifModel);
-                for (Document document : documents) {
-                    loadedDocuments.add(new DocumentImpl(document.getText(), document.getDocumentURI(),
-                            EntityTypeChange.changeType(document)));
-                }
+	protected static List<Document> loadDocuments() {
+		List<Document> loadedDocuments = new ArrayList<Document>();
+		for (int i = 0; i < DATASET_FILES.length; ++i) {
+			try {
+				Model nifModel = ModelFactory.createDefaultModel();
+				nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+				FileInputStream fin = new FileInputStream(new File(DATASET_FILES[i]));
+				nifModel.read(fin, "", "TTL");
+				fin.close();
+				DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
+				List<Document> documents = parser.parseDocuments(nifModel);
+				for (Document document : documents) {
+					loadedDocuments.add(new DocumentImpl(document.getText(), document.getDocumentURI(),
+							EntityTypeChange.changeType(document)));
+				}
 
-                // loadedDocuments.addAll(CheckerPipeline.readDocuments(DATASET_FILES[i]));
-            } catch (Exception e) {
-                LOGGER.error("Couldn't load the dataset!", e);
-            }
-        }
-        return loadedDocuments;
-    }
+				// loadedDocuments.addAll(CheckerPipeline.readDocuments(DATASET_FILES[i]));
+			} catch (Exception e) {
+				LOGGER.error("Couldn't load the dataset!", e);
+			}
+		}
+		return loadedDocuments;
+	}
 }

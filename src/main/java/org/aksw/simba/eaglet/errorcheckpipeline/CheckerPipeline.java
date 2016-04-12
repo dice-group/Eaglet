@@ -42,7 +42,7 @@ public class CheckerPipeline {
 		return annotators;
 	}
 
-	public static void startPipe(List<Document> documents) throws GerbilException, IOException {
+	public static void startPipe(List<Document> documents, String name) throws GerbilException, IOException {
 		List<A2KBAnnotator> annotators = callAnnotator("eaglet/Results_anontator_dbpedia");
 
 		GoldStandardCompletion Complete = new MissingEntityCompletion(annotators);
@@ -66,8 +66,7 @@ public class CheckerPipeline {
 
 		// write documents
 		Model nifModel = generateModel(documents);
-		FileOutputStream fout = new FileOutputStream(
-				"eaglet_data/result_pipe/sample-result-nif.ttl");
+		FileOutputStream fout = new FileOutputStream("eaglet_data/result_pipe/sample-" + name + "-result-nif.ttl");
 		nifModel.write(fout, "TTL");
 		fout.close();
 		// TODO: Send to server
@@ -129,21 +128,19 @@ public class CheckerPipeline {
 					List<NamedEntityCorrections> entity_set = doc.getMarkings(NamedEntityCorrections.class);
 					for (NamedEntityCorrections entity : entity_set) {
 						if ((entity.getStartPosition() == startsbj)
-								&& (entity.getStartPosition() + entity.getLength() == endsbj)) 
-						{
-							subject=entity;
+								&& (entity.getStartPosition() + entity.getLength() == endsbj)) {
+							subject = entity;
 						}
 						if ((entity.getStartPosition() == startobj)
-								&& (entity.getStartPosition() + entity.getLength() == endobj)) 
-						{
-							object=entity;
+								&& (entity.getStartPosition() + entity.getLength() == endobj)) {
+							object = entity;
 						}
 					}
 					subject.setPartner(object);
 
 				}
 			}
-			
+
 		}
 		return documents;
 	}
