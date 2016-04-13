@@ -39,23 +39,31 @@ function printDocument(data) {
 	$("#sidebar-content").html(text_content);
 	var content = '<div id="marking">';
 
-	$.each(markings, function(i, v) {
+	$
+			.each(
+					markings,
+					function(i, v) {
 
-		content += '<div " id="' + counter + '" class="marking"><ul>';
-		content += '<a href="#">' + '<span class="name">' + v.name
-				+ '</span></a><br />';
-		content += '<li> Start: ' + '<span class="start">' + v.start
-				+ '</span></li></br>';
-		content += '<li> Length: ' + '<span class="length">' + v.length
-				+ '</span></li></br>';
-		content += '<li> Result : ' + '<span class="result">' + v.result
-				+ '</span></li></br>';
-		content += '<li > Uris : ' + '<span id="uri' + counter
-				+ '" class="uri">' + v.uris + '</span></li></br>';
-		content += '</ul> <button onclick="removeelement(' + counter
-				+ ')">Delete</button> </br></div><hr>';
-		counter += 1;
-	});
+						content += '<div " id="' + counter
+								+ '" class="marking"><ul>';
+						content += '<a href="#">' + '<span class="name">'
+								+ v.name + '</span></a><br />';
+						content += '<li> Start: ' + '<span class="start">'
+								+ v.start + '</span></li></br>';
+						content += '<li> Length: ' + '<span class="length">'
+								+ v.length + '</span></li></br>';
+						content += '<li> Result : ' + '<span class="result">'
+								+ v.result + '</span></li></br>';
+						content += '<li > Uris : ' + '<span id="uri' + counter
+								+ '" class="uri">' + v.uris
+								+ '</span></li></br>';
+						content += '<form ><input type="radio" class = "enitycheck" name="NamedEntity" value="true" checked="checked"> Is NamedEntity <br> <input type="radio" class = "enitycheck" name="NamedEntity" value="false"> Not Named Entity<br> </form>'
+						content += '</ul> <button onclick="removeelement('
+								+ counter
+								+ ')">Delete</button> </br></div><hr>';
+
+						counter += 1;
+					});
 
 	content += '</div>';
 
@@ -77,7 +85,7 @@ function uservalidation() {
 		// option as
 		// parameter and returns JSON of to-be-populated
 		// options
-		type : "GET",// request type, can be GET
+		type : "POST",// request type, can be GET
 		data : {
 			username : loginName,// data to be sent
 		// to the
@@ -98,16 +106,22 @@ function senddata() {
 	var marking_list = [];
 	var attributes = {};
 
-	$('.innerContainer .marking').each(function() {
-		attributes = {};
-		attributes["name"] = $('.name', this).text();
-		attributes["length"] = $('.length', this).text();
-		attributes["start"] = $('.start', this).text();
-		attributes["result"] = $('.result', this).text();
-		attributes["uri"] = $('.uri', this).text();
-		console.log(attributes);
-		marking_list.push(attributes);
-	});
+	$('.innerContainer .marking')
+			.each(
+					function() {
+						attributes = {};
+						attributes["name"] = $('.name', this).text();
+						attributes["length"] = $('.length', this).text();
+						attributes["start"] = $('.start', this).text();
+						attributes["result"] = $('.result', this).text();
+						attributes["uri"] = $('.uri', this).text();
+						attributes["checkentity"] = $(".enitycheck:checked",
+								this).siblings().text();
+						console.log($($(".enitycheck:checked", this).siblings()
+								.text()));
+						console.log(attributes);
+						marking_list.push(attributes);
+					});
 	console.log(marking_list);
 	$.ajax({
 		url : 'service/submitResults',
@@ -184,8 +198,10 @@ Selector.mouseup = function() {
 				+ (selection.end - selection.start) + '</span></li></br>';
 		content += '<li > Uris : ' + '<span class="uri" id="uri' + counter
 				+ '">ADD_URI</span></li></br>';
+		content += '<form  ><input type="radio" name="NamedEntity" class = "enitycheck" value="true" checked="checked"> Is NamedEntity <br> <input class = "enitycheck" type="radio" name="NamedEntity" value="false"> Not Named Entity<br> </form>'
 		content += '</ul> <button onclick="removeelement(' + counter
 				+ ')">Delete</button> </br></div><hr>';
+
 		$('#main-content .innerContainer').append($(content));
 
 		counter += 1;

@@ -22,6 +22,7 @@ import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
+import org.aksw.simba.eaglet.entitytypemodify.EntityCheck;
 import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.json.JSONArray;
@@ -46,8 +47,7 @@ public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] {
-			"" };
+	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/kore50-nif-result-nif.ttl" };
 
 	@Autowired
 	private EagletDatabaseStatements database;
@@ -127,8 +127,11 @@ public class EagletController {
 		JSONArray markings = new JSONArray(userInput);
 
 		for (int i = 0; i < markings.length(); i++) {
-			Marking entity = new NamedEntity(markings.getJSONObject(i).getInt("start"),
-					markings.getJSONObject(i).getInt("length"), markings.getJSONObject(i).getString("uri"));
+			Set<String> uris = new HashSet<String>();
+			uris.add(markings.getJSONObject(i).getString("uri"));
+			Marking entity = new EntityCheck(markings.getJSONObject(i).getInt("start"),
+					markings.getJSONObject(i).getInt("length"), uris,
+					markings.getJSONObject(i).getBoolean("checkentity"));
 			userAcceptedEntities.add(entity);
 		}
 		return userAcceptedEntities;
