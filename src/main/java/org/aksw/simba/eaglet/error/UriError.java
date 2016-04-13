@@ -1,6 +1,8 @@
 package org.aksw.simba.eaglet.error;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import org.aksw.simba.eaglet.uri.impl.FileBasedCachingUriCheckerManager;
 import org.aksw.simba.eaglet.uri.impl.HttpBasedUriChecker;
 import org.aksw.simba.eaglet.uri.impl.UriCheckerWrappingDBpediaWikipediaBridge;
 import org.aksw.simba.eaglet.uri.impl.WikipidiaUriChecker;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
-public class UriError implements ErrorChecker {
+public class UriError implements ErrorChecker, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UriError.class);
 
@@ -105,4 +108,10 @@ public class UriError implements ErrorChecker {
         return uriChecker.checkUri(uri);
     }
 
+    @Override
+    public void close() throws IOException {
+        if (uriChecker instanceof Closeable) {
+            IOUtils.closeQuietly((Closeable) uriChecker);
+        }
+    }
 }

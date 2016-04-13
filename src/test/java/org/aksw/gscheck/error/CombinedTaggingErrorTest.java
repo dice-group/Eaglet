@@ -1,4 +1,4 @@
-package org.aksw.gscheck.error.Test;
+package org.aksw.gscheck.error;
 
 import static org.junit.Assert.*;
 

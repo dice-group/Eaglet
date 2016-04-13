@@ -16,6 +16,7 @@
  */
 package org.aksw.simba.eaglet.uri.impl;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -47,7 +48,7 @@ import com.carrotsearch.hppc.ObjectLongOpenHashMap;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
-public class FileBasedCachingUriCheckerManager extends UriCheckerManagerImpl {
+public class FileBasedCachingUriCheckerManager extends UriCheckerManagerImpl implements Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedCachingUriCheckerManager.class);
 
@@ -289,4 +290,8 @@ public class FileBasedCachingUriCheckerManager extends UriCheckerManagerImpl {
         // }
     }
 
+    @Override
+    public void close() throws IOException {
+        storeCache();
+    }
 }

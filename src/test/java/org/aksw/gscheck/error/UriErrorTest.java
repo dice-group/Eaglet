@@ -1,5 +1,7 @@
-package org.aksw.gscheck.error.Test;
+package org.aksw.gscheck.error;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.aksw.gerbil.transfer.nif.Marking;
@@ -7,9 +9,11 @@ import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
 import org.aksw.simba.eaglet.error.UriError;
+import org.apache.commons.io.IOUtils;
+import org.junit.After;
 import org.junit.Before;
 
-public class InvalidUriErrorTest extends AbstractErrorTest {
+public class UriErrorTest extends AbstractErrorTest {
 
     @Before
     public void setUp() throws Exception {
@@ -44,6 +48,23 @@ public class InvalidUriErrorTest extends AbstractErrorTest {
                 Check.GOOD, Check.INVALID_URI });
         partner_list.add(new NamedEntityCorrections[] { null, null, null, null, null, null });
 
+        // a URI that points to a disambiguation page
+        doc.add(new DocumentImpl("The delay was short.",
+                "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-3",
+                Arrays.asList((Marking) new NamedEntityCorrections(4, 5, "http://dbpedia.org/resource/Delay"))));
+        expectedResults.add(new Check[] { Check.DISAMBIG_URI });
+        partner_list.add(new NamedEntityCorrections[] { null });
+
+        // an outdated URI
+        doc.add(new DocumentImpl("China is a large country.",
+                "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4",
+                Arrays.asList((Marking) new NamedEntityCorrections(0, 5, "http://dbpedia.org/resource/People's_Republic_of_China"))));
+        expectedResults.add(new Check[] { Check.OUTDATED_URI });
+        partner_list.add(new NamedEntityCorrections[] { null });
     }
 
+    @After
+    public void close() throws IOException {
+        IOUtils.closeQuietly((Closeable) errorChecker);
+    }
 }

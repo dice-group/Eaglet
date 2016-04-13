@@ -89,7 +89,7 @@ public class HttpBasedUriChecker extends AbstractHttpRequestEmitter implements U
             }
             return Check.INVALID_URI;
         }
-        if (model == null) {
+        if ((model == null) || (model.isEmpty())) {
             return Check.INVALID_URI;
         }
         Resource entity = model.getResource(uri);
