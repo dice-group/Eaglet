@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.aksw.gerbil.annotator.A2KBAnnotator;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
@@ -34,7 +33,10 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
+import org.slf4j.LoggerFactory;
+
 public class CheckerPipeline {
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CheckerPipeline.class);
 
 	public static List<A2KBAnnotator> callAnnotator(String path) throws GerbilException {
 		AnnotatorResult ar = new AnnotatorResult(path);
@@ -66,10 +68,18 @@ public class CheckerPipeline {
 
 		// write documents
 		Model nifModel = generateModel(documents);
-		FileOutputStream fout = new FileOutputStream("eaglet_data/result_pipe/sample-" + name + "-result-nif.ttl");
+
+		File resultfile = new File("eaglet_data/result_pipe/" + name + "-result-nif.ttl");
+
+		if (!resultfile.exists()) {
+			resultfile.getParentFile().mkdirs();
+			resultfile.createNewFile();
+		}
+		FileOutputStream fout = new FileOutputStream(resultfile);
+		fout.flush();
 		nifModel.write(fout, "TTL");
 		fout.close();
-		// TODO: Send to server
+		LOGGER.info("PIPELINE RESULTS GENERATED");
 	}
 
 	public static Model generateModel(List<Document> documents) {

@@ -16,12 +16,13 @@ import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 public class AnnotatorResult {
 
 	private static final ExperimentType EXPERIMENT_TYPE = ExperimentType.A2KB;
-	private List<A2KBAnnotator> annotators;
+	private List<A2KBAnnotator> annotators = new ArrayList<A2KBAnnotator>();
 	String filename;
 
 	public AnnotatorResult(String Filename) throws GerbilException {
 		// TODO Auto-generated constructor stub
 		this.filename = Filename;
+		
 		readannotatorlist();
 
 	}
@@ -39,9 +40,10 @@ public class AnnotatorResult {
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
 			if (file.isFile()) {
-				//String annotatorFilenName = file.getParent() + "/" + file.getName();
+				// String annotatorFilenName = file.getParent() + "/" +
+				// file.getName();
 				String annotatorFilenName = file.getAbsolutePath();
-				System.out.println(annotatorFilenName);
+				//System.out.println(annotatorFilenName);
 				annotators.add(AnnotatorResult.loadAnnotator(annotatorFilenName, file.getName()));
 			}
 		}

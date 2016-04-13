@@ -41,8 +41,8 @@ public class InputforPipeline {
 	}
 
 	public static void main(String[] args) throws GerbilException, IOException {
-		//new InputforPipeline();
-		CheckerPipeline.callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
+		new InputforPipeline();
+		//CheckerPipeline.callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
 
 	}
 }
