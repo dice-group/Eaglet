@@ -13,7 +13,7 @@ import org.aksw.simba.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
 
 public class InputforPipeline {
-	private String name = "eaglet_data/Results_anontator_dbpedia/WAT-DBpediaSpotlight-s-A2KB.ttl";
+	private String name = "eaglet_data/gerbil_data/datasets/KORE50/kore50-nif.ttl";
 	private DatasetConfiguration DATASET = new NIFFileDatasetConfig("DBpedia", name, false, ExperimentType.A2KB);
 
 	public InputforPipeline() throws GerbilException, IOException {
@@ -41,7 +41,8 @@ public class InputforPipeline {
 	}
 
 	public static void main(String[] args) throws GerbilException, IOException {
-		new InputforPipeline();
+		//new InputforPipeline();
+		CheckerPipeline.callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
 
 	}
 }

@@ -16,7 +16,7 @@ import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
-import org.aksw.simba.eaglet.completion.GoldStandardCompletion;
+
 import org.aksw.simba.eaglet.completion.MissingEntityCompletion;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.error.CombinedTaggingError;
@@ -43,14 +43,14 @@ public class CheckerPipeline {
 	}
 
 	public static void startPipe(List<Document> documents, String name) throws GerbilException, IOException {
-		List<A2KBAnnotator> annotators = callAnnotator("eaglet/Results_anontator_dbpedia");
-
-		GoldStandardCompletion Complete = new MissingEntityCompletion(annotators);
+		List<A2KBAnnotator> annotators = callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
 
 		// prepare the pipeline
 
 		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
+		checkers.add(new MissingEntityCompletion(annotators));
 		checkers.add(new CombinedTaggingError());
+
 		checkers.add(new OverLappingError());
 		checkers.add(new LongDescriptionError());
 		checkers.add(new OverLappingError());

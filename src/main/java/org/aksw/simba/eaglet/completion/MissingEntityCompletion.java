@@ -12,10 +12,11 @@ import org.aksw.gerbil.transfer.nif.MeaningSpan;
 import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MissingEntityCompletion implements GoldStandardCompletion {
+public class MissingEntityCompletion implements ErrorChecker {
 
 	private List<A2KBAnnotator> annotators;
 	private static final Logger LOGGER = LoggerFactory.getLogger(MissingEntityCompletion.class);

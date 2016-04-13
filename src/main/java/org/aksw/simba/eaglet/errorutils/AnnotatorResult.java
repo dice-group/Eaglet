@@ -39,8 +39,9 @@ public class AnnotatorResult {
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
 			if (file.isFile()) {
-				String annotatorFilenName = file.getParent() + "/" + file.getName();
-				System.out.println(file.getName());
+				//String annotatorFilenName = file.getParent() + "/" + file.getName();
+				String annotatorFilenName = file.getAbsolutePath();
+				System.out.println(annotatorFilenName);
 				annotators.add(AnnotatorResult.loadAnnotator(annotatorFilenName, file.getName()));
 			}
 		}
