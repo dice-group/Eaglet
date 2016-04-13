@@ -12,8 +12,35 @@ var counter = 1;
 var documentUri;
 var loginName;
 
+function printEntity(name, start, length, checkResult, uri) {
+	var content = '<div " id="' + counter + '" class="marking"><ul>';
+	if (uri != null) {
+		content += '<a id="a' + counter + ' href="' + uri + '">';
+	} else {
+		content += '<a id="a' + counter + ' href="#">';
+	}
+	content += '<span class="name">' + name + '</span></a><br />';
+	content += '<li> Start: <span class="start">' + start
+			+ '</span></li><br />';
+	content += '<li> Length: <span class="length">' + length
+			+ '</span></li><br />';
+	if (checkResult != null) {
+		content += '<li> Result : <span class="result">' + checkResult
+				+ '</span></li><br />';
+	}
+	content += '<li > Uris : <span id="uri' + counter + '" class="uri">' + uri
+			+ '</span></li><br />';
+	content += '<form ><input type="radio" class = "entityCheckTrue" name="NamedEntity" value="true" checked="checked">Is NamedEntity</input><br />'
+			+ '<input type="radio" class = "entityCheckFalse" name="NamedEntity" value="false"> Not Named Entity</input></form>'
+	content += '</ul> <button onclick="removeelement(' + counter
+			+ ')">Delete</button> <br /></div><hr>';
+
+	$('#main-content .innerContainer').append($(content));
+	makeUrisEditable($('span#uri' + counter));
+	counter += 1;
+}
+
 function printDocument(data) {
-	console.log(data);
 	text = data.text[0];
 	documentUri = data.uri[0];
 
@@ -37,40 +64,15 @@ function printDocument(data) {
 					});
 	text_content += text.slice(lastpos, text.length);
 	$("#sidebar-content").html(text_content);
-	var content = '<div id="marking">';
+	$("#markings-list").html('<div id="marking"></div>');
+	$.each(markings, function(i, v) {
+		printEntity(v.name, v.start, v.length, v.result, v.uris);
+	});
 
-	$
-			.each(
-					markings,
-					function(i, v) {
-
-						content += '<div " id="' + counter
-								+ '" class="marking"><ul>';
-						content += '<a href="#">' + '<span class="name">'
-								+ v.name + '</span></a><br />';
-						content += '<li> Start: ' + '<span class="start">'
-								+ v.start + '</span></li></br>';
-						content += '<li> Length: ' + '<span class="length">'
-								+ v.length + '</span></li></br>';
-						content += '<li> Result : ' + '<span class="result">'
-								+ v.result + '</span></li></br>';
-						content += '<li > Uris : ' + '<span id="uri' + counter
-								+ '" class="uri">' + v.uris
-								+ '</span></li></br>';
-						content += '<form ><input type="radio" class = "enitycheck" name="NamedEntity" value="true" checked="checked"> Is NamedEntity <br> <input type="radio" class = "enitycheck" name="NamedEntity" value="false"> Not Named Entity<br> </form>'
-						content += '</ul> <button onclick="removeelement('
-								+ counter
-								+ ')">Delete</button> </br></div><hr>';
-
-						counter += 1;
-					});
-
-	content += '</div>';
-
-	/* like this the results won't cummulate */
-	$("#markings-list").html(content);
 	// make the URIs editable
-	makeUrisEditable();
+	$("span.uri").each(function() {
+		makeUrisEditable(this);
+	});
 
 	// $(text).appendTo("#sidebar-content");
 }
@@ -97,32 +99,24 @@ function uservalidation() {
 	});
 };
 
-function makeUrisEditable() {
+function makeUrisEditable(span) {
 	var replaceWith = $('<input name="temp" type="text" value="" />');
-	$('span.uri').inlineEdit(replaceWith);
+	$(span).inlineEdit(replaceWith);
 }
 
 function senddata() {
 	var marking_list = [];
 	var attributes = {};
 
-	$('.innerContainer .marking')
-			.each(
-					function() {
-						attributes = {};
-						attributes["name"] = $('.name', this).text();
-						attributes["length"] = $('.length', this).text();
-						attributes["start"] = $('.start', this).text();
-						attributes["result"] = $('.result', this).text();
-						attributes["uri"] = $('.uri', this).text();
-						attributes["checkentity"] = $(".enitycheck:checked",
-								this).siblings().text();
-						console.log($($(".enitycheck:checked", this).siblings()
-								.text()));
-						console.log(attributes);
-						marking_list.push(attributes);
-					});
-	console.log(marking_list);
+	$('.innerContainer .marking').each(function() {
+		attributes = {};
+		attributes["name"] = $('.name', this).text();
+		attributes["length"] = $('.length', this).text();
+		attributes["start"] = $('.start', this).text();
+		attributes["uri"] = $('.uri', this).text();
+		attributes["checkentity"] = $(".entityCheckTrue", this)[0].value;
+		marking_list.push(attributes);
+	});
 	$.ajax({
 		url : 'service/submitResults',
 		data : {
@@ -187,25 +181,8 @@ Selector.getSelectionCharOffsetsWithin = function() {
 Selector.mouseup = function() {
 	var st = Selector.getSelected();
 	var selection = Selector.getSelectionCharOffsetsWithin();
-	console.log(st);
-	console.log(selection);
 	if (st != '') {
-		var content = '<div " id="' + counter + '" class="marking"><ul>';
-		content += '<a href="#"><span class="name">' + st + '</span></a><br />';
-		content += '<li >  Start: ' + '<span class="start">' + selection.start
-				+ '</span></li></br>';
-		content += '<li> Length: ' + '<span class="length">'
-				+ (selection.end - selection.start) + '</span></li></br>';
-		content += '<li > Uris : ' + '<span class="uri" id="uri' + counter
-				+ '">ADD_URI</span></li></br>';
-		content += '<form  ><input type="radio" name="NamedEntity" class = "enitycheck" value="true" checked="checked"> Is NamedEntity <br> <input class = "enitycheck" type="radio" name="NamedEntity" value="false"> Not Named Entity<br> </form>'
-		content += '</ul> <button onclick="removeelement(' + counter
-				+ ')">Delete</button> </br></div><hr>';
-
-		$('#main-content .innerContainer').append($(content));
-
-		counter += 1;
-		makeUrisEditable();
-
+		printEntity(st, selection.start, (selection.end - selection.start),
+				null, null);
 	}
 };
