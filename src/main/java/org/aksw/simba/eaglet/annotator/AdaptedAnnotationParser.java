@@ -151,8 +151,6 @@ public class AdaptedAnnotationParser extends AnnotationParser {
     private Check parseCheckResult(Resource resource) {
         if (EAGLET.Inserted.equals(resource)) {
             return Check.INSERTED;
-        } else if (EAGLET.Inserted.equals(resource)) {
-            return Check.INSERTED;
         } else if (EAGLET.Deleted.equals(resource)) {
             return Check.DELETED;
         } else if (EAGLET.Good.equals(resource)) {
@@ -163,6 +161,12 @@ public class AdaptedAnnotationParser extends AnnotationParser {
             return Check.OVERLAPS;
         } else if (EAGLET.Completed.equals(resource)) {
             return Check.COMPLETED;
+        } else if (EAGLET.InvalidUri.equals(resource)) {
+            return Check.INVALID_URI;
+        } else if (EAGLET.OutdatedUri.equals(resource)) {
+            return Check.OUTDATED_URI;
+        } else if (EAGLET.DisambiguationUri.equals(resource)) {
+            return Check.DISAMBIG_URI;
         } else {
             LOGGER.error("Got an unknown matching type: " + resource);
             return null;

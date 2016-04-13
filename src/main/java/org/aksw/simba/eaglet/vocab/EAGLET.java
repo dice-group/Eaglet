@@ -53,6 +53,9 @@ public class EAGLET {
     public static final Resource NeedToPair = resource("NeedToPair");
     public static final Resource Overlaps = resource("Overlaps");
     public static final Resource Completed = resource("Completed");
+    public static final Resource InvalidUri = resource("InvalidUri");
+    public static final Resource OutdatedUri = resource("OutdatedUri");
+    public static final Resource DisambiguationUri = resource("DisambiguationUri");
 
     public static final Property hasCheckResult = property("hasCheckResult");
     public static final Property hasPairPartner = property("hasPairPartner");
@@ -71,6 +74,12 @@ public class EAGLET {
             return Overlaps;
         case COMPLETED:
             return Completed;
+        case INVALID_URI:
+            return InvalidUri;
+        case OUTDATED_URI:
+            return OutdatedUri;
+        case DISAMBIG_URI:
+            return DisambiguationUri;
         }
         LOGGER.error("Got an unknown matching type: " + checkResult.name());
         return null;
