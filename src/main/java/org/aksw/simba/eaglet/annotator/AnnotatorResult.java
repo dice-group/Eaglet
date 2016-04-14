@@ -1,4 +1,4 @@
-package org.aksw.simba.eaglet.errorutils;
+package org.aksw.simba.eaglet.annotator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
-import org.aksw.simba.eaglet.annotator.TestA2KBAnnotator;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 
 public class AnnotatorResult {

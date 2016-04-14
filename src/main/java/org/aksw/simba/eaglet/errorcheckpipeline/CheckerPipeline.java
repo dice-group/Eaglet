@@ -15,7 +15,7 @@ import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
-
+import org.aksw.simba.eaglet.annotator.AnnotatorResult;
 import org.aksw.simba.eaglet.completion.MissingEntityCompletion;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.error.CombinedTaggingError;
@@ -23,7 +23,6 @@ import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.aksw.simba.eaglet.error.LongDescriptionError;
 import org.aksw.simba.eaglet.error.OverLappingError;
 import org.aksw.simba.eaglet.error.SubsetMarkingError;
-import org.aksw.simba.eaglet.errorutils.AnnotatorResult;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 
 import com.hp.hpl.jena.rdf.model.Model;

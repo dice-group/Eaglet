@@ -33,6 +33,7 @@ import org.aksw.gerbil.transfer.nif.data.SpanImpl;
 import org.aksw.gerbil.transfer.nif.data.TypedNamedEntity;
 import org.aksw.gerbil.transfer.nif.vocabulary.ITSRDF;
 import org.aksw.gerbil.transfer.nif.vocabulary.NIF;
+import org.aksw.simba.eaglet.entitytypemodify.EntityCheck;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
 import org.aksw.simba.eaglet.vocab.EAGLET;
@@ -47,162 +48,181 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class AdaptedAnnotationParser extends AnnotationParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdaptedAnnotationParser.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AdaptedAnnotationParser.class);
 
-    private boolean removeUsedProperties;
+	private boolean removeUsedProperties;
 
-    public AdaptedAnnotationParser() {
-        this(false);
-    }
+	public AdaptedAnnotationParser() {
+		this(false);
+	}
 
-    public AdaptedAnnotationParser(boolean removeUsedProperties) {
-        super(removeUsedProperties);
-        this.removeUsedProperties = removeUsedProperties;
-    }
+	public AdaptedAnnotationParser(boolean removeUsedProperties) {
+		super(removeUsedProperties);
+		this.removeUsedProperties = removeUsedProperties;
+	}
 
-    public void parseAnnotations(Model nifModel, Document document, Resource documentResource) {
-        // get the annotations from the model
-        List<Marking> markings = document.getMarkings();
-        ResIterator resIter = nifModel.listSubjectsWithProperty(NIF.referenceContext, documentResource);
-        Resource annotationResource;
-        int start, end;
-        Set<String> entityUris;
-        double confidence;
-        NodeIterator nodeIter;
-        while (resIter.hasNext()) {
-            annotationResource = resIter.next();
-            start = end = -1;
-            nodeIter = nifModel.listObjectsOfProperty(annotationResource, NIF.beginIndex);
-            if (nodeIter.hasNext()) {
-                start = nodeIter.next().asLiteral().getInt();
-            }
-            nodeIter = nifModel.listObjectsOfProperty(annotationResource, NIF.endIndex);
-            if (nodeIter.hasNext()) {
-                end = nodeIter.next().asLiteral().getInt();
-            }
-            if ((start >= 0) && (end >= 0)) {
-                nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taIdentRef);
-                if (nodeIter.hasNext()) {
-                    entityUris = new HashSet<String>();
-                    while (nodeIter.hasNext()) {
-                        entityUris.add(nodeIter.next().toString());
-                    }
-                    nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taClassRef);
-                    if (nodeIter.hasNext()) {
-                        Set<String> types = new HashSet<String>();
-                        while (nodeIter.hasNext()) {
-                            types.add(nodeIter.next().toString());
-                        }
-                        nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasCheckResult);
-                        if (nodeIter.hasNext()) {
-                            Check result = parseCheckResult(nodeIter.next().asResource());
-                            markings.add(new NamedEntityCorrections(start, end - start, entityUris, result));
-                        } else {
-                            // It has been typed without a confidence
-                            markings.add(addTypeInformation(new TypedNamedEntity(start, end - start, entityUris, types),
-                                    nifModel));
-                        }
-                    } else {
-                        nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taConfidence);
-                        if (nodeIter.hasNext()) {
-                            confidence = nodeIter.next().asLiteral().getDouble();
-                            markings.add(addTypeInformationIfPossible(
-                                    new ScoredNamedEntity(start, end - start, entityUris, confidence), nifModel));
-                        } else {
-                            // It has been disambiguated without a confidence
-                            markings.add(addTypeInformationIfPossible(new NamedEntity(start, end - start, entityUris),
-                                    nifModel));
-                        }
-                    }
-                } else {
-                    // It is a named entity that hasn't been disambiguated
-                    markings.add(new SpanImpl(start, end - start));
-                }
-                // FIXME scored Span is missing
-            } else {
-                LOGGER.warn("Found an annotation resource (\"" + annotationResource.getURI()
-                        + "\") without a start or end index. This annotation will be ignored.");
-            }
-            if (removeUsedProperties) {
-                nifModel.removeAll(annotationResource, null, null);
-            }
-        }
+	public void parseAnnotations(Model nifModel, Document document, Resource documentResource) {
+		// get the annotations from the model
+		List<Marking> markings = document.getMarkings();
+		ResIterator resIter = nifModel.listSubjectsWithProperty(NIF.referenceContext, documentResource);
+		Resource annotationResource;
+		int start, end;
+		Set<String> entityUris;
+		double confidence;
+		NodeIterator nodeIter;
+		while (resIter.hasNext()) {
+			annotationResource = resIter.next();
+			start = end = -1;
+			nodeIter = nifModel.listObjectsOfProperty(annotationResource, NIF.beginIndex);
+			if (nodeIter.hasNext()) {
+				start = nodeIter.next().asLiteral().getInt();
+			}
+			nodeIter = nifModel.listObjectsOfProperty(annotationResource, NIF.endIndex);
+			if (nodeIter.hasNext()) {
+				end = nodeIter.next().asLiteral().getInt();
+			}
+			if ((start >= 0) && (end >= 0)) {
+				nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taIdentRef);
+				if (nodeIter.hasNext()) {
+					entityUris = new HashSet<String>();
+					while (nodeIter.hasNext()) {
+						entityUris.add(nodeIter.next().toString());
+					}
+					nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taClassRef);
+					if (nodeIter.hasNext()) {
+						Set<String> types = new HashSet<String>();
+						while (nodeIter.hasNext()) {
+							types.add(nodeIter.next().toString());
+						}
+						nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasCheckResult);
+						if (nodeIter.hasNext()) {
+							Check result = parseCheckResult(nodeIter.next().asResource());
+							markings.add(new NamedEntityCorrections(start, end - start, entityUris, result));
+						} else {
+							// It has been typed without a confidence
+							markings.add(addTypeInformation(new TypedNamedEntity(start, end - start, entityUris, types),
+									nifModel));
+						}
 
-        NodeIterator annotationIter = nifModel.listObjectsOfProperty(documentResource, NIF.topic);
-        while (annotationIter.hasNext()) {
-            annotationResource = annotationIter.next().asResource();
-            nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taIdentRef);
-            if (nodeIter.hasNext()) {
-                entityUris = new HashSet<String>();
-                while (nodeIter.hasNext()) {
-                    entityUris.add(nodeIter.next().toString());
-                }
-                nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taConfidence);
-                if (nodeIter.hasNext()) {
-                    confidence = nodeIter.next().asLiteral().getDouble();
-                    markings.add(new ScoredAnnotation(entityUris, confidence));
-                } else {
-                    markings.add(new Annotation(entityUris));
-                }
-            }
-        }
-    }
+						nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.isNamedEntity);
+						if (nodeIter.hasNext()) {
+							boolean namedentity = parseEntityResult(nodeIter.next().asResource());
+							markings.add(new EntityCheck(start, end - start, entityUris, namedentity));
+						} else {
 
-    private Check parseCheckResult(Resource resource) {
-        if (EAGLET.Inserted.equals(resource)) {
-            return Check.INSERTED;
-        } else if (EAGLET.Deleted.equals(resource)) {
-            return Check.DELETED;
-        } else if (EAGLET.Good.equals(resource)) {
-            return Check.GOOD;
-        } else if (EAGLET.NeedToPair.equals(resource)) {
-            return Check.NEED_TO_PAIR;
-        } else if (EAGLET.Overlaps.equals(resource)) {
-            return Check.OVERLAPS;
-        } else if (EAGLET.Completed.equals(resource)) {
-            return Check.COMPLETED;
-        } else if (EAGLET.InvalidUri.equals(resource)) {
-            return Check.INVALID_URI;
-        } else if (EAGLET.OutdatedUri.equals(resource)) {
-            return Check.OUTDATED_URI;
-        } else if (EAGLET.DisambiguationUri.equals(resource)) {
-            return Check.DISAMBIG_URI;
-        } else {
-            LOGGER.error("Got an unknown matching type: " + resource);
-            return null;
-        }
-    }
+							markings.add(addTypeInformation(new TypedNamedEntity(start, end - start, entityUris, types),
+									nifModel));
+						}
+					} else {
+						nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taConfidence);
+						if (nodeIter.hasNext()) {
+							confidence = nodeIter.next().asLiteral().getDouble();
+							markings.add(addTypeInformationIfPossible(
+									new ScoredNamedEntity(start, end - start, entityUris, confidence), nifModel));
+						} else {
+							// It has been disambiguated without a confidence
+							markings.add(addTypeInformationIfPossible(new NamedEntity(start, end - start, entityUris),
+									nifModel));
+						}
+					}
+				} else {
+					// It is a named entity that hasn't been disambiguated
+					markings.add(new SpanImpl(start, end - start));
+				}
+				// FIXME scored Span is missing
+			} else {
+				LOGGER.warn("Found an annotation resource (\"" + annotationResource.getURI()
+						+ "\") without a start or end index. This annotation will be ignored.");
+			}
+			if (removeUsedProperties) {
+				nifModel.removeAll(annotationResource, null, null);
+			}
+		}
 
-    private MeaningSpan addTypeInformationIfPossible(NamedEntity ne, Model nifModel) {
-        TypedNamedEntity typedNE = new TypedNamedEntity(ne.getStartPosition(), ne.getLength(), ne.getUris(),
-                new HashSet<String>());
-        addTypeInformation(typedNE, nifModel);
-        if (typedNE.getTypes().size() > 0) {
-            return typedNE;
-        } else {
-            return ne;
-        }
-    }
+		NodeIterator annotationIter = nifModel.listObjectsOfProperty(documentResource, NIF.topic);
+		while (annotationIter.hasNext()) {
+			annotationResource = annotationIter.next().asResource();
+			nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taIdentRef);
+			if (nodeIter.hasNext()) {
+				entityUris = new HashSet<String>();
+				while (nodeIter.hasNext()) {
+					entityUris.add(nodeIter.next().toString());
+				}
+				nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taConfidence);
+				if (nodeIter.hasNext()) {
+					confidence = nodeIter.next().asLiteral().getDouble();
+					markings.add(new ScoredAnnotation(entityUris, confidence));
+				} else {
+					markings.add(new Annotation(entityUris));
+				}
+			}
+		}
+	}
 
-    private MeaningSpan addTypeInformationIfPossible(ScoredNamedEntity ne, Model nifModel) {
-        ScoredTypedNamedEntity typedNE = new ScoredTypedNamedEntity(ne.getStartPosition(), ne.getLength(), ne.getUris(),
-                new HashSet<String>(), ne.getConfidence());
-        addTypeInformation(typedNE, nifModel);
-        if (typedNE.getTypes().size() > 0) {
-            return typedNE;
-        } else {
-            return ne;
-        }
-    }
+	private Check parseCheckResult(Resource resource) {
+		if (EAGLET.Inserted.equals(resource)) {
+			return Check.INSERTED;
+		} else if (EAGLET.Deleted.equals(resource)) {
+			return Check.DELETED;
+		} else if (EAGLET.Good.equals(resource)) {
+			return Check.GOOD;
+		} else if (EAGLET.NeedToPair.equals(resource)) {
+			return Check.NEED_TO_PAIR;
+		} else if (EAGLET.Overlaps.equals(resource)) {
+			return Check.OVERLAPS;
+		} else if (EAGLET.Completed.equals(resource)) {
+			return Check.COMPLETED;
+		} else if (EAGLET.InvalidUri.equals(resource)) {
+			return Check.INVALID_URI;
+		} else if (EAGLET.OutdatedUri.equals(resource)) {
+			return Check.OUTDATED_URI;
+		} else if (EAGLET.DisambiguationUri.equals(resource)) {
+			return Check.DISAMBIG_URI;
+		} else {
+			LOGGER.error("Got an unknown matching type: " + resource);
+			return null;
+		}
+	}
 
-    private TypedNamedEntity addTypeInformation(TypedNamedEntity typedNE, Model nifModel) {
-        for (String uri : typedNE.getUris()) {
-            NodeIterator nodeIter = nifModel.listObjectsOfProperty(nifModel.getResource(uri), RDF.type);
-            Set<String> types = typedNE.getTypes();
-            while (nodeIter.hasNext()) {
-                types.add(nodeIter.next().asResource().getURI());
-            }
-        }
-        return typedNE;
-    }
+	private boolean parseEntityResult(Resource resource) {
+		if (EAGLET.isNamedEntity.equals(resource)) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	private MeaningSpan addTypeInformationIfPossible(NamedEntity ne, Model nifModel) {
+		TypedNamedEntity typedNE = new TypedNamedEntity(ne.getStartPosition(), ne.getLength(), ne.getUris(),
+				new HashSet<String>());
+		addTypeInformation(typedNE, nifModel);
+		if (typedNE.getTypes().size() > 0) {
+			return typedNE;
+		} else {
+			return ne;
+		}
+	}
+
+	private MeaningSpan addTypeInformationIfPossible(ScoredNamedEntity ne, Model nifModel) {
+		ScoredTypedNamedEntity typedNE = new ScoredTypedNamedEntity(ne.getStartPosition(), ne.getLength(), ne.getUris(),
+				new HashSet<String>(), ne.getConfidence());
+		addTypeInformation(typedNE, nifModel);
+		if (typedNE.getTypes().size() > 0) {
+			return typedNE;
+		} else {
+			return ne;
+		}
+	}
+
+	private TypedNamedEntity addTypeInformation(TypedNamedEntity typedNE, Model nifModel) {
+		for (String uri : typedNE.getUris()) {
+			NodeIterator nodeIter = nifModel.listObjectsOfProperty(nifModel.getResource(uri), RDF.type);
+			Set<String> types = typedNE.getTypes();
+			while (nodeIter.hasNext()) {
+				types.add(nodeIter.next().asResource().getURI());
+			}
+		}
+		return typedNE;
+	}
 }

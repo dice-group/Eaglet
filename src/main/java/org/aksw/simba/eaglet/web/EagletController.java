@@ -11,20 +11,20 @@ import java.util.List;
 import java.util.Set;
 
 import org.aksw.gerbil.io.nif.DocumentListParser;
+import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.DocumentParser;
-import org.aksw.gerbil.io.nif.NIFWriter;
-import org.aksw.gerbil.io.nif.impl.TurtleNIFWriter;
+import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
-import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
 import org.aksw.simba.eaglet.entitytypemodify.EntityCheck;
 import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
+import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 @Controller
 public class EagletController {
@@ -156,19 +157,46 @@ public class EagletController {
 		if (result != null) {
 			String name = result.getDocumentURI().replaceAll("http://", "");
 			name = name.replaceAll("/", "-");
+			name = name.replaceAll(".tar.gz", "");
 			filename = "result-" + userId + "-" + name;
 		}
 		Document newdoc = new DocumentImpl(result.getText(), result.getDocumentURI(), changes);
-		FileOutputStream fout = new FileOutputStream("eaglet_data/result_user/" + filename + "-nif.ttl");
+		// FileOutputStream fout = new
+		// FileOutputStream("eaglet_data/result_user/" + filename + "-nif.ttl");
 		// serialize the document into a file
-		NIFWriter nif = new TurtleNIFWriter();
-		nif.writeNIF(Arrays.asList(newdoc), fout);
-		fout.close();
+		Model nifModel = generateModifiedModel(newdoc);
 
+		File resultfile = new File("eaglet_data/result_user/" + filename + "-nif.ttl");
+		if (!resultfile.exists()) {
+			resultfile.getParentFile().mkdirs();
+			resultfile.createNewFile();
+		}
+		FileOutputStream fout = new FileOutputStream(resultfile);
+		fout.flush();
+		nifModel.write(fout, "TTL");
+		fout.close();
 		// store the user ID - file name - document URI triple into the
 		// database
 		database.addDocument(userId, document, filename);
 		return "redirect:next?username=" + userName;
+	}
+
+	public static Model generateModifiedModel(Document document) {
+		Model nifModel = ModelFactory.createDefaultModel();
+		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+		DocumentListWriter writer = new DocumentListWriter();
+		writer.writeDocumentsToModel(nifModel, Arrays.asList(document));
+		Resource annotationResource;
+		NamedEntityCorrections partner;
+		for (EntityCheck correction : document.getMarkings(EntityCheck.class)) {
+			annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
+					correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
+			nifModel.add(annotationResource, EAGLET.isNamedEntity, EAGLET.getNamedResult(correction.isNamedEntity()));
+
+		}
+
+		return nifModel;
+
 	}
 
 	protected static List<Document> loadDocuments() {
