@@ -59,6 +59,7 @@ public class EAGLET {
 
     public static final Property hasCheckResult = property("hasCheckResult");
     public static final Property hasPairPartner = property("hasPairPartner");
+    public static final Property isNamedEntity = property("isNamedEntity");
 
     public static Resource getCheckResult(Check checkResult) {
         switch (checkResult) {

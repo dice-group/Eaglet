@@ -10,7 +10,46 @@ $(document).ready(function() {
 
 var counter = 1;
 var documentUri;
+var documentText;
 var loginName;
+
+function updateText() {
+	clearText();
+	printText();
+}
+
+function clearText() {
+	$("#sidebar-content").html("");
+}
+
+function printText() {
+	var markedChars = new BitSet;
+	// collect all marked characters
+	$('.innerContainer .marking').each(function() {
+		var start = parseInt($('.start', this).text());
+		var length = parseInt($('.length', this).text());
+		markedChars.setRange(start,(start + length) - 1);
+	});
+	var lastPos = 0;
+	var oldValue = 0;
+	var value;
+	var markedText = "";
+	for (i = 0; i < documentText.length; i++) { 
+		value = markedChars.get(i);
+		if(value != oldValue) {
+			markedText += documentText.slice(lastPos, i);
+			if(oldValue == 0) {
+				markedText += '<span style="font-size:14px; color:#538b01; font-weight:bold; font-style:italic;">';
+			} else {
+				markedText += '</span>';
+			}
+			lastPos = i;
+		}
+		oldValue = value;
+	}
+	markedText += documentText.slice(lastPos);
+	$("#sidebar-content").html(markedText);
+}
 
 function printEntity(name, start, length, checkResult, uri) {
 	var content = '<div " id="' + counter + '" class="marking"><ul>';
@@ -41,33 +80,18 @@ function printEntity(name, start, length, checkResult, uri) {
 }
 
 function printDocument(data) {
-	text = data.text[0];
+	documentText = data.text[0];
 	documentUri = data.uri[0];
 
 	markings = data.markings[0];
 	var lastpos = 0;
 	var text_content = '';
-	// loop for all the markings and call
-	// mark function
-	$
-			.each(
-					markings,
-					function(i, v) {
-						var startpos = parseInt(v.start);
-						var length = parseInt(v.length);
-						var entity = text.slice(startpos, startpos + length);
-						var rem_text = text.slice(lastpos, startpos);
-						text_content += rem_text
-								+ '<span style="font-size:14px; color:#538b01; font-weight:bold; font-style:italic;">'
-								+ entity + '</span>';
-						lastpos = startpos + length;
-					});
-	text_content += text.slice(lastpos, text.length);
-	$("#sidebar-content").html(text_content);
-	$("#markings-list").html('<div id="marking"></div>');
+	//
+	$("#markings-list").html('');
 	$.each(markings, function(i, v) {
 		printEntity(v.name, v.start, v.length, v.result, v.uris);
 	});
+	updateText();
 
 	// make the URIs editable
 	$("span.uri").each(function() {
@@ -130,7 +154,10 @@ function senddata() {
 }
 
 function removeelement(divid) {
-	$('#' + divid).remove();
+	var div = $('#' + divid);
+	div.next('hr').remove();
+	div.remove();
+	updateText();
 };
 function edittext(divid) {
 
@@ -184,5 +211,6 @@ Selector.mouseup = function() {
 	if (st != '') {
 		printEntity(st, selection.start, (selection.end - selection.start),
 				null, null);
+		updateText();
 	}
 };
