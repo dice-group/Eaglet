@@ -17,5 +17,15 @@ public class EntityCheck  extends NamedEntity {
 		// TODO Auto-generated constructor stub
 		this.isNamedEntity= value;
 	}
-
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		return true;
+	}
 }

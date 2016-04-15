@@ -5,42 +5,27 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.RootPaneContainer;
-
 import org.aksw.gerbil.annotator.Annotator;
 import org.aksw.gerbil.annotator.AnnotatorConfiguration;
 import org.aksw.gerbil.dataset.Dataset;
 import org.aksw.gerbil.dataset.DatasetConfiguration;
 import org.aksw.gerbil.datatypes.AbstractAdapterConfiguration;
-import org.aksw.gerbil.datatypes.AdapterConfiguration;
 import org.aksw.gerbil.datatypes.ExperimentTaskConfiguration;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.datatypes.marking.ClassifiedSpanMeaning;
-import org.aksw.gerbil.datatypes.marking.MarkingClasses;
 import org.aksw.gerbil.evaluate.Evaluator;
 import org.aksw.gerbil.evaluate.EvaluatorFactory;
 import org.aksw.gerbil.evaluate.SubTaskEvaluator;
-import org.aksw.gerbil.evaluate.impl.ClassConsideringFMeasureCalculator;
-import org.aksw.gerbil.evaluate.impl.ClassifyingEvaluatorDecorator;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentParser;
 import org.aksw.gerbil.matching.Matching;
 import org.aksw.gerbil.matching.MatchingsSearcher;
 import org.aksw.gerbil.matching.MatchingsSearcherFactory;
-import org.aksw.gerbil.matching.impl.ClassifiedMeaningMatchingsSearcher;
-import org.aksw.gerbil.matching.impl.CompoundMatchingsSearcher;
-import org.aksw.gerbil.matching.impl.MatchingsCounterImpl;
-import org.aksw.gerbil.matching.impl.clas.EmergingEntityMeaningClassifier;
-import org.aksw.gerbil.matching.impl.clas.UriBasedMeaningClassifier;
 import org.aksw.gerbil.transfer.nif.Document;
-import org.aksw.gerbil.transfer.nif.Marking;
-import org.aksw.gerbil.transfer.nif.MeaningSpan;
 import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
-import org.aksw.gerbil.web.config.RootConfig;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.entitytypemodify.EntityCheck;
-import org.apache.commons.configuration.AbstractConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,14 +95,19 @@ public class InterRaterAgreement {
 
             MatchingsSearcher<ClassifiedSpanMeaning> searcher = (MatchingsSearcher<ClassifiedSpanMeaning>) MatchingsSearcherFactory
                     .createSpanMatchingsSearcher(Matching.STRONG_ANNOTATION_MATCH);
-//            evaluators.add(new ClassifyingEvaluatorDecorator<MeaningSpan, ClassifiedSpanMeaning>(
-//                    new ClassConsideringFMeasureCalculator<ClassifiedSpanMeaning>(
-//                            new MatchingsCounterImpl<ClassifiedSpanMeaning>(
-//                                    new CompoundMatchingsSearcher<ClassifiedSpanMeaning>(searcher,
-//                                            new ClassifiedMeaningMatchingsSearcher<ClassifiedSpanMeaning>())),
-//                            MarkingClasses.IN_KB, MarkingClasses.EE, MarkingClasses.GS_IN_KB),
-//                    new UriBasedMeaningClassifier<ClassifiedSpanMeaning>(this.globalClassifier, MarkingClasses.IN_KB),
-//                    new EmergingEntityMeaningClassifier<ClassifiedSpanMeaning>()));
+            // evaluators.add(new ClassifyingEvaluatorDecorator<MeaningSpan,
+            // ClassifiedSpanMeaning>(
+            // new ClassConsideringFMeasureCalculator<ClassifiedSpanMeaning>(
+            // new MatchingsCounterImpl<ClassifiedSpanMeaning>(
+            // new CompoundMatchingsSearcher<ClassifiedSpanMeaning>(searcher,
+            // new
+            // ClassifiedMeaningMatchingsSearcher<ClassifiedSpanMeaning>())),
+            // MarkingClasses.IN_KB, MarkingClasses.EE,
+            // MarkingClasses.GS_IN_KB),
+            // new
+            // UriBasedMeaningClassifier<ClassifiedSpanMeaning>(this.globalClassifier,
+            // MarkingClasses.IN_KB),
+            // new EmergingEntityMeaningClassifier<ClassifiedSpanMeaning>()));
 
             ExperimentTaskConfiguration subTaskConfig;
             subTaskConfig = new ExperimentTaskConfiguration(new ConfigurationImpl(name1, false, ExperimentType.ERec),
