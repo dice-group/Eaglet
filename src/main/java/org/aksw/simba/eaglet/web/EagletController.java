@@ -202,6 +202,7 @@ public class EagletController {
 
     protected static List<Document> loadDocuments() {
         List<Document> loadedDocuments = new ArrayList<Document>();
+        DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
         for (int i = 0; i < DATASET_FILES.length; ++i) {
             try {
                 Model nifModel = ModelFactory.createDefaultModel();
@@ -209,14 +210,7 @@ public class EagletController {
                 FileInputStream fin = new FileInputStream(new File(DATASET_FILES[i]));
                 nifModel.read(fin, "", "TTL");
                 fin.close();
-                DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
-                List<Document> documents = parser.parseDocuments(nifModel);
-                for (Document document : documents) {
-                    loadedDocuments.add(new DocumentImpl(document.getText(), document.getDocumentURI(),
-                            EntityTypeChange.changeType(document)));
-                }
-
-                // loadedDocuments.addAll(CheckerPipeline.readDocuments(DATASET_FILES[i]));
+                loadedDocuments.addAll(parser.parseDocuments(nifModel));
             } catch (Exception e) {
                 LOGGER.error("Couldn't load the dataset!", e);
             }
