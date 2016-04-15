@@ -191,6 +191,7 @@ public class EagletController {
         for (EntityCheck correction : document.getMarkings(EntityCheck.class)) {
             annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
                     correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
+            System.out.println(correction.getUris().toString() + " -> " + correction.isNamedEntity());
             nifModel.add(annotationResource, EAGLET.isNamedEntity,
                     nifModel.createTypedLiteral(correction.isNamedEntity()));
         }
