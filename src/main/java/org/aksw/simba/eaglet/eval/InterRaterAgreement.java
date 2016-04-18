@@ -50,7 +50,7 @@ public class InterRaterAgreement {
     private static final Logger LOGGER = LoggerFactory.getLogger(InterRaterAgreement.class);
 
     private static final int USER_IDS[] = new int[] { 1, 6 };
-    private static final String USER_OUTPUT_FOLDER = "eaglet_data/result_user";
+    private static final String USER_OUTPUT_FOLDER = "eaglet_data/result_user/KORE50";
 
     public static void main(String[] args) {
         InterRaterAgreement raterAgreement = new InterRaterAgreement();
@@ -124,7 +124,7 @@ public class InterRaterAgreement {
         return uris;
     }
 
-    protected List<List<Document>> loadDocuments(int userIds[], File userOutputFolder) {
+    protected static List<List<Document>> loadDocuments(int userIds[], File userOutputFolder) {
         List<List<Document>> loadedDocuments = new ArrayList<List<Document>>();
         List<Document> userDocuments = null;
         String expectedPrefix;
