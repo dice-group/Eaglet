@@ -3,10 +3,9 @@
   <groupId>org.aksw</groupId>
   <artifactId>gerbil</artifactId>
   <versioning>
-    <release>1.2.2</release>
     <versions>
-      <version>1.2.2</version>
+      <version>1.2.3-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20160311151343</lastUpdated>
+    <lastUpdated>20160419103550</lastUpdated>
   </versioning>
 </metadata>
