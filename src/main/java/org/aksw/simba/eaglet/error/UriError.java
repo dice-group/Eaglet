@@ -56,15 +56,15 @@ public class UriError implements ErrorChecker, Closeable {
         uriChecker.registerUriChecker("http://de.dbpedia.org/resource",
                 new UriCheckerWrappingDBpediaWikipediaBridge(wikiBasedChecker));
 
-        uriChecker.registerUriChecker("http://en.wikipedia.org/wiki", wikiBasedChecker);
         uriChecker.registerUriChecker("http://en.wikipedia.org/wiki",
                 new UriCheckerWrappingDBpediaWikipediaBridge(httpBasedChecker));
-        uriChecker.registerUriChecker("http://fr.wikipedia.org/wiki", wikiBasedChecker);
+        uriChecker.registerUriChecker("http://en.wikipedia.org/wiki", wikiBasedChecker);
         uriChecker.registerUriChecker("http://fr.wikipedia.org/wiki",
                 new UriCheckerWrappingDBpediaWikipediaBridge(httpBasedChecker));
-        uriChecker.registerUriChecker("http://de.wikipedia.org/wiki", wikiBasedChecker);
+        uriChecker.registerUriChecker("http://fr.wikipedia.org/wiki", wikiBasedChecker);
         uriChecker.registerUriChecker("http://de.wikipedia.org/wiki",
                 new UriCheckerWrappingDBpediaWikipediaBridge(httpBasedChecker));
+        uriChecker.registerUriChecker("http://de.wikipedia.org/wiki", wikiBasedChecker);
     }
 
     @Override
