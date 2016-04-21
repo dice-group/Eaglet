@@ -48,15 +48,17 @@ public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/kore50-nif-result-nif.ttl" };
-
+	private static final String DATASET_FILES[] = new String[] {
+			"eaglet_data/result_pipe/DBpediaSpotlight-result-nif.ttl" };
+	
 	@Autowired
 	private EagletDatabaseStatements database;
 
 	private List<Document> documents;
-
+int counter;
 	public EagletController() {
 		this.documents = loadDocuments();
+		this.counter=0;
 	}
 
 	public EagletController(List<Document> documents) {
@@ -116,7 +118,8 @@ public class EagletController {
 			ne.append("result", nec.getResult());
 			ne.append("doc", nec.getDoc());
 			ne.append("uris", nec.getUris());
-			ne.append("name", document.getText().substring(nec.getStartPosition(),nec.getStartPosition()+nec.getLength()).toUpperCase());
+			ne.append("name", document.getText()
+					.substring(nec.getStartPosition(), nec.getStartPosition() + nec.getLength()).toUpperCase());
 			array.put(ne);
 		}
 		doc.append("markings", array);
@@ -155,18 +158,21 @@ public class EagletController {
 
 		}
 		if (result != null) {
-			String name = result.getDocumentURI().replaceAll("http://", "");
-			name = name.replaceAll("/", "-");
-			name = name.replaceAll(".tar.gz", "");
-			filename = "result-" + userId + "-" + name;
+String name = result.getDocumentURI().replaceAll("http://", "");
+	name = name.replaceAll("/", "_");
+			//name = name.replaceAll(".tar.gz", "");
+	filename = "result-" + name + userName ;
+			filename=name.substring(0, 20);
+			counter++;
 		}
+		
 		Document newdoc = new DocumentImpl(result.getText(), result.getDocumentURI(), changes);
 		// FileOutputStream fout = new
 		// FileOutputStream("eaglet_data/result_user/" + filename + "-nif.ttl");
 		// serialize the document into a file
 		Model nifModel = generateModifiedModel(newdoc);
 
-		File resultfile = new File("eaglet_data/result_user/" + filename + "-nif.ttl");
+		File resultfile = new File("eaglet_data/result_user/"+ filename+"_"+ counter + "-nif.ttl");
 		if (!resultfile.exists()) {
 			resultfile.getParentFile().mkdirs();
 			resultfile.createNewFile();

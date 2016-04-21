@@ -51,7 +51,6 @@ public class ClassifyingEvaluatorDecorator
         this.classifiers = classifiers;
     }
 
-    @Override
     protected List<ClassifiedEntityCheck> changeType(List<EntityCheck> markings) {
         List<ClassifiedEntityCheck> classifiedMarkings = new ArrayList<ClassifiedEntityCheck>(markings.size());
         ClassifiedEntityCheck classifiedMarking;

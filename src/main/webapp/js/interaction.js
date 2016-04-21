@@ -138,7 +138,7 @@ function senddata() {
 		attributes["length"] = $('.length', this).text();
 		attributes["start"] = $('.start', this).text();
 		attributes["uri"] = $('.uri', this).text();
-		attributes["checkentity"] = $("input[name='NamedEntity']:checked",$('.innerContainer .marking')[0]).val();
+		attributes["checkentity"] = $("input[name='NamedEntity']:checked",this).val();
 		marking_list.push(attributes);
 	});
 	$.ajax({
