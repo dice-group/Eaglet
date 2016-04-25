@@ -23,6 +23,7 @@ import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.aksw.simba.eaglet.error.LongDescriptionError;
 import org.aksw.simba.eaglet.error.OverLappingError;
 import org.aksw.simba.eaglet.error.SubsetMarkingError;
+import org.aksw.simba.eaglet.eval.CountChanges;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -64,9 +65,10 @@ public class CheckerPipeline {
 		for (ErrorChecker checker : checkers) {
 			checker.check(documents);
 		}
-
+		
+		CountChanges.countchanges(documents);
 		// write documents
-		Model nifModel = generateModel(documents);
+/*		Model nifModel = generateModel(documents);
 
 		File resultfile = new File("eaglet_data/result_pipe/" + name + "-result-nif.ttl");
 
@@ -78,7 +80,7 @@ public class CheckerPipeline {
 		fout.flush();
 		nifModel.write(fout, "TTL");
 		fout.close();
-		LOGGER.info("PIPELINE RESULTS GENERATED");
+		LOGGER.info("PIPELINE RESULTS GENERATED");*/
 	}
 
 	public static Model generateModel(List<Document> documents) {
