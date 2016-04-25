@@ -48,9 +48,14 @@ public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
+
 	private static final String DATASET_FILES[] = new String[] {
 			"eaglet_data/result_pipe/DBpediaSpotlight-result-nif.ttl" };
-	
+
+//	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/kore50-nif-result-nif.ttl" };
+ //   private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_user/KORE50/mergedCorpus.ttl" };
+
+
 	@Autowired
 	private EagletDatabaseStatements database;
 
@@ -122,6 +127,16 @@ int counter;
 					.substring(nec.getStartPosition(), nec.getStartPosition() + nec.getLength()).toUpperCase());
 			array.put(ne);
 		}
+        List<EntityCheck> ecs = document.getMarkings(EntityCheck.class);
+        ecs.sort(new StartPosBasedComparator());
+        for (EntityCheck nec : ecs) {
+            ne = new JSONObject();
+            ne.append("start", nec.getStartPosition());
+            ne.append("length", nec.getLength());
+            ne.append("uris", nec.getUris());
+            ne.append("name", document.getText().substring(nec.getStartPosition(),nec.getStartPosition()+nec.getLength()).toUpperCase());
+            array.put(ne);
+        }
 		doc.append("markings", array);
 		return doc.toString();
 	}
@@ -200,9 +215,7 @@ String name = result.getDocumentURI().replaceAll("http://", "");
 			nifModel.add(annotationResource, EAGLET.isNamedEntity,
 					nifModel.createTypedLiteral(correction.isNamedEntity()));
 		}
-
 		return nifModel;
-
 	}
 
 	protected static List<Document> loadDocuments() {

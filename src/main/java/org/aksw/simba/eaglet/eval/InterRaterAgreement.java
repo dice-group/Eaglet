@@ -151,7 +151,7 @@ public class InterRaterAgreement {
         return loadedDocuments;
     }
 
-    protected void printResult(EvaluationResult result) {
+    public static void printResult(EvaluationResult result) {
         if (result instanceof EvaluationResultContainer) {
             System.out.println("--- container start ---");
             for (EvaluationResult singleResult : ((EvaluationResultContainer) result).getResults()) {

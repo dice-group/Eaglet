@@ -27,8 +27,8 @@ public class MergeResults {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeResults.class);
 
-    private static final int USER_IDS[] = new int[] { 1, 6 };
-    private static final String USER_OUTPUT_FOLDER = "eaglet_data/result_user/KORE50";
+    private static final int USER_IDS[] = new int[] { 1, 6, 8 };
+    private static final String USER_OUTPUT_FOLDER = "eaglet_data/result_user/KORE50/final";
 
     public static void main(String[] args) {
         MergeResults merger = new MergeResults();
@@ -52,7 +52,7 @@ public class MergeResults {
         FileOutputStream fout = null;
         try {
             fout = new FileOutputStream(userOutputFolder.getAbsolutePath() + File.separator + "mergedCorpus.ttl");
-            nifModel.write(fout);
+            nifModel.write(fout, "TURTLE");
         } catch (Exception e) {
             LOGGER.error("Couldn't write result file.", e);
         } finally {
@@ -72,7 +72,7 @@ public class MergeResults {
     }
 
     protected static List<Map<String, Document>> loadDocuments(int[] userIds, File userOutputFolder) {
-        List<List<Document>> documents = InterRaterAgreement.loadDocuments(USER_IDS, userOutputFolder);
+        List<List<Document>> documents = InterRaterAgreement.loadDocuments(userIds, userOutputFolder);
         List<Map<String, Document>> documentsPerUser = new ArrayList<Map<String, Document>>(documents.size());
         Map<String, Document> indexedDocuments;
         for (List<Document> userDocuments : documents) {
