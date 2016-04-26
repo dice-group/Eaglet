@@ -32,8 +32,7 @@ public class InputforPipeline {
             Dataset dataset = datasetConfig.getDataset(ExperimentType.A2KB);
             List<Document> documents = dataset.getInstances();
             PrePipeProcessor(documents);
-            // name = name.substring(name.lastIndexOf('/'));
-            // name = name.replaceAll(".ttl", "");
+          
             callPipe(documents, dataset.getName());
         }
 
