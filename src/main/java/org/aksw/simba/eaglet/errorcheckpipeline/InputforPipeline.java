@@ -21,6 +21,7 @@ public class InputforPipeline {
 		//List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
 		MSNBCDataset dataset = new MSNBCDataset("eaglet_data/gerbil_data/datasets/MSNBC/RawTextsSimpleChars_utf8",
                 "eaglet_data/gerbil_data/datasets/MSNBC/Problems");
+		dataset.init();
 		List<Document> documents=dataset.getInstances();
 		PrePipeProcessor(documents);
 		//name = name.substring(name.lastIndexOf('/'));
