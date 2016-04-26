@@ -59,7 +59,7 @@ public class ErraticEntityError implements ErrorChecker {
                         NamedEntitySurfaceForm surfaceformvar = current_list.get(j);
                         k = 0;
                         // check whether the complete surface form is matching
-                        while ((k < surfaceformvar.surfaceForm.length)
+                        while ((k < surfaceformvar.surfaceForm.length) && ((i + k) < tokens.size())
                                 && surfaceformvar.surfaceForm[k].equals(tokens.get(i + k).lemma())) {
                             ++k;
                         }
@@ -175,7 +175,10 @@ public class ErraticEntityError implements ErrorChecker {
         @SuppressWarnings("unchecked")
         List<CoreLabel> entityTokens[] = new List[entities.size()];
         for (CoreLabel token : tokens) {
-            if (nePositions.get(token.beginPosition(), token.endPosition() - 1).cardinality() > 0) {
+            if (token.toString().startsWith("3")) {
+                System.out.println("STOP!");
+            }
+            if (nePositions.get(token.beginPosition(), token.endPosition()).cardinality() > 0) {
                 // search for matching named entities
                 int pos = 0;
                 while ((pos < start.length) && (start[pos] <= token.endPosition())) {
