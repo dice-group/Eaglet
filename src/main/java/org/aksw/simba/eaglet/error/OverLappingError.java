@@ -27,23 +27,18 @@ public class OverLappingError implements ErrorChecker {
 
 		LOGGER.info(" OVERLAPPING ENTITY MODULE RUNNING");
 		for (Document doc : documents) {
-			
+
 			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			Collections.sort(entities, new StartPosBasedComparator());
 			for (int i = 0; i < entities.size() - 1; i++) {
-				if (entities.get(i).getResult().equals(Check.GOOD)
-						|| (entities.get(i).getResult().equals(Check.INSERTED))) {
+				if (entities.get(i).getResult().equals(Check.GOOD)) {
 
 					if ((entities.get(i).getStartPosition() + entities.get(i).getLength()) >= entities.get(i + 1)
 							.getStartPosition()) {
 
-						
-							entities.get(i).setResult(Check.OVERLAPS);
+						entities.get(i).setResult(Check.OVERLAPS);
 
-							entities.get(i).setPartner(entities.get(i + 1));
-						
-
-						
+						entities.get(i).setPartner(entities.get(i + 1));
 
 					}
 				}

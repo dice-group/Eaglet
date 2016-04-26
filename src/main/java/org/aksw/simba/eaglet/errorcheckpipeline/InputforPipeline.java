@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.aksw.gerbil.dataset.DatasetConfiguration;
+import org.aksw.gerbil.dataset.impl.msnbc.MSNBCDataset;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
@@ -13,16 +14,18 @@ import org.aksw.simba.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
 
 public class InputforPipeline {
-	private String name = "eaglet_data/gerbil_data/datasets/KORE50/kore50-nif.ttl";
-	private DatasetConfiguration DATASET = new NIFFileDatasetConfig("KORE50", name, false, ExperimentType.A2KB);
+	//private String name = "eaglet_data/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl";
+	//private DatasetConfiguration DATASET = new NIFFileDatasetConfig("KORE50", name, false, ExperimentType.A2KB);
 
 	public InputforPipeline() throws GerbilException, IOException {
-		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
-
+		//List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
+		MSNBCDataset dataset = new MSNBCDataset("eaglet_data/gerbil_data/datasets/MSNBC/RawTextsSimpleChars_utf8",
+                "eaglet_data/gerbil_data/datasets/MSNBC/Problems");
+		List<Document> documents=dataset.getInstances();
 		PrePipeProcessor(documents);
-		name = name.substring(name.lastIndexOf('/'));
-		name = name.replaceAll(".ttl", "");
-		callPipe(documents, name);
+		//name = name.substring(name.lastIndexOf('/'));
+		//name = name.replaceAll(".ttl", "");
+		callPipe(documents, "MSNBC");
 	}
 
 	public void PrePipeProcessor(List<Document> documents) throws GerbilException {
@@ -42,7 +45,7 @@ public class InputforPipeline {
 
 	public static void main(String[] args) throws GerbilException, IOException {
 		new InputforPipeline();
-		CheckerPipeline.callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
+		// CheckerPipeline.callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
 
 	}
 }

@@ -33,8 +33,7 @@ public class CombinedTaggingError implements ErrorChecker {
 			Collections.sort(entities, new StartPosBasedComparator());
 			if (entities.size() > 0) {
 				for (int i = 1; i < entities.size(); ++i) {
-					if (entities.get(i).getResult().equals(Check.GOOD)
-							|| (entities.get(i).getResult().equals(Check.INSERTED))) {
+					if (entities.get(i).getResult().equals(Check.GOOD)) {
 
 						String substring;
 						// make sure that the entities are not

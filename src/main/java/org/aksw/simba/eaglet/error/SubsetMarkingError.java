@@ -29,7 +29,7 @@ public class SubsetMarkingError implements ErrorChecker {
 			text = doc.getText();
 			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			for (NamedEntityCorrections entity : entities) {
-				if (entity.getResult().equals(Check.GOOD)|| (entity.getResult().equals(Check.INSERTED))) {
+				if (entity.getResult().equals(Check.GOOD)) {
 					if (entity.getStartPosition() > 0) {
 						if (!Character.isWhitespace(text.charAt(entity.getStartPosition() - 1))) {
 							entity.setResult(Check.DELETED);

@@ -19,6 +19,7 @@ import org.aksw.simba.eaglet.annotator.AnnotatorResult;
 import org.aksw.simba.eaglet.completion.MissingEntityCompletion;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.error.CombinedTaggingError;
+import org.aksw.simba.eaglet.error.ErraticEntityError;
 import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.aksw.simba.eaglet.error.LongDescriptionError;
 import org.aksw.simba.eaglet.error.OverLappingError;
@@ -45,18 +46,20 @@ public class CheckerPipeline {
 	}
 
 	public static void startPipe(List<Document> documents, String name) throws GerbilException, IOException {
-		List<A2KBAnnotator> annotators = callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
+		//List<A2KBAnnotator> annotators = callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
 
 		// prepare the pipeline
 
 		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
-		checkers.add(new MissingEntityCompletion(annotators));
-		checkers.add(new CombinedTaggingError());
+		//checkers.add(new MissingEntityCompletion(annotators));
 
-		checkers.add(new OverLappingError());
 		checkers.add(new LongDescriptionError());
-		checkers.add(new OverLappingError());
-		checkers.add(new SubsetMarkingError());
+//		checkers.add(new SubsetMarkingError());
+//		checkers.add(new ErraticEntityError());
+//		checkers.add(new OverLappingError());
+//		checkers.add(new CombinedTaggingError());
+
+
 
 		// TODO: Switch Case for both modules
 

@@ -46,7 +46,7 @@ public class LongDescriptionError implements ErrorChecker {
 			Collections.sort(entities, new StartPosBasedComparator());
 
 			for (NamedEntityCorrections entity : entities) {
-				if (entity.getResult().equals(Check.GOOD) || (entity.getResult().equals(Check.INSERTED))) {
+				if (entity.getResult().equals(Check.GOOD)) {
 					String entity_text = text.substring(entity.getStartPosition(),
 							entity.getLength() + entity.getStartPosition());
 					String[] arr = entity_text.split(" ");
