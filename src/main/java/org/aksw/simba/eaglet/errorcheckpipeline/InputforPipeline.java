@@ -3,6 +3,7 @@ package org.aksw.simba.eaglet.errorcheckpipeline;
 import java.io.IOException;
 import java.util.List;
 
+import org.aksw.gerbil.dataset.Dataset;
 import org.aksw.gerbil.dataset.DatasetConfiguration;
 import org.aksw.gerbil.dataset.impl.msnbc.MSNBCDataset;
 import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
@@ -10,43 +11,50 @@ import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
+import org.aksw.gerbil.web.config.AdapterList;
+import org.aksw.gerbil.web.config.AdapterManager;
+import org.aksw.gerbil.web.config.DatasetsConfig;
+import org.aksw.gerbil.web.config.RootConfig;
 import org.aksw.simba.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
 
 public class InputforPipeline {
-	//private String name = "eaglet_data/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl";
-	//private DatasetConfiguration DATASET = new NIFFileDatasetConfig("KORE50", name, false, ExperimentType.A2KB);
+    // private String name =
+    // "eaglet_data/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl";
+    // private DatasetConfiguration DATASET = new NIFFileDatasetConfig("KORE50",
+    // name, false, ExperimentType.A2KB);
 
-	public InputforPipeline() throws GerbilException, IOException {
-		//List<Document> documents = DATASET.getDataset(ExperimentType.A2KB).getInstances();
-		MSNBCDataset dataset = new MSNBCDataset("eaglet_data/gerbil_data/datasets/MSNBC/RawTextsSimpleChars_utf8",
-                "eaglet_data/gerbil_data/datasets/MSNBC/Problems");
-		dataset.init();
-		List<Document> documents=dataset.getInstances();
-		PrePipeProcessor(documents);
-		//name = name.substring(name.lastIndexOf('/'));
-		//name = name.replaceAll(".ttl", "");
-		callPipe(documents, "MSNBC");
-	}
+    public InputforPipeline() throws GerbilException, IOException {
+        AdapterList<DatasetConfiguration> datasetAdapters = DatasetsConfig.datasets(null, null);
+        List<DatasetConfiguration> datasetConfigs = datasetAdapters.getAdaptersForExperiment(ExperimentType.A2KB);
 
-	public void PrePipeProcessor(List<Document> documents) throws GerbilException {
+        for (DatasetConfiguration datasetConfig : datasetConfigs) {
+            Dataset dataset = datasetConfig.getDataset(ExperimentType.A2KB);
+            List<Document> documents = dataset.getInstances();
+            PrePipeProcessor(documents);
+            // name = name.substring(name.lastIndexOf('/'));
+            // name = name.replaceAll(".ttl", "");
+            callPipe(documents, dataset.getName());
+        }
 
-		for (Document doc : documents) {
-			List<Marking> list = EntityTypeChange.changeType(doc);
-			doc.setMarkings(list);
-		}
-		DocumentProcessor dp = new DocumentProcessor();
-		dp.process(documents);
+    }
 
-	}
+    public void PrePipeProcessor(List<Document> documents) throws GerbilException {
+        for (Document doc : documents) {
+            List<Marking> list = EntityTypeChange.changeType(doc);
+            doc.setMarkings(list);
+        }
+        DocumentProcessor dp = new DocumentProcessor();
+        dp.process(documents);
+    }
 
-	public void callPipe(List<Document> doc, String datasetname) throws GerbilException, IOException {
-		CheckerPipeline.startPipe(doc, datasetname);
-	}
+    public void callPipe(List<Document> doc, String datasetname) throws GerbilException, IOException {
+        CheckerPipeline.startPipe(doc, datasetname);
+    }
 
-	public static void main(String[] args) throws GerbilException, IOException {
-		new InputforPipeline();
-		// CheckerPipeline.callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
+    public static void main(String[] args) throws GerbilException, IOException {
+        new InputforPipeline();
+        // CheckerPipeline.callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
 
-	}
+    }
 }

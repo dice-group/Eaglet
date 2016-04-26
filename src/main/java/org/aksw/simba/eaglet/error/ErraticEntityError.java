@@ -175,12 +175,12 @@ public class ErraticEntityError implements ErrorChecker {
         @SuppressWarnings("unchecked")
         List<CoreLabel> entityTokens[] = new List[entities.size()];
         for (CoreLabel token : tokens) {
-            if (nePositions.get(token.beginPosition()) || nePositions.get(token.endPosition() - 1)) {
+            if (nePositions.get(token.beginPosition(), token.endPosition() - 1).cardinality() > 0) {
                 // search for matching named entities
                 int pos = 0;
                 while ((pos < start.length) && (start[pos] <= token.endPosition())) {
-                    // if the token and the
-                    if ((start[pos] <= token.beginPosition()) && (end[pos] >= token.endPosition())) {
+                    // if the token and the ne are overlapping
+                    if ((start[pos] < token.endPosition()) && (end[pos] > token.beginPosition())) {
                         // nes.get(pos) is the matching ne
                         // add the token to the list of tokens of ne
                         if (entityTokens[pos] == null) {
