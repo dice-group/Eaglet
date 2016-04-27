@@ -88,15 +88,12 @@ public class LongDescriptionError implements ErrorChecker {
 
 		for (CoreLabel token : tokens) {
 			// we can get the token that has been marked inside the text
-
+			// token.get(PartOfSpeechAnnotation.class).equals("VBP"))
 			// System.out.println(token.get(PartOfSpeechAnnotation.class));
 			// System.out.print(token.get(TextAnnotation.class));
 			// System.out.print("??????");
-			if ((token.get(PartOfSpeechAnnotation.class).equals("VBP"))
-					|| (token.get(PartOfSpeechAnnotation.class).equals("VBZ")
-							|| (token.get(PartOfSpeechAnnotation.class).equals("WDT"))
-							|| (token.get(PartOfSpeechAnnotation.class).equals("PRP"))
-							|| (token.get(PartOfSpeechAnnotation.class).equals("MD")))) {
+			if (((token.get(PartOfSpeechAnnotation.class).equals("WDT"))
+					|| (token.get(PartOfSpeechAnnotation.class).equals("MD")))) {
 				POS_Blacklist.add(token);
 
 			}
