@@ -59,15 +59,18 @@ public class WikipidiaUriChecker extends AbstractHttpRequestEmitter implements U
     @Override
     public Check checkUri(String uri) {
         if (uri == null) {
+			LOGGER.info("INVALID_URI \"{}\"", uri);
             return Check.INVALID_URI;
         }
         String title = WikipediaHelper.getWikipediaTitle(uri);
         if (title == null) {
+			LOGGER.info("INVALID_URI \"{}\"", uri);
             return Check.INVALID_URI;
         }
         String xml = queryRedirect(SimpleDomainExtractor.extractDomain(uri), title);
         String redirect = parser.extractRedirect(xml);
         if ((redirect != null) && (!title.equals(redirect))) {
+			LOGGER.info("OUTDATED_URI \"{}\"", uri);
             return Check.OUTDATED_URI;
         } else {
             return Check.GOOD;

@@ -69,6 +69,7 @@ public class HttpBasedUriChecker extends AbstractHttpRequestEmitter implements U
     @Override
     public Check checkUri(String uri) {
         if ((uri == null) || (uri.isEmpty())) {
+			LOGGER.info("INVALID_URI \"{}\"", uri);
             return Check.INVALID_URI;
         }
         Model model = null;
@@ -77,23 +78,28 @@ public class HttpBasedUriChecker extends AbstractHttpRequestEmitter implements U
         } catch (org.apache.jena.atlas.web.HttpException e) {
             LOGGER.debug("HTTP Exception while requesting uri \"{}\". Returning INVALID_URI. Exception: {}", uri,
                     e.getMessage());
+			LOGGER.info("INVALID_URI \"{}\" because model caused exception", uri);
             return Check.INVALID_URI;
         } catch (org.apache.jena.riot.RiotException e) {
             LOGGER.debug(
                     "Riot Exception while parsing requested model of uri \"{}\". Returning INVALID_URI. Exception: {}",
                     uri, e.getMessage());
+			LOGGER.info("INVALID_URI \"{}\" because model caused exception", uri);
             return Check.INVALID_URI;
         } catch (Exception e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exception while requesting uri \"" + uri + "\". Returning INVALID_URI.", e);
             }
+			LOGGER.info("INVALID_URI \"{}\" because model caused exception", uri);
             return Check.INVALID_URI;
         }
         if ((model == null) || (model.isEmpty())) {
+			LOGGER.info("INVALID_URI \"{}\" because model==null", uri);
             return Check.INVALID_URI;
         }
         Resource entity = model.getResource(uri);
         if (model.contains(entity, DISAMBIGUATION_PROPERTY)) {
+			LOGGER.info("DISAMBIG_URI \"{}\"", uri);
             return Check.DISAMBIG_URI;
         } else {
             return Check.GOOD;

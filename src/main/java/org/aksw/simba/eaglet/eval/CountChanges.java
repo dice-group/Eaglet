@@ -2,33 +2,31 @@ package org.aksw.simba.eaglet.eval;
 
 import java.util.List;
 
-import org.aksw.gerbil.dataset.DatasetConfiguration;
-import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
-import org.aksw.gerbil.datatypes.ExperimentType;
-import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.carrotsearch.hppc.ObjectIntOpenHashMap;
 
 public class CountChanges {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(CountChanges.class);
 
 	public static void countchanges(List<Document> documents, String name) {
-		int count;
-		int sum = 0;
-		System.out.println(" Dataset : " + name);
+		ObjectIntOpenHashMap<Check> checkCounts = new ObjectIntOpenHashMap<Check>();
 		for (Document doc : documents) {
 			List<NamedEntityCorrections> markings = doc.getMarkings(NamedEntityCorrections.class);
-			count = 0;
 			for (NamedEntityCorrections nec : markings) {
-				if (!nec.getResult().equals(Check.GOOD)) {
-					count++;
-					System.out.println(doc.getText().substring(nec.getStartPosition(),
-							nec.getStartPosition() + nec.getLength()));
-				}
+				checkCounts.putOrAdd(nec.getResult(), 1, 1);
 			}
-			sum += count;
 		}
-		System.out.println("Total number of corrections: " + sum);
+		LOGGER.error("Dataset : " + name);
+		for (int i = 0; i < checkCounts.allocated.length; ++i) {
+			if (checkCounts.allocated[i]) {
+				LOGGER.error("Total number of " + ((Object[]) checkCounts.keys)[i] + ": " + checkCounts.values[i]);
+			}
+		}
 	}
 }
