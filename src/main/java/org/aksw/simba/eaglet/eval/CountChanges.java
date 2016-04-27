@@ -23,6 +23,8 @@ public class CountChanges {
 			for (NamedEntityCorrections nec : markings) {
 				if (!nec.getResult().equals(Check.GOOD)) {
 					count++;
+					System.out.println(doc.getText().substring(nec.getStartPosition(),
+							nec.getStartPosition() + nec.getLength()));
 				}
 			}
 			sum += count;
