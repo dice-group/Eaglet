@@ -98,7 +98,6 @@ public class LongDescriptionError implements ErrorChecker {
 							|| (token.get(PartOfSpeechAnnotation.class).equals("PRP"))
 							|| (token.get(PartOfSpeechAnnotation.class).equals("MD")))) {
 				POS_Blacklist.add(token);
-
 			}
 		}
 
