@@ -67,7 +67,7 @@ public class CombinedTaggingError implements ErrorChecker {
 								
 									entities.get(i).setResult(Check.NEED_TO_PAIR);
 									entities.get(i).setPartner(entities.get(i -1));
-								//	entities.get(i-1).setResult(Check.NEED_TO_PAIR);
+								entities.get(i-1).setResult(Check.NEED_TO_PAIR);
 								
 
 							}

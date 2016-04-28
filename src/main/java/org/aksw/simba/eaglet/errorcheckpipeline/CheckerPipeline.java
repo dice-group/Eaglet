@@ -55,10 +55,10 @@ public class CheckerPipeline {
         // checkers.add(new MissingEntityCompletion(annotators));
 
         // checkers.add(new LongDescriptionError());
-        checkers.add(new SubsetMarkingError());
-        // checkers.add(new ErraticEntityError());
-        // checkers.add(new OverLappingError());
-        // checkers.add(new CombinedTaggingError());
+//        checkers.add(new SubsetMarkingError());
+//         checkers.add(new ErraticEntityError());
+//         checkers.add(new OverLappingError());
+         checkers.add(new CombinedTaggingError());
 
         // TODO: Switch Case for both modules
 

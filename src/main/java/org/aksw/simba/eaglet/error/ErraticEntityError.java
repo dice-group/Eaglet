@@ -175,9 +175,7 @@ public class ErraticEntityError implements ErrorChecker {
         @SuppressWarnings("unchecked")
         List<CoreLabel> entityTokens[] = new List[entities.size()];
         for (CoreLabel token : tokens) {
-            if (token.toString().startsWith("3")) {
-                System.out.println("STOP!");
-            }
+           
             if (nePositions.get(token.beginPosition(), token.endPosition()).cardinality() > 0) {
                 // search for matching named entities
                 int pos = 0;

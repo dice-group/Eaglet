@@ -39,7 +39,7 @@ public class OverLappingError implements ErrorChecker {
 						entities.get(i).setResult(Check.OVERLAPS);
 
 						entities.get(i).setPartner(entities.get(i + 1));
-
+						entities.get(i + 1).setResult(Check.OVERLAPS);
 					}
 				}
 
