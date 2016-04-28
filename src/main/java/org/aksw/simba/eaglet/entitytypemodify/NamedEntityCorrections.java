@@ -9,6 +9,17 @@ public class NamedEntityCorrections extends NamedEntity {
 	public enum Check {
 		COMPLETED, INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS, INVALID_URI, DISAMBIG_URI, OUTDATED_URI
 	}
+	public enum ErrorType {
+		COMBINED,ERRATIC,LONGDESC,OVERLAPPING,WRONGPOSITION,URI
+	}
+	private ErrorType error;
+	public ErrorType getError() {
+		return error;
+	}
+
+	public void setError(ErrorType error) {
+		this.error = error;
+	}
 
 	private Check result;
 	private NamedEntityCorrections partner;
@@ -124,6 +135,8 @@ public class NamedEntityCorrections extends NamedEntity {
 		} else if (!partner.equals(other.partner))
 			return false;
 		if (result != other.result)
+			return false;
+		if (error != other.error)
 			return false;
 		return true;
 	}

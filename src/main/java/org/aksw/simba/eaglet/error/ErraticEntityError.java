@@ -15,6 +15,7 @@ import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.documentprocessor.StanfordParsedMarking;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.simba.eaglet.errorutils.NamedEntitySurfaceForm;
 import org.aksw.simba.eaglet.errorutils.Token_StartposbasedComparator;
 import org.slf4j.Logger;
@@ -85,6 +86,7 @@ public class ErraticEntityError implements ErrorChecker {
                                         tokens.get(i + surfaceformvar.surfaceForm.length - 1).endPosition()
                                                 - currentToken.beginPosition(),
                                         new HashSet<String>(surfaceformvar.nes.get(0).getUris()), Check.INSERTED);
+                                newentity.setError(ErrorType.ERRATIC);
                                 doc.addMarking(newentity);
                             }
                             matchedSurfaceFormLength = surfaceformvar.surfaceForm.length;

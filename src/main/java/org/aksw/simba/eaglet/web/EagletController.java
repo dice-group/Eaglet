@@ -127,6 +127,7 @@ public class EagletController {
             ne.append("uris", nec.getUris());
             ne.append("name", document.getText()
                     .substring(nec.getStartPosition(), nec.getStartPosition() + nec.getLength()).toUpperCase());
+            ne.append("error",  nec.getError());
             array.put(ne);
         }
         List<EntityCheck> ecs = document.getMarkings(EntityCheck.class);

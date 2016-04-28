@@ -10,6 +10,7 @@ import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.documentprocessor.StanfordParsedMarking;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,8 @@ public class CombinedTaggingError implements ErrorChecker {
 									entities.get(i).setResult(Check.NEED_TO_PAIR);
 									entities.get(i).setPartner(entities.get(i -1));
 								entities.get(i-1).setResult(Check.NEED_TO_PAIR);
+								entities.get(i).setError(ErrorType.COMBINED);
+								entities.get(i-1).setError(ErrorType.COMBINED);
 								
 
 							}

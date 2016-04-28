@@ -8,6 +8,7 @@ import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +38,11 @@ public class OverLappingError implements ErrorChecker {
 							.getStartPosition()) {
 
 						entities.get(i).setResult(Check.OVERLAPS);
+						entities.get(i).setError(ErrorType.OVERLAPPING);
 
 						entities.get(i).setPartner(entities.get(i + 1));
 						entities.get(i + 1).setResult(Check.OVERLAPS);
+						entities.get(i + 1).setError(ErrorType.OVERLAPPING);
 					}
 				}
 

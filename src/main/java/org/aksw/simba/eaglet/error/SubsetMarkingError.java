@@ -5,6 +5,7 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,12 +54,14 @@ public class SubsetMarkingError implements ErrorChecker {
 								&& (text.charAt(entity.getStartPosition()) != '[')
 								&& (text.charAt(entity.getStartPosition()) != '$')) {
 							entity.setResult(Check.DELETED);
+							entity.setError(ErrorType.WRONGPOSITION);
 						}
 					}
 					// If there are letters behind check for letters or digits
 					if (entity.getStartPosition() + entity.getLength() < text.length()) {
 						if (Character.isLetterOrDigit(text.charAt(entity.getStartPosition() + entity.getLength()))) {
 							entity.setResult(Check.DELETED);
+							entity.setError(ErrorType.WRONGPOSITION);
 						}
 					}
 				}

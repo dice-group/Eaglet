@@ -15,6 +15,7 @@ import org.aksw.simba.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.simba.eaglet.documentprocessor.StanfordParsedMarking;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +64,7 @@ public class LongDescriptionError implements ErrorChecker {
 								 * entity.getLength());
 								 */
 								entity.setResult(Check.DELETED);
+								entity.setError(ErrorType.LONGDESC);
 
 							}
 						}
