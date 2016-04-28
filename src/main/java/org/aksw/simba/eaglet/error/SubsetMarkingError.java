@@ -31,7 +31,27 @@ public class SubsetMarkingError implements ErrorChecker {
 			for (NamedEntityCorrections entity : entities) {
 				if (entity.getResult().equals(Check.GOOD)) {
 					if (entity.getStartPosition() > 0) {
-						if (!Character.isWhitespace(text.charAt(entity.getStartPosition() - 1))) {
+						if ((!Character.isWhitespace(text.charAt(entity.getStartPosition() - 1)))
+								&& (text.charAt(entity.getStartPosition() - 1) != '@')
+								&& (text.charAt(entity.getStartPosition() - 1) != '\'')
+								&& (text.charAt(entity.getStartPosition() - 1) != '\"')
+								&& (text.charAt(entity.getStartPosition() - 1) != '#')
+								&& (text.charAt(entity.getStartPosition() - 1) != '_')
+								&& (text.charAt(entity.getStartPosition() - 1) != '*')
+								&& (text.charAt(entity.getStartPosition() - 1) != '(')
+								&& (text.charAt(entity.getStartPosition() - 1) != '{')
+								&& (text.charAt(entity.getStartPosition() - 1) != '[')
+								&& (text.charAt(entity.getStartPosition() - 1) != '$')
+								&& (text.charAt(entity.getStartPosition()) != '@')
+								&& (text.charAt(entity.getStartPosition()) != '\'')
+								&& (text.charAt(entity.getStartPosition()) != '\"')
+								&& (text.charAt(entity.getStartPosition()) != '#')
+								&& (text.charAt(entity.getStartPosition()) != '_')
+								&& (text.charAt(entity.getStartPosition()) != '*')
+								&& (text.charAt(entity.getStartPosition()) != '(')
+								&& (text.charAt(entity.getStartPosition()) != '{')
+								&& (text.charAt(entity.getStartPosition()) != '[')
+								&& (text.charAt(entity.getStartPosition()) != '$')) {
 							entity.setResult(Check.DELETED);
 						}
 					}
@@ -42,12 +62,11 @@ public class SubsetMarkingError implements ErrorChecker {
 						}
 					}
 				}
-				/*if (!) {
-					break;
-				}*/
+				/*
+				 * if (!) { break; }
+				 */
 				// If there are letters in front check for a whitespace
 
-				
 			}
 		}
 

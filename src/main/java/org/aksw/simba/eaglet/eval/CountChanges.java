@@ -20,6 +20,14 @@ public class CountChanges {
 			List<NamedEntityCorrections> markings = doc.getMarkings(NamedEntityCorrections.class);
 			for (NamedEntityCorrections nec : markings) {
 				checkCounts.putOrAdd(nec.getResult(), 1, 1);
+				if (!nec.getResult().equals(Check.GOOD)&&(nec.getStartPosition()>0))
+					System.out.println(" ERROR ENTITY::" + doc.getText().substring(nec.getStartPosition()-1,
+							nec.getStartPosition() + nec.getLength()));
+				else if (!nec.getResult().equals(Check.GOOD))
+						{
+					System.out.println(" ERROR ENTITY::" + doc.getText().substring(nec.getStartPosition(),
+							nec.getStartPosition() + nec.getLength()));
+						}
 			}
 		}
 		LOGGER.error("Dataset : " + name);
