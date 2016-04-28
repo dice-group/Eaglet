@@ -86,7 +86,18 @@ public class UriError implements ErrorChecker, Closeable {
 				result = checkUris(entity.getUris());
 				if (result != Check.GOOD) {
 					entity.setResult(result);
-					entity.setError(ErrorType.URI);
+					if(result.equals(Check.DISAMBIG_URI))
+					{
+						entity.setError(ErrorType.DISAMBIGURIERR);
+					}
+					else if(result.equals(Check.INVALID_URI))
+					{
+						entity.setError(ErrorType.INVALIDURIERR);
+					}
+					else if(result.equals(Check.OUTDATED_URI))
+					{
+						entity.setError(ErrorType.OUTDATEDURIERR);
+					}
 				}
 			}
 		}

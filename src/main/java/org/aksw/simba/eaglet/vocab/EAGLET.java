@@ -62,7 +62,9 @@ public class EAGLET {
 	public static final Resource Erratic = resource("Combined");
 	public static final Resource WrongPos = resource("WrongPos");
 	public static final Resource LongDesc = resource("LongDesc");
-	public static final Resource Uri = resource("Uri");
+	public static final Resource InvalidUriErr = resource("InvalidUriErr");
+	public static final Resource OutdatedUriErr = resource("OutdatedUriErr");
+	public static final Resource DisambiguationUriErr = resource("DisambiguationUriErr");
 
 	public static final Property hasErrorType = property("hasErrorType");
 	public static final Property hasCheckResult = property("hasCheckResult");
@@ -79,8 +81,12 @@ public class EAGLET {
 			return Erratic;
 		case LONGDESC:
 			return LongDesc;
-		case URI:
-			return Uri;
+		case INVALIDURIERR:
+			return InvalidUriErr;
+		case OUTDATEDURIERR:
+			return OutdatedUriErr;
+		case DISAMBIGURIERR:
+			return DisambiguationUriErr;
 		case WRONGPOSITION:
 			return WrongPos;
 

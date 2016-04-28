@@ -51,7 +51,7 @@ function printText() {
 	$("#sidebar-content").html(markedText);
 }
 
-function printEntity(name, start, length, checkResult, uri) {
+function printEntity(name, start, length, checkResult, uri, errortype) {
 	var content = '<div " id="' + counter + '" class="marking"><ul>';
 	if (uri != null) {
 		content += '<a id="a' + counter + ' href="' + uri + '">';
@@ -67,12 +67,13 @@ function printEntity(name, start, length, checkResult, uri) {
 		content += '<li> Result : <span class="result">' + checkResult
 				+ '</span></li><br />';
 	}
+	if (errortype != null) {
+		content += '<li > Error Type : <span id="error' + counter + '" class="error">' + errortype
+		+ '</span></li><br />';
+	}
 	content += '<li > Uris : <span id="uri' + counter + '" class="uri">' + uri
 			+ '</span></li><br />';
-	content += '<form ><input type="radio" class = "entityCheckTrue" name="NamedEntity" value="true" checked="checked">Is NamedEntity</input><br />'
-			+ '<input type="radio" class = "entityCheckFalse" name="NamedEntity" value="false"> Not Named Entity</input></form>'
-	content += '</ul> <button onclick="removeelement(' + counter
-			+ ')">Delete</button> <br /></div><hr>';
+	
 
 	$('#main-content .innerContainer').append($(content));
 	makeUrisEditable($('span#uri' + counter));
@@ -95,6 +96,9 @@ function printDocument(data) {
 
 	// make the URIs editable
 	$("span.uri").each(function() {
+		makeUrisEditable(this);
+	});
+	$("span.error").each(function() {
 		makeUrisEditable(this);
 	});
 
@@ -138,6 +142,7 @@ function senddata() {
 		attributes["length"] = $('.length', this).text();
 		attributes["start"] = $('.start', this).text();
 		attributes["uri"] = $('.uri', this).text();
+		attributes["uri"] = $('.error', this).text();
 		attributes["checkentity"] = $("input[name='NamedEntity']:checked",this).val();
 		marking_list.push(attributes);
 	});

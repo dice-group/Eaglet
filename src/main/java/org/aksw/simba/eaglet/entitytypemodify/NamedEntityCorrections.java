@@ -1,6 +1,7 @@
 package org.aksw.simba.eaglet.entitytypemodify;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
@@ -9,16 +10,19 @@ public class NamedEntityCorrections extends NamedEntity {
 	public enum Check {
 		COMPLETED, INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS, INVALID_URI, DISAMBIG_URI, OUTDATED_URI
 	}
+
 	public enum ErrorType {
-		COMBINED,ERRATIC,LONGDESC,OVERLAPPING,WRONGPOSITION,URI
+		COMBINED, ERRATIC, LONGDESC, OVERLAPPING, WRONGPOSITION, INVALIDURIERR, DISAMBIGURIERR, OUTDATEDURIERR
 	}
-	private ErrorType error;
-	public ErrorType getError() {
+
+	private List<ErrorType> error;
+
+	public List<ErrorType> getError() {
 		return error;
 	}
 
 	public void setError(ErrorType error) {
-		this.error = error;
+		this.error.add(error);
 	}
 
 	private Check result;
@@ -59,16 +63,18 @@ public class NamedEntityCorrections extends NamedEntity {
 		partner = null;
 
 	}
-	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, org.aksw.gerbil.transfer.nif.Document d) {
+
+	public NamedEntityCorrections(int startPosition, int length, Set<String> uris,
+			org.aksw.gerbil.transfer.nif.Document d) {
 		super(startPosition, length, uris);
 		// TODO Auto-generated constructor stub
 		result = Check.GOOD;
-		doc=d.getDocumentURI();
+		doc = d.getDocumentURI();
 		partner = null;
-		this.setEntity_name(d.getText().substring(startPosition,startPosition+length).toUpperCase());
+		this.setEntity_name(d.getText().substring(startPosition, startPosition + length).toUpperCase());
 
 	}
-	
+
 	public NamedEntityCorrections(int startPosition, int length, String uri, Check result,
 			NamedEntityCorrections partner) {
 		super(startPosition, length, uri);
@@ -92,6 +98,13 @@ public class NamedEntityCorrections extends NamedEntity {
 	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, Check result) {
 		super(startPosition, length, uris);
 		this.result = result;
+	}
+
+	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, Check result,
+			List<ErrorType> error) {
+		super(startPosition, length, uris);
+		this.result = result;
+		this.error = error;
 	}
 
 	public NamedEntityCorrections getPartner() {

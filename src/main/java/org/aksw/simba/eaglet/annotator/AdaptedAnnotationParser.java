@@ -16,6 +16,7 @@
  */
 package org.aksw.simba.eaglet.annotator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -91,8 +92,15 @@ public class AdaptedAnnotationParser extends AnnotationParser {
 					}
 					nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasCheckResult);
 					if (nodeIter.hasNext()) {
+						nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasErrorType);
 						Check result = parseCheckResult(nodeIter.next().asResource());
-						markings.add(new NamedEntityCorrections(start, end - start, entityUris, result));
+						if (nodeIter.hasNext()) {
+							
+							ErrorType error= parseErroResult(nodeIter.next().asResource());
+							List<ErrorType> error_list = new ArrayList<ErrorType>();
+							error_list.add(error);
+							markings.add(new NamedEntityCorrections(start, end - start, entityUris, result, error_list));
+						}
 					} else {
 						nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.isNamedEntity);
 						if (nodeIter.hasNext()) {
@@ -191,8 +199,12 @@ public class AdaptedAnnotationParser extends AnnotationParser {
 			return ErrorType.WRONGPOSITION;
 		} else if (EAGLET.LongDesc.equals(resource)) {
 			return ErrorType.LONGDESC;
-		} else if (EAGLET.Uri.equals(resource)) {
-			return ErrorType.URI;
+		} else if (EAGLET.InvalidUriErr.equals(resource)) {
+			return ErrorType.INVALIDURIERR;
+		} else if (EAGLET.DisambiguationUri.equals(resource)) {
+			return ErrorType.DISAMBIGURIERR;
+		} else if (EAGLET.OutdatedUri.equals(resource)) {
+			return ErrorType.OUTDATEDURIERR;
 
 		} else {
 			LOGGER.error("Got an unknown matching type: " + resource);

@@ -24,6 +24,7 @@ import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
 import org.aksw.simba.eaglet.entitytypemodify.EntityCheck;
 import org.aksw.simba.eaglet.entitytypemodify.EntityTypeChange;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -152,6 +153,8 @@ public class EagletController {
         for (int i = 0; i < markings.length(); i++) {
             Set<String> uris = new HashSet<String>();
             uris.add(markings.getJSONObject(i).getString("uri"));
+            List<ErrorType> error = new ArrayList<ErrorType>();
+            error.add(markings.getJSONObject(i).("error"));
             Marking entity = new EntityCheck(markings.getJSONObject(i).getInt("start"),
                     markings.getJSONObject(i).getInt("length"), uris,
                     markings.getJSONObject(i).getBoolean("checkentity"));
