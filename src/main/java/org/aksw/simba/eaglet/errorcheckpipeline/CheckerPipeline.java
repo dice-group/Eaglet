@@ -37,122 +37,126 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import org.slf4j.LoggerFactory;
 
 public class CheckerPipeline {
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CheckerPipeline.class);
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CheckerPipeline.class);
 
-    public static List<A2KBAnnotator> callAnnotator(String path) throws GerbilException {
-        AnnotatorResult ar = new AnnotatorResult(path);
-        List<A2KBAnnotator> annotators = ar.getAnnotators();
-        return annotators;
-    }
+	public static List<A2KBAnnotator> callAnnotator(String path) throws GerbilException {
+		AnnotatorResult ar = new AnnotatorResult(path);
+		List<A2KBAnnotator> annotators = ar.getAnnotators();
+		return annotators;
+	}
 
-    public static void startPipe(List<Document> documents, String name) throws GerbilException, IOException {
-        // List<A2KBAnnotator> annotators =
-        // callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
+	public static void startPipe(List<Document> documents, String name) throws GerbilException, IOException {
+		// List<A2KBAnnotator> annotators =
+		// callAnnotator("eaglet_data/Results_anontator_dbpedia/Kore50");
 
-        // prepare the pipeline
+		// prepare the pipeline
 
-        List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
-        // checkers.add(new MissingEntityCompletion(annotators));
+		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
+		// checkers.add(new MissingEntityCompletion(annotators));
 
-        // checkers.add(new LongDescriptionError());
-//        checkers.add(new SubsetMarkingError());
-//         checkers.add(new ErraticEntityError());
-//         checkers.add(new OverLappingError());
-         checkers.add(new CombinedTaggingError());
+		// checkers.add(new LongDescriptionError());
+		// checkers.add(new SubsetMarkingError());
+		// checkers.add(new ErraticEntityError());
+		// checkers.add(new OverLappingError());
+		checkers.add(new CombinedTaggingError());
 
-        // TODO: Switch Case for both modules
+		// TODO: Switch Case for both modules
 
-        // start pipeline
+		// start pipeline
 
-        for (ErrorChecker checker : checkers) {
-            checker.check(documents);
-        }
+		for (ErrorChecker checker : checkers) {
+			checker.check(documents);
+		}
 
-        CountChanges.countchanges(documents, name);
-        // write documents
-        /*
-         * Model nifModel = generateModel(documents);
-         * 
-         * File resultfile = new File("eaglet_data/result_pipe/" + name +
-         * "-result-nif.ttl");
-         * 
-         * if (!resultfile.exists()) { resultfile.getParentFile().mkdirs();
-         * resultfile.createNewFile(); } FileOutputStream fout = new
-         * FileOutputStream(resultfile); fout.flush(); nifModel.write(fout,
-         * "TTL"); fout.close(); LOGGER.info("PIPELINE RESULTS GENERATED");
-         */
-    }
+		// CountChanges.countchanges(documents, name);
+		// write documents
 
-    public static Model generateModel(List<Document> documents) {
-        Model nifModel = ModelFactory.createDefaultModel();
-        nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-        DocumentListWriter writer = new DocumentListWriter();
-        writer.writeDocumentsToModel(nifModel, documents);
-        Resource annotationResource;
-        NamedEntityCorrections partner;
-        for (Document document : documents) {
-            for (NamedEntityCorrections correction : document.getMarkings(NamedEntityCorrections.class)) {
-                annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
-                        correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
-                nifModel.add(annotationResource, EAGLET.hasCheckResult, EAGLET.getCheckResult(correction.getResult()));
-                partner = correction.getPartner();
-                if ((partner != null)) {
+		Model nifModel = generateModel(documents);
 
-                    nifModel.add(annotationResource, EAGLET.hasPairPartner,
-                            nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
-                                    partner.getStartPosition(), partner.getStartPosition() + partner.getLength())));
+		File resultfile = new File("eaglet_data/result_pipe/" + name + "-result-nif.ttl");
 
-                }
-            }
-        }
-        return nifModel;
+		if (!resultfile.exists()) {
+			resultfile.getParentFile().mkdirs();
+			resultfile.createNewFile();
+		}
+		FileOutputStream fout = new FileOutputStream(resultfile);
+		fout.flush();
+		nifModel.write(fout, "TTL");
+		fout.close();
+		LOGGER.info("PIPELINE RESULTS GENERATED");
 
-    }
+	}
 
-    public static List<Document> readDocuments(String fileName) throws IOException {
-        // Read the RDF MOdel
-        Model nifModel = ModelFactory.createDefaultModel();
-        nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-        FileInputStream fin = new FileInputStream(new File(fileName));
-        nifModel.read(fin, "", "TTL");
-        fin.close();
+	public static Model generateModel(List<Document> documents) {
+		Model nifModel = ModelFactory.createDefaultModel();
+		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+		DocumentListWriter writer = new DocumentListWriter();
+		writer.writeDocumentsToModel(nifModel, documents);
+		Resource annotationResource;
+		NamedEntityCorrections partner;
+		for (Document document : documents) {
+			for (NamedEntityCorrections correction : document.getMarkings(NamedEntityCorrections.class)) {
+				annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
+						correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
+				nifModel.add(annotationResource, EAGLET.hasCheckResult, EAGLET.getCheckResult(correction.getResult()));
+				partner = correction.getPartner();
+				if ((partner != null)) {
 
-        DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
-        List<Document> documents = parser.parseDocuments(nifModel);
-        StmtIterator iterator = nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode) null);
-        Statement s;
-        String subjectUri, objectUri, documentUri;
-        NamedEntityCorrections subject = null, object = null;
-        while (iterator.hasNext()) {
-            s = iterator.next();
-            subjectUri = s.getSubject().getURI();
-            objectUri = s.getObject().asResource().getURI();
-            documentUri = NIFUriHelper.getDocumentUriFromNifUri(subjectUri);
-            // TODO search the document from the list
-            for (Document doc : documents) {
-                if (documentUri.equals(doc.getDocumentURI())) {
-                    int startsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 3));
-                    int endsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 1));
-                    int startobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 3));
-                    int endobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 1));
+					nifModel.add(annotationResource, EAGLET.hasPairPartner,
+							nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
+									partner.getStartPosition(), partner.getStartPosition() + partner.getLength())));
 
-                    List<NamedEntityCorrections> entity_set = doc.getMarkings(NamedEntityCorrections.class);
-                    for (NamedEntityCorrections entity : entity_set) {
-                        if ((entity.getStartPosition() == startsbj)
-                                && (entity.getStartPosition() + entity.getLength() == endsbj)) {
-                            subject = entity;
-                        }
-                        if ((entity.getStartPosition() == startobj)
-                                && (entity.getStartPosition() + entity.getLength() == endobj)) {
-                            object = entity;
-                        }
-                    }
-                    subject.setPartner(object);
+				}
+			}
+		}
+		return nifModel;
 
-                }
-            }
+	}
 
-        }
-        return documents;
-    }
+	public static List<Document> readDocuments(String fileName) throws IOException {
+		// Read the RDF MOdel
+		Model nifModel = ModelFactory.createDefaultModel();
+		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+		FileInputStream fin = new FileInputStream(new File(fileName));
+		nifModel.read(fin, "", "TTL");
+		fin.close();
+
+		DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
+		List<Document> documents = parser.parseDocuments(nifModel);
+		StmtIterator iterator = nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode) null);
+		Statement s;
+		String subjectUri, objectUri, documentUri;
+		NamedEntityCorrections subject = null, object = null;
+		while (iterator.hasNext()) {
+			s = iterator.next();
+			subjectUri = s.getSubject().getURI();
+			objectUri = s.getObject().asResource().getURI();
+			documentUri = NIFUriHelper.getDocumentUriFromNifUri(subjectUri);
+			// TODO search the document from the list
+			for (Document doc : documents) {
+				if (documentUri.equals(doc.getDocumentURI())) {
+					int startsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 3));
+					int endsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 1));
+					int startobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 3));
+					int endobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 1));
+
+					List<NamedEntityCorrections> entity_set = doc.getMarkings(NamedEntityCorrections.class);
+					for (NamedEntityCorrections entity : entity_set) {
+						if ((entity.getStartPosition() == startsbj)
+								&& (entity.getStartPosition() + entity.getLength() == endsbj)) {
+							subject = entity;
+						}
+						if ((entity.getStartPosition() == startobj)
+								&& (entity.getStartPosition() + entity.getLength() == endobj)) {
+							object = entity;
+						}
+					}
+					subject.setPartner(object);
+
+				}
+			}
+
+		}
+		return documents;
+	}
 }

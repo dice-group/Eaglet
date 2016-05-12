@@ -28,17 +28,17 @@ function printText() {
 	$('.innerContainer .marking').each(function() {
 		var start = parseInt($('.start', this).text());
 		var length = parseInt($('.length', this).text());
-		markedChars.setRange(start,(start + length) - 1);
+		markedChars.setRange(start, (start + length) - 1);
 	});
 	var lastPos = 0;
 	var oldValue = 0;
 	var value;
 	var markedText = "";
-	for (i = 0; i < documentText.length; i++) { 
+	for (i = 0; i < documentText.length; i++) {
 		value = markedChars.get(i);
-		if(value != oldValue) {
+		if (value != oldValue) {
 			markedText += documentText.slice(lastPos, i);
-			if(oldValue == 0) {
+			if (oldValue == 0) {
 				markedText += '<span style="font-size:14px; color:#538b01; font-weight:bold; font-style:italic;">';
 			} else {
 				markedText += '</span>';
@@ -68,15 +68,15 @@ function printEntity(name, start, length, checkResult, uri, errortype) {
 				+ '</span></li><br />';
 	}
 	if (errortype != null) {
-		content += '<li > Error Type : <span id="error' + counter + '" class="error">' + errortype
-		+ '</span></li><br />';
+		content += '<li > Error Type : <span id="error' + counter
+				+ '" class="error">' + errortype + '</span></li><br />';
 	}
-	content += '<li > Uris : <span id="uri' + counter + '" class="uri">' + uri
-			+ '</span></li><br />';
-	
+	content += '<li > Uris : <span id="uri' + counter
+			+ '" class="uri"> <a href ="' + uri + '">' + uri
+			+ '</a></span></li><br />';
 
 	$('#main-content .innerContainer').append($(content));
-	makeUrisEditable($('span#uri' + counter));
+	//makeUrisEditable($('span#uri' + counter));
 	counter += 1;
 }
 
@@ -90,14 +90,14 @@ function printDocument(data) {
 	//
 	$("#markings-list").html('');
 	$.each(markings, function(i, v) {
-		printEntity(v.name, v.start, v.length, v.result, v.uris);
+		printEntity(v.name, v.start, v.length, v.result, v.uris, v.error);
 	});
 	updateText();
 
 	// make the URIs editable
-	$("span.uri").each(function() {
-		makeUrisEditable(this);
-	});
+	/*
+	 * $("span.uri").each(function() { makeUrisEditable(this); });
+	 */
 	$("span.error").each(function() {
 		makeUrisEditable(this);
 	});
@@ -136,16 +136,18 @@ function senddata() {
 	var marking_list = [];
 	var attributes = {};
 
-	$('.innerContainer .marking').each(function() {
-		attributes = {};
-		attributes["name"] = $('.name', this).text();
-		attributes["length"] = $('.length', this).text();
-		attributes["start"] = $('.start', this).text();
-		attributes["uri"] = $('.uri', this).text();
-		attributes["uri"] = $('.error', this).text();
-		attributes["checkentity"] = $("input[name='NamedEntity']:checked",this).val();
-		marking_list.push(attributes);
-	});
+	$('.innerContainer .marking').each(
+			function() {
+				attributes = {};
+				attributes["name"] = $('.name', this).text();
+				attributes["length"] = $('.length', this).text();
+				attributes["start"] = $('.start', this).text();
+				attributes["uri"] = $('.uri', this).text();
+				attributes["error"] = $('.error', this).text();
+				attributes["checkentity"] = $(
+						"input[name='NamedEntity']:checked", this).val();
+				marking_list.push(attributes);
+			});
 	$.ajax({
 		url : 'service/submitResults',
 		data : {

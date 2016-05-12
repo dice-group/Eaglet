@@ -61,6 +61,7 @@ public class NamedEntityCorrections extends NamedEntity {
 		// TODO Auto-generated constructor stub
 		result = Check.GOOD;
 		partner = null;
+		error=null;
 
 	}
 
@@ -71,6 +72,7 @@ public class NamedEntityCorrections extends NamedEntity {
 		result = Check.GOOD;
 		doc = d.getDocumentURI();
 		partner = null;
+		error=null;
 		this.setEntity_name(d.getText().substring(startPosition, startPosition + length).toUpperCase());
 
 	}
@@ -104,6 +106,12 @@ public class NamedEntityCorrections extends NamedEntity {
 			List<ErrorType> error) {
 		super(startPosition, length, uris);
 		this.result = result;
+		this.error = error;
+	}
+
+	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, List<ErrorType> error) {
+		super(startPosition, length, uris);
+
 		this.error = error;
 	}
 
