@@ -1,5 +1,6 @@
 package org.aksw.simba.eaglet.entitytypemodify;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -15,10 +16,11 @@ public class NamedEntityCorrections extends NamedEntity {
 		COMBINED, ERRATIC, LONGDESC, OVERLAPPING, WRONGPOSITION, INVALIDURIERR, DISAMBIGURIERR, OUTDATEDURIERR
 	}
 
-	private List<ErrorType> error;
+	private List<ErrorType> error = new ArrayList<ErrorType>();
 
 	public List<ErrorType> getError() {
 		return error;
+
 	}
 
 	public void setError(ErrorType error) {
@@ -61,55 +63,62 @@ public class NamedEntityCorrections extends NamedEntity {
 		// TODO Auto-generated constructor stub
 		result = Check.GOOD;
 		partner = null;
-		error=null;
 
 	}
 
-	public NamedEntityCorrections(int startPosition, int length, Set<String> uris,
-			org.aksw.gerbil.transfer.nif.Document d) {
+	public NamedEntityCorrections(int startPosition, int length,
+			Set<String> uris, org.aksw.gerbil.transfer.nif.Document d) {
 		super(startPosition, length, uris);
 		// TODO Auto-generated constructor stub
-		result = Check.GOOD;
-		doc = d.getDocumentURI();
-		partner = null;
-		error=null;
-		this.setEntity_name(d.getText().substring(startPosition, startPosition + length).toUpperCase());
+		this.result = Check.GOOD;
+		this.doc = d.getDocumentURI();
+		this.partner = null;
+
+		this.setEntity_name(d.getText()
+				.substring(startPosition, startPosition + length).toUpperCase());
 
 	}
 
-	public NamedEntityCorrections(int startPosition, int length, String uri, Check result,
-			NamedEntityCorrections partner) {
+	public NamedEntityCorrections(int startPosition, int length, String uri,
+			Check result, NamedEntityCorrections partner) {
 		super(startPosition, length, uri);
 		this.result = result;
 		this.partner = partner;
 
 	}
 
-	public NamedEntityCorrections(int startPosition, int length, Set<String> uris) {
+	public NamedEntityCorrections(int startPosition, int length,
+			Set<String> uris) {
 		super(startPosition, length, uris);
 		// TODO Auto-generated constructor stub
-		result = Check.GOOD;
-		partner = null;
+		this.result = Check.GOOD;
+		this.partner = null;
+
 	}
 
-	public NamedEntityCorrections(int startPosition, int length, String uri, Check result) {
+	public NamedEntityCorrections(int startPosition, int length, String uri,
+			Check result) {
 		super(startPosition, length, uri);
 		this.result = result;
+
 	}
 
-	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, Check result) {
+	public NamedEntityCorrections(int startPosition, int length,
+			Set<String> uris, Check result) {
 		super(startPosition, length, uris);
 		this.result = result;
+
 	}
 
-	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, Check result,
-			List<ErrorType> error) {
+	public NamedEntityCorrections(int startPosition, int length,
+			Set<String> uris, Check result, List<ErrorType> error) {
 		super(startPosition, length, uris);
 		this.result = result;
 		this.error = error;
 	}
 
-	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, List<ErrorType> error) {
+	public NamedEntityCorrections(int startPosition, int length,
+			Set<String> uris, List<ErrorType> error) {
 		super(startPosition, length, uris);
 
 		this.error = error;
@@ -137,7 +146,8 @@ public class NamedEntityCorrections extends NamedEntity {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((partner == null) ? 0 : partner.hashCode());
-		result = prime * result + ((this.result == null) ? 0 : this.result.hashCode());
+		result = prime * result
+				+ ((this.result == null) ? 0 : this.result.hashCode());
 		return result;
 	}
 
