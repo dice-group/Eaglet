@@ -33,7 +33,7 @@ public class EAGLET {
 
 	/**
 	 * returns the URI for this schema
-	 * 
+	 *
 	 * @return the URI for this schema
 	 */
 	public static String getURI() {
@@ -69,7 +69,10 @@ public class EAGLET {
 	public static final Property hasErrorType = property("hasErrorType");
 	public static final Property hasCheckResult = property("hasCheckResult");
 	public static final Property hasPairPartner = property("hasPairPartner");
-	public static final Property isNamedEntity = property("isNamedEntity");
+	public static final Property isMarkedCorrect = property("isMarkedCorrect");
+	public static final Property isMarkedWrong = property("isMarkedWrong");
+	public static final Property isMarkedMissing = property("isMarkedMissing");
+	public static final Property isMarkedAdded = property("isMarkedAdded");
 
 	public static Resource getErrorType(ErrorType errorkind) {
 		switch (errorkind) {
