@@ -74,9 +74,18 @@ function printEntity(name, start, length, checkResult, uri, errortype) {
 	content += '<li > Uris : <span id="uri' + counter
 			+ '" class="uri"> <a href ="' + uri + '">' + uri
 			+ '</a></span></li><br />';
+	content += '<form name="ValidationData">'
+			+ '<p>Decide The correctness of Marking</p><br />'
+			+ '<input type="radio" class = "entityCheck" name="decision" value="correct" >Correct</input><br />'
+			+ '<input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input><br />'
+			+ '<input type="radio" class = "entityCheck" name="decision" value="added" >Added</input><br />'
+			+ '<input type="radio" class = "entityCheck" name="decision" value="missing" >Missing</input><br />'
+			+ '</form>'
+	content += '</ul> <button onclick="removeelement(' + counter
+			+ ')">Delete</button> <br /></div><hr>';
 
 	$('#main-content .innerContainer').append($(content));
-	//makeUrisEditable($('span#uri' + counter));
+	// makeUrisEditable($('span#uri' + counter));
 	counter += 1;
 }
 
@@ -95,14 +104,11 @@ function printDocument(data) {
 	updateText();
 
 	// make the URIs editable
-	/*
-	 * $("span.uri").each(function() { makeUrisEditable(this); });
-	 */
+
 	$("span.error").each(function() {
 		makeUrisEditable(this);
 	});
 
-	// $(text).appendTo("#sidebar-content");
 }
 
 function uservalidation() {
@@ -111,10 +117,6 @@ function uservalidation() {
 
 	$.ajax({
 		url : "service/next",// servlet URL that gets
-		// first
-		// option as
-		// parameter and returns JSON of to-be-populated
-		// options
 		type : "POST",// request type, can be GET
 		data : {
 			username : loginName,// data to be sent
@@ -144,8 +146,9 @@ function senddata() {
 				attributes["start"] = $('.start', this).text();
 				attributes["uri"] = $('.uri', this).text();
 				attributes["error"] = $('.error', this).text();
-				attributes["checkentity"] = $(
-						"input[name='NamedEntity']:checked", this).val();
+				attributes["correct"] = $(
+						"input[name='decision']:checked", this).val();
+				
 				marking_list.push(attributes);
 			});
 	$.ajax({

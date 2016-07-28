@@ -21,9 +21,10 @@ import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
-import org.aksw.simba.eaglet.entitytypemodify.EntityCheck;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
+import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -137,9 +138,10 @@ public class EagletController {
 			ne.append("error", nec.getError());
 			array.put(ne);
 		}
-		List<EntityCheck> ecs = document.getMarkings(EntityCheck.class);
+		List<NamedEntityCorrections> ecs = document
+				.getMarkings(NamedEntityCorrections.class);
 		ecs.sort(new StartPosBasedComparator());
-		for (EntityCheck nec : ecs) {
+		for (NamedEntityCorrections nec : ecs) {
 			ne = new JSONObject();
 			ne.append("start", nec.getStartPosition());
 			ne.append("length", nec.getLength());
@@ -168,7 +170,8 @@ public class EagletController {
 			error.add(parseErroResult(errortype));
 			Marking entity = new NamedEntityCorrections(markings.getJSONObject(
 					i).getInt("start"), markings.getJSONObject(i).getInt(
-					"length"), uris, error);
+					"length"), uris, error, parseDecisionType(markings
+					.getJSONObject(i).getString("decision")));
 			userAcceptedEntities.add(entity);
 		}
 		return userAcceptedEntities;
@@ -181,9 +184,7 @@ public class EagletController {
 			@RequestParam(value = "username") String userName)
 			throws IOException {
 		int userId = getUser(userName);
-		// TODO parse document from JSON
 		List<Marking> changes = transformEntityFromJson(userInput);
-		// TODO generate file name
 		Document result = null;
 		String filename = null;
 		for (Document doc : documents) {
@@ -202,9 +203,6 @@ public class EagletController {
 
 		Document newdoc = new DocumentImpl(result.getText(),
 				result.getDocumentURI(), changes);
-		// FileOutputStream fout = new
-		// FileOutputStream("eaglet_data/result_user/" + filename + "-nif.ttl");
-		// serialize the document into a file
 		Model nifModel = generateModifiedModel(newdoc);
 
 		File resultfile = new File("eaglet_data" + File.separator
@@ -230,22 +228,16 @@ public class EagletController {
 		DocumentListWriter writer = new DocumentListWriter();
 		writer.writeDocumentsToModel(nifModel, Arrays.asList(document));
 		Resource annotationResource;
-		for (EntityCheck correction : document.getMarkings(EntityCheck.class)) {
+		for (NamedEntityCorrections correction : document
+				.getMarkings(NamedEntityCorrections.class)) {
 			annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(
 					document.getDocumentURI(), correction.getStartPosition(),
 					correction.getStartPosition() + correction.getLength()));
 			System.out.println(correction.getUris().toString() + " -> "
-					+ correction.isCorrect());
+					+ correction.getUserDecision());
+			nifModel.add(annotationResource, EAGLET.hasUserDecision,
+					nifModel.createTypedLiteral(correction.getUserDecision()));
 
-			/*
-			 * nifModel.add(annotationResource, EAGLET.isMarkedCorrect,
-			 * EAGLET.isMarkedAdded, EAGLET.isMarkedMissing,
-			 * EAGLET.isMarkedWrong,
-			 * nifModel.createTypedLiteral(correction.isCorrect()),
-			 * nifModel.createTypedLiteral(correction.isWrong()),
-			 * nifModel.createTypedLiteral(correction.isAdded()),
-			 * nifModel.createTypedLiteral(correction.isMissing()));
-			 */
 		}
 		return nifModel;
 	}
@@ -293,4 +285,20 @@ public class EagletController {
 			return null;
 		}
 	}
+
+	private DecisionValue parseDecisionType(String errortype) {
+		if (errortype.toUpperCase().equals("CORRECT")) {
+			return DecisionValue.CORRECT;
+		} else if (errortype.toUpperCase().equals("WRONG")) {
+			return DecisionValue.WRONG;
+		} else if (errortype.toUpperCase().equals("MISSING")) {
+			return DecisionValue.MISSING;
+		} else if (errortype.toUpperCase().equals("ADDED")) {
+			return DecisionValue.ADDED;
+		} else {
+
+			return null;
+		}
+	}
+
 }

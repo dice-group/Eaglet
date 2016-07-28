@@ -25,7 +25,7 @@
 
   /**
    * Calculates the number of set bits
-   * 
+   *
    * @param {number} v
    * @returns {number}
    */
@@ -126,14 +126,13 @@
         break;
 
       default:
-        
+
         P['data'] = [0];
         var data = P['data'];
 
         if (val instanceof Array) {
 
           for (var i = val.length - 1; i >= 0; i--) {
-            
             var ndx = val[i];
 
             if (ndx === Infinity) {
@@ -580,7 +579,7 @@
     },
     /**
      * Gets a list of set bits
-     * 
+     *
      * @returns {Array|number}
      */
     'toArray': Math['clz32'] ?

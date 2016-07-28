@@ -12,6 +12,14 @@ public class NamedEntityCorrections extends NamedEntity {
 		COMPLETED, INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS, INVALID_URI, DISAMBIG_URI, OUTDATED_URI
 	}
 
+	public enum DecisionValue {
+		CORRECT, WRONG, MISSING, ADDED
+	}
+
+	private DecisionValue userDecision;
+
+	// TODO: Check Hashcode.
+
 	public enum ErrorType {
 		COMBINED, ERRATIC, LONGDESC, OVERLAPPING, WRONGPOSITION, INVALIDURIERR, DISAMBIGURIERR, OUTDATEDURIERR
 	}
@@ -40,6 +48,20 @@ public class NamedEntityCorrections extends NamedEntity {
 
 	public void setEntity_name(String entity_name) {
 		this.entity_name = entity_name;
+	}
+
+	public DecisionValue getUserDecision() {
+		return userDecision;
+	}
+
+	public void setUserDecision(DecisionValue userDecision) {
+		this.userDecision = userDecision;
+	}
+
+	public NamedEntityCorrections(int startPosition, int length,
+			Set<String> uris, DecisionValue des) {
+		super(startPosition, length, uris);
+		this.userDecision = des;
 	}
 
 	public String getDoc() {
@@ -124,6 +146,15 @@ public class NamedEntityCorrections extends NamedEntity {
 		this.error = error;
 	}
 
+	public NamedEntityCorrections(int startPosition, int length,
+			Set<String> uris, List<ErrorType> error, DecisionValue userDescision) {
+		// TODO Auto-generated constructor stub
+		super(startPosition, length, uris);
+		this.error = error;
+		this.userDecision = userDescision;
+
+	}
+
 	public NamedEntityCorrections getPartner() {
 		return partner;
 	}
@@ -168,6 +199,8 @@ public class NamedEntityCorrections extends NamedEntity {
 		if (result != other.result)
 			return false;
 		if (error != other.error)
+			return false;
+		if (this.userDecision != other.getUserDecision())
 			return false;
 		return true;
 	}

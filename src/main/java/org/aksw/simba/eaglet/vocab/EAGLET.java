@@ -17,6 +17,7 @@
 package org.aksw.simba.eaglet.vocab;
 
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,14 +66,31 @@ public class EAGLET {
 	public static final Resource InvalidUriErr = resource("InvalidUriErr");
 	public static final Resource OutdatedUriErr = resource("OutdatedUriErr");
 	public static final Resource DisambiguationUriErr = resource("DisambiguationUriErr");
+	public static final Resource Correct = resource("Correct");
+	public static final Resource Wrong = resource("Wrong");
+	public static final Resource Missing = resource("Missing");
+	public static final Resource Added = resource("Added");
 
 	public static final Property hasErrorType = property("hasErrorType");
 	public static final Property hasCheckResult = property("hasCheckResult");
 	public static final Property hasPairPartner = property("hasPairPartner");
-	public static final Property isMarkedCorrect = property("isMarkedCorrect");
-	public static final Property isMarkedWrong = property("isMarkedWrong");
-	public static final Property isMarkedMissing = property("isMarkedMissing");
-	public static final Property isMarkedAdded = property("isMarkedAdded");
+	public static final Property hasUserDecision = property("hasUserDecision");
+
+	public static Resource getUserDecision(DecisionValue desVal) {
+		switch (desVal) {
+		case ADDED:
+			return Added;
+		case CORRECT:
+			return Correct;
+		case MISSING:
+			return Missing;
+		case WRONG:
+			return Wrong;
+
+		}
+		LOGGER.error("Got an unknown Decision type: " + desVal.name());
+		return null;
+	}
 
 	public static Resource getErrorType(ErrorType errorkind) {
 		switch (errorkind) {
