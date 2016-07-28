@@ -138,7 +138,7 @@ public class EagletController {
 			ne.append("error", nec.getError());
 			array.put(ne);
 		}
-		List<NamedEntityCorrections> ecs = document
+		/*List<NamedEntityCorrections> ecs = document
 				.getMarkings(NamedEntityCorrections.class);
 		ecs.sort(new StartPosBasedComparator());
 		for (NamedEntityCorrections nec : ecs) {
@@ -153,7 +153,7 @@ public class EagletController {
 									nec.getStartPosition() + nec.getLength())
 							.toUpperCase());
 			array.put(ne);
-		}
+		}*/
 		doc.append("markings", array);
 		return doc.toString();
 	}
