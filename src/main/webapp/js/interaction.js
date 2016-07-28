@@ -76,7 +76,7 @@ function printEntity(name, start, length, checkResult, uri, errortype) {
 			+ '</a></span></li><br />';
 	content += '<form name="ValidationData">'
 			+ '<p>Decide The correctness of Marking</p>'
-			+ '<input type="radio" class = "entityCheck" name="decision" value="correct" >Correct</input><br />'
+			+ '<input type="radio" class = "entityCheck" name="decision" value="correct" checked="checked">Correct</input><br />'
 			+ '<input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input><br />'
 			+ '<input type="radio" class = "entityCheck" name="decision" value="added" >Added</input><br />'
 			+ '<input type="radio" class = "entityCheck" name="decision" value="missing" >Missing</input><br />'
@@ -146,9 +146,9 @@ function senddata() {
 				attributes["start"] = $('.start', this).text();
 				attributes["uri"] = $('.uri', this).text();
 				attributes["error"] = $('.error', this).text();
-				attributes["decision"] = $(
-						"input[name='decision']:checked", this).val();
-				
+				attributes["decision"] = $("input[name='decision']:checked",
+						this).val();
+
 				marking_list.push(attributes);
 			});
 	$.ajax({
