@@ -7,6 +7,12 @@ import java.util.Set;
 
 import org.aksw.gerbil.transfer.nif.data.NamedEntity;
 
+/**
+ * The class is a modified marking which stores error information.
+ *
+ * @author Kunal
+ *
+ */
 public class NamedEntityCorrections extends NamedEntity {
 	public enum Check {
 		COMPLETED, INSERTED, DELETED, GOOD, NEED_TO_PAIR, OVERLAPS, INVALID_URI, DISAMBIG_URI, OUTDATED_URI
@@ -58,6 +64,14 @@ public class NamedEntityCorrections extends NamedEntity {
 		this.userDecision = userDecision;
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uris
+	 * @param des
+	 */
 	public NamedEntityCorrections(int startPosition, int length,
 			Set<String> uris, DecisionValue des) {
 		super(startPosition, length, uris);
@@ -80,6 +94,14 @@ public class NamedEntityCorrections extends NamedEntity {
 		this.doc = entity_text;
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uri
+	 */
+
 	public NamedEntityCorrections(int startPosition, int length, String uri) {
 		super(startPosition, length, uri);
 		// TODO Auto-generated constructor stub
@@ -87,6 +109,15 @@ public class NamedEntityCorrections extends NamedEntity {
 		partner = null;
 
 	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uris
+	 * @param d
+	 */
 
 	public NamedEntityCorrections(int startPosition, int length,
 			Set<String> uris, org.aksw.gerbil.transfer.nif.Document d) {
@@ -101,6 +132,15 @@ public class NamedEntityCorrections extends NamedEntity {
 
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uri
+	 * @param result
+	 * @param partner
+	 */
 	public NamedEntityCorrections(int startPosition, int length, String uri,
 			Check result, NamedEntityCorrections partner) {
 		super(startPosition, length, uri);
@@ -109,6 +149,13 @@ public class NamedEntityCorrections extends NamedEntity {
 
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uris
+	 */
 	public NamedEntityCorrections(int startPosition, int length,
 			Set<String> uris) {
 		super(startPosition, length, uris);
@@ -118,6 +165,14 @@ public class NamedEntityCorrections extends NamedEntity {
 
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uri
+	 * @param result
+	 */
 	public NamedEntityCorrections(int startPosition, int length, String uri,
 			Check result) {
 		super(startPosition, length, uri);
@@ -125,12 +180,30 @@ public class NamedEntityCorrections extends NamedEntity {
 
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uris
+	 * @param result
+	 */
 	public NamedEntityCorrections(int startPosition, int length,
 			Set<String> uris, Check result) {
 		super(startPosition, length, uris);
 		this.result = result;
 
 	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uris
+	 * @param result
+	 * @param error
+	 */
 
 	public NamedEntityCorrections(int startPosition, int length,
 			Set<String> uris, Check result, List<ErrorType> error) {
@@ -139,6 +212,14 @@ public class NamedEntityCorrections extends NamedEntity {
 		this.error = error;
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uris
+	 * @param error
+	 */
 	public NamedEntityCorrections(int startPosition, int length,
 			Set<String> uris, List<ErrorType> error) {
 		super(startPosition, length, uris);
@@ -146,6 +227,15 @@ public class NamedEntityCorrections extends NamedEntity {
 		this.error = error;
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param startPosition
+	 * @param length
+	 * @param uris
+	 * @param error
+	 * @param userDescision
+	 */
 	public NamedEntityCorrections(int startPosition, int length,
 			Set<String> uris, List<ErrorType> error, DecisionValue userDescision) {
 		// TODO Auto-generated constructor stub

@@ -26,6 +26,12 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
+/**
+ * Vocabulary for the whole software.
+ *
+ * @author Kunal
+ *
+ */
 public class EAGLET {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EAGLET.class);

@@ -48,6 +48,12 @@ import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
 
+/**
+ * The modified annotation parser to write into the NIF file.
+ *
+ * @author Michael
+ * @author Kunal
+ */
 public class AdaptedAnnotationParser extends AnnotationParser {
 
 	private static final Logger LOGGER = LoggerFactory

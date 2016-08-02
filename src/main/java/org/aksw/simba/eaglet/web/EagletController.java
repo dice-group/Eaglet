@@ -42,6 +42,12 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+/**
+ * The controller class for the EAGLET web service.
+ *
+ * @author Kunal
+ * @author Michael R&ouml;der
+ */
 @Controller
 public class EagletController {
 
@@ -50,27 +56,38 @@ public class EagletController {
 
 	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/DBpediaSpotlight-result-nif.ttl" };
 
-	// private static final String DATASET_FILES[] = new String[] {
-	// "eaglet_data/result_pipe/kore50-nif-result-nif.ttl" };
-	// private static final String DATASET_FILES[] = new String[] {
-	// "eaglet_data/result_user/KORE50/mergedCorpus.ttl" };
-
 	@Autowired
 	private EagletDatabaseStatements database;
 
 	private List<Document> documents;
-	// TODO make me thread safe
 	private int counter;
 
+	/**
+	 * Constructor
+	 */
 	public EagletController() {
 		this.documents = loadDocuments();
 		this.counter = 0;
 	}
 
+	/**
+	 *
+	 * Constructor
+	 *
+	 * @param documents
+	 *            : List of documents
+	 */
+
 	public EagletController(List<Document> documents) {
 		this.documents = documents;
 	}
 
+	/**
+	 * The method to get the user from the database
+	 *
+	 * @param userName
+	 * @return Userid
+	 */
 	public int getUser(String userName) {
 		int userId;
 		if (database.getUser(userName) == -1) {
@@ -81,6 +98,12 @@ public class EagletController {
 		return userId;
 	}
 
+	/**
+	 * The method handles the next set of documents based on User information.
+	 *
+	 * @param userName
+	 * @return ResponseEntity
+	 */
 	@RequestMapping(value = "/next", produces = "application/json;charset=utf-8")
 	public ResponseEntity<String> nextDocument(
 			@RequestParam(value = "username") String userName) {
@@ -112,6 +135,14 @@ public class EagletController {
 		return null;
 	}
 
+	/**
+	 * The method transforms the document into Json for parsing in the
+	 * webservice.
+	 *
+	 * @param document
+	 * @return Json string
+	 */
+
 	private String transformDocToJson(Document document) {
 		JSONObject doc = new JSONObject();
 		doc.append("text", document.getText());
@@ -138,26 +169,17 @@ public class EagletController {
 			ne.append("error", nec.getError());
 			array.put(ne);
 		}
-		/*List<NamedEntityCorrections> ecs = document
-				.getMarkings(NamedEntityCorrections.class);
-		ecs.sort(new StartPosBasedComparator());
-		for (NamedEntityCorrections nec : ecs) {
-			ne = new JSONObject();
-			ne.append("start", nec.getStartPosition());
-			ne.append("length", nec.getLength());
-			ne.append("uris", nec.getUris());
-			ne.append(
-					"name",
-					document.getText()
-							.substring(nec.getStartPosition(),
-									nec.getStartPosition() + nec.getLength())
-							.toUpperCase());
-			array.put(ne);
-		}*/
 		doc.append("markings", array);
 		return doc.toString();
 	}
 
+	/**
+	 * The method transforms the JSon string returned by the user into a list of
+	 * markings to be written into the NIF file.
+	 *
+	 * @param userInput
+	 * @return List of Markings
+	 */
 	private List<Marking> transformEntityFromJson(String userInput) {
 		List<Marking> userAcceptedEntities = new ArrayList<Marking>();
 		JSONArray markings = new JSONArray(userInput);
@@ -177,6 +199,15 @@ public class EagletController {
 		return userAcceptedEntities;
 	}
 
+	/**
+	 * The method handles the returning of Json string.
+	 *
+	 * @param document
+	 * @param userInput
+	 * @param userName
+	 * @return Json String of entities.
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/submitResults", method = RequestMethod.POST)
 	public String submitResults(
 			@RequestParam(value = "documenturi") String document,
@@ -222,6 +253,13 @@ public class EagletController {
 		return "redirect:next?username=" + userName;
 	}
 
+	/**
+	 * The method writes the output to the NIF file.
+	 *
+	 * @param document
+	 * @return
+	 */
+
 	public static Model generateModifiedModel(Document document) {
 		Model nifModel = ModelFactory.createDefaultModel();
 		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
@@ -242,6 +280,12 @@ public class EagletController {
 		return nifModel;
 	}
 
+	/**
+	 * The method is responsible for returning list of documents based on
+	 * userId.
+	 *
+	 * @return List of Documents
+	 */
 	protected static List<Document> loadDocuments() {
 		List<Document> loadedDocuments = new ArrayList<Document>();
 		DocumentListParser parser = new DocumentListParser(new DocumentParser(

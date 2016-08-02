@@ -1,4 +1,5 @@
 package org.aksw.simba.eaglet.annotator;
+
 /**
  * This file is part of General Entity Annotator Benchmark.
  *
@@ -16,7 +17,6 @@ package org.aksw.simba.eaglet.annotator;
  * along with General Entity Annotator Benchmark.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,48 +28,56 @@ import org.aksw.gerbil.transfer.nif.Meaning;
 import org.aksw.gerbil.transfer.nif.MeaningSpan;
 import org.aksw.gerbil.transfer.nif.Span;
 
+/**
+ * The class defines the various annotators related function for A2KB Experiment
+ * tasks.
+ *
+ * @author Michael
+ *
+ */
 
+public class TestA2KBAnnotator extends AbstractTestAnnotator implements
+		A2KBAnnotator {
 
-public class TestA2KBAnnotator extends AbstractTestAnnotator implements A2KBAnnotator {
+	public TestA2KBAnnotator(List<Document> instances) {
+		super("TestEntityExtractor", false, instances, ExperimentType.OKE_Task1);
+	}
 
-    public TestA2KBAnnotator(List<Document> instances) {
-        super("TestEntityExtractor", false, instances, ExperimentType.OKE_Task1);
-    }
+	@Override
+	public List<MeaningSpan> performD2KBTask(Document document)
+			throws GerbilException {
+		Document result = this.getDocument(document.getDocumentURI());
+		if (result == null) {
+			return new ArrayList<MeaningSpan>(0);
+		}
+		return result.getMarkings(MeaningSpan.class);
+	}
 
-    @Override
-    public List<MeaningSpan> performD2KBTask(Document document) throws GerbilException {
-        Document result = this.getDocument(document.getDocumentURI());
-        if (result == null) {
-            return new ArrayList<MeaningSpan>(0);
-        }
-        return result.getMarkings(MeaningSpan.class);
-    }
+	@Override
+	public List<Span> performRecognition(Document document) {
+		Document result = this.getDocument(document.getDocumentURI());
+		if (result == null) {
+			return new ArrayList<Span>(0);
+		}
+		return result.getMarkings(Span.class);
+	}
 
-    @Override
-    public List<Span> performRecognition(Document document) {
-        Document result = this.getDocument(document.getDocumentURI());
-        if (result == null) {
-            return new ArrayList<Span>(0);
-        }
-        return result.getMarkings(Span.class);
-    }
+	@Override
+	public List<MeaningSpan> performA2KBTask(Document document) {
+		Document result = this.getDocument(document.getDocumentURI());
+		if (result == null) {
+			return new ArrayList<MeaningSpan>(0);
+		}
+		return result.getMarkings(MeaningSpan.class);
+	}
 
-    @Override
-    public List<MeaningSpan> performA2KBTask(Document document) {
-        Document result = this.getDocument(document.getDocumentURI());
-        if (result == null) {
-            return new ArrayList<MeaningSpan>(0);
-        }
-        return result.getMarkings(MeaningSpan.class);
-    }
-
-    @Override
-    public List<Meaning> performC2KB(Document document) throws GerbilException {
-        Document result = this.getDocument(document.getDocumentURI());
-        if (result == null) {
-            return new ArrayList<Meaning>(0);
-        }
-        return result.getMarkings(Meaning.class);
-    }
+	@Override
+	public List<Meaning> performC2KB(Document document) throws GerbilException {
+		Document result = this.getDocument(document.getDocumentURI());
+		if (result == null) {
+			return new ArrayList<Meaning>(0);
+		}
+		return result.getMarkings(Meaning.class);
+	}
 
 }

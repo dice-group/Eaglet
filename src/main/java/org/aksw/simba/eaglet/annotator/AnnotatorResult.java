@@ -12,16 +12,26 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 
+/**
+ * The class that defines the annotator result.
+ *
+ * @author Kunal
+ * @author Michael
+ */
 public class AnnotatorResult {
 
 	private static final ExperimentType EXPERIMENT_TYPE = ExperimentType.A2KB;
 	private List<A2KBAnnotator> annotators = new ArrayList<A2KBAnnotator>();
 	String filename;
 
+	/**
+	 * Constructor
+	 *
+	 * @param Filename
+	 * @throws GerbilException
+	 */
 	public AnnotatorResult(String Filename) throws GerbilException {
-		// TODO Auto-generated constructor stub
 		this.filename = Filename;
-		
 		readannotatorlist();
 
 	}
@@ -34,38 +44,44 @@ public class AnnotatorResult {
 		this.annotators = annotators;
 	}
 
+	/**
+	 * The method reads all the A2KB annotators.
+	 *
+	 * @throws GerbilException
+	 */
 	public void readannotatorlist() throws GerbilException {
 		File folder = new File(filename);
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
 			if (file.isFile()) {
-				// String annotatorFilenName = file.getParent() + "/" +
-				// file.getName();
 				String annotatorFilenName = file.getAbsolutePath();
-				//System.out.println(annotatorFilenName);
-				annotators.add(AnnotatorResult.loadAnnotator(annotatorFilenName, file.getName()));
+				annotators.add(AnnotatorResult.loadAnnotator(
+						annotatorFilenName, file.getName()));
 			}
 		}
 	}
 
 	@Deprecated
-	public static List<NamedEntityCorrections> loadAnnotatorResult(String annotatorFileName, String AnnotatorName)
+	public static List<NamedEntityCorrections> loadAnnotatorResult(
+			String annotatorFileName, String AnnotatorName)
 			throws GerbilException {
-		Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
+		Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR",
+				annotatorFileName, false, EXPERIMENT_TYPE))
 				.getDataset(EXPERIMENT_TYPE);
 		ArrayList<NamedEntityCorrections> entity_set = new ArrayList<NamedEntityCorrections>();
 		List<Document> documents = dataset.getInstances();
-		A2KBAnnotator alias_annotator = new TestA2KBAnnotator(documents);
-		// System.out.println(documents.get(0).getDocumentURI());
 		for (Document doc : documents) {
-			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
+			List<NamedEntityCorrections> entities = doc
+					.getMarkings(NamedEntityCorrections.class);
 			entity_set.addAll(entities);
 		}
 		return entity_set;
 	}
 
-	public static A2KBAnnotator loadAnnotator(String annotatorFileName, String AnnotatorName) throws GerbilException {
-		Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
+	public static A2KBAnnotator loadAnnotator(String annotatorFileName,
+			String AnnotatorName) throws GerbilException {
+		Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR",
+				annotatorFileName, false, EXPERIMENT_TYPE))
 				.getDataset(EXPERIMENT_TYPE);
 		List<Document> documents = dataset.getInstances();
 		return new TestA2KBAnnotator(documents);

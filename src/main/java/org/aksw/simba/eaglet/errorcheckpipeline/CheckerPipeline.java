@@ -19,7 +19,7 @@ import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.annotator.AnnotatorResult;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.error.CombinedTaggingError;
-import org.aksw.simba.eaglet.error.ErraticEntityError;
+import org.aksw.simba.eaglet.error.ErraticMarkingError;
 import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.aksw.simba.eaglet.error.LongDescriptionError;
 import org.aksw.simba.eaglet.error.OverLappingError;
@@ -34,47 +34,58 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
+/**
+ * The class defines the pipeline structure and functionalities.
+ *
+ * @author Kunal
+ * @author Michael
+ */
 public class CheckerPipeline {
+	/** Value - {@value} , LOGGER used for log information. */
 	private static final org.slf4j.Logger LOGGER = LoggerFactory
 			.getLogger(CheckerPipeline.class);
 
-	public static List<A2KBAnnotator> callAnnotator(String path)
+	/**
+	 * This method call all the annotators results. Utility method for pipeline.
+	 *
+	 * @param path
+	 * @return List of A2KB Annotators Object.
+	 * @throws GerbilException
+	 */
+	public List<A2KBAnnotator> callAnnotator(String path)
 			throws GerbilException {
 		AnnotatorResult ar = new AnnotatorResult(path);
 		List<A2KBAnnotator> annotators = ar.getAnnotators();
 		return annotators;
 	}
 
-	public static void startPipe(List<Document> documents, String name)
+	/**
+	 * This method defines the structure of the pipe and starts the error
+	 * checker pipeline.
+	 *
+	 * @param documents
+	 * @param name
+	 * @throws GerbilException
+	 * @throws IOException
+	 */
+	public void startPipe(List<Document> documents, String name)
 			throws GerbilException, IOException {
-		//List<A2KBAnnotator> annotators = callAnnotator("eaglet_data/Results_anontator");
-
 		// prepare the pipeline
-
 		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
-		//checkers.add(new MissingEntityCompletion(annotators));
+		// checkers.add(new MissingEntityCompletion(annotators));
 		checkers.add(new LongDescriptionError());
 		checkers.add(new SubsetMarkingError());
-		checkers.add(new ErraticEntityError());
+		checkers.add(new ErraticMarkingError());
 		checkers.add(new OverLappingError());
 		checkers.add(new CombinedTaggingError());
-		//checkers.add(new UriError());
-
-
+		// checkers.add(new UriError());
 		// start pipeline
-
 		for (ErrorChecker checker : checkers) {
 			checker.check(documents);
 		}
-
-		// CountChanges.countchanges(documents, name);
-		// write documents
-
 		Model nifModel = generateModel(documents);
-
-		File resultfile = new File("eaglet_data/result_pipe/" + name
-				+ "-result-nif.ttl");
-
+		File resultfile = new File("eaglet_data" + File.separator
+				+ "result_pipe" + File.separator + name + "-result-nif.ttl");
 		if (!resultfile.exists()) {
 			resultfile.getParentFile().mkdirs();
 			resultfile.createNewFile();
@@ -84,9 +95,14 @@ public class CheckerPipeline {
 		nifModel.write(fout, "TTL");
 		fout.close();
 		LOGGER.info("PIPELINE RESULTS GENERATED");
-
 	}
 
+	/**
+	 * This method generates the NIF model for writing to the annotation file.
+	 *
+	 * @param documents
+	 * @return NIF Model
+	 */
 	public static Model generateModel(List<Document> documents) {
 		Model nifModel = ModelFactory.createDefaultModel();
 		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
@@ -107,27 +123,30 @@ public class CheckerPipeline {
 						EAGLET.getCheckResult(correction.getResult()));
 				partner = correction.getPartner();
 				if ((partner != null)) {
-
 					nifModel.add(annotationResource, EAGLET.hasPairPartner,
 							nifModel.getResource(NIFUriHelper.getNifUri(
 									document.getDocumentURI(),
 									partner.getStartPosition(),
 									partner.getStartPosition()
 											+ partner.getLength())));
-
 				}
 			}
 		}
 		return nifModel;
-
 	}
 
-	public static List<Document> readDocuments(String fileName)
-			throws IOException {
+	/**
+	 * This method reads the documents from the TTL files.
+	 *
+	 * @param path
+	 * @return List of Documents
+	 * @throws IOException
+	 */
+	public static List<Document> readDocuments(String path) throws IOException {
 		// Read the RDF MOdel
 		Model nifModel = ModelFactory.createDefaultModel();
 		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-		FileInputStream fin = new FileInputStream(new File(fileName));
+		FileInputStream fin = new FileInputStream(new File(path));
 		nifModel.read(fin, "", "TTL");
 		fin.close();
 
@@ -155,7 +174,6 @@ public class CheckerPipeline {
 							.charAt(subjectUri.length() - 3));
 					int endobj = Character.getNumericValue(objectUri
 							.charAt(subjectUri.length() - 1));
-
 					List<NamedEntityCorrections> entity_set = doc
 							.getMarkings(NamedEntityCorrections.class);
 					for (NamedEntityCorrections entity : entity_set) {

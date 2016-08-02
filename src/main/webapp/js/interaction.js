@@ -1,3 +1,6 @@
+/**
+ * The javascript class that controls the working of the UI.
+ */
 $(document).ready(function() {
 	$("#anotherSection").hide();
 	$("#newEntity").bind("click", Selector.mouseup);
@@ -7,21 +10,28 @@ $(document).ready(function() {
 		$("#userinfo").hide()
 	});
 });
-
+// Basic Variables.
 var counter = 1;
 var documentUri;
 var documentText;
 var loginName;
 
+/**
+ * Method to update the document text.
+ */
 function updateText() {
 	clearText();
 	printText();
 }
-
+/**
+ * Method to clean the document text.
+ */
 function clearText() {
 	$("#sidebar-content").html("");
 }
-
+/**
+ * Method to print the document text
+ */
 function printText() {
 	var markedChars = new BitSet;
 	// collect all marked characters
@@ -50,7 +60,22 @@ function printText() {
 	markedText += documentText.slice(lastPos);
 	$("#sidebar-content").html(markedText);
 }
-
+/**
+ * Method to display the list of Entity.
+ * 
+ * @param name
+ *            Name of the entity
+ * @param start
+ *            :The start position of the marking.
+ * @param length :
+ *            The length of the marking.
+ * @param checkResult:
+ *            The pipeline decision of the entity
+ * @param uri:
+ *            The uri string of the entity.
+ * @param errortype:
+ *            The string to store errorType
+ */
 function printEntity(name, start, length, checkResult, uri, errortype) {
 	var content = '<div " id="' + counter + '" class="marking"><ul>';
 	if (uri != null) {
@@ -85,10 +110,14 @@ function printEntity(name, start, length, checkResult, uri, errortype) {
 			+ ')">Delete</button> <br /></div><hr>';
 
 	$('#main-content .innerContainer').append($(content));
-	// makeUrisEditable($('span#uri' + counter));
 	counter += 1;
 }
-
+/**
+ * The method to print the text of the document for user reference.
+ * 
+ * @param data:
+ *            String containing text.
+ */
 function printDocument(data) {
 	documentText = data.text[0];
 	documentUri = data.uri[0];
@@ -96,7 +125,7 @@ function printDocument(data) {
 	markings = data.markings[0];
 	var lastpos = 0;
 	var text_content = '';
-	//
+
 	$("#markings-list").html('');
 	$.each(markings, function(i, v) {
 		printEntity(v.name, v.start, v.length, v.result, v.uris, v.error);
@@ -110,7 +139,9 @@ function printDocument(data) {
 	});
 
 }
-
+/**
+ * The method to record the user details
+ */
 function uservalidation() {
 	// get the form data using another method
 	loginName = $("input#user").val();
@@ -128,11 +159,19 @@ function uservalidation() {
 		// handle error
 	});
 };
-
+/**
+ * The method that makes the URI editable.
+ * 
+ * @param span:
+ *            The span of covering the URI
+ */
 function makeUrisEditable(span) {
 	var replaceWith = $('<input name="temp" type="text" value="" />');
 	$(span).inlineEdit(replaceWith);
 }
+/**
+ * The method to send the data back to the server.
+ */
 
 function senddata() {
 	var marking_list = [];
@@ -162,20 +201,29 @@ function senddata() {
 
 	}).done(printDocument);
 }
-
+/**
+ * The method to delete the id.
+ * 
+ * @param divid
+ */
 function removeelement(divid) {
 	var div = $('#' + divid);
 	div.next('hr').remove();
 	div.remove();
 	updateText();
 };
+/**
+ * The method is utility for URI editing.
+ * 
+ * @param divid
+ */
 function edittext(divid) {
 
 	$("#uri" + divid).contentEditable = "true";
 
 }
 
-// Selection
+// Selection of text
 var t = '';
 Selector = {};
 Selector.getSelected = function() {
