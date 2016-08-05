@@ -5,6 +5,8 @@
 	<artifactId>gscheck</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+
+
 	<properties>
 		<java.version>1.7</java.version>
 		<slf4j.version>1.7.6</slf4j.version>
@@ -14,7 +16,7 @@
 		<jena.version>2.13.0</jena.version>
 		<jsonld-java-jena.version>0.4.1</jsonld-java-jena.version>
 	</properties>
-	
+
 	<repositories>
 		<!-- Let's use a local repository for the local libraries of this project -->
 		<repository>
@@ -132,7 +134,7 @@
 		</dependency>
 		<!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -144,6 +146,16 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
+				<configuration>
+				</configuration>
+			</plugin>
+
+
 			<!-- License management plugin -->
 			<plugin>
 				<groupId>com.mycila</groupId>

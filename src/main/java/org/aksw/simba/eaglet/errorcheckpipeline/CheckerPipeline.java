@@ -24,6 +24,7 @@ import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.aksw.simba.eaglet.error.LongDescriptionError;
 import org.aksw.simba.eaglet.error.OverLappingError;
 import org.aksw.simba.eaglet.error.SubsetMarkingError;
+import org.aksw.simba.eaglet.error.UriError;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,7 @@ public class CheckerPipeline {
 		checkers.add(new ErraticMarkingError());
 		checkers.add(new OverLappingError());
 		checkers.add(new CombinedTaggingError());
-		// checkers.add(new UriError());
+		checkers.add(new UriError());
 		// start pipeline
 		for (ErrorChecker checker : checkers) {
 			checker.check(documents);
