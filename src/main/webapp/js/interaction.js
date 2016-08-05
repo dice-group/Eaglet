@@ -99,13 +99,22 @@ function printEntity(name, start, length, checkResult, uri, errortype) {
 	content += '<li > Uris : <span id="uri' + counter
 			+ '" class="uri"> <a href ="' + uri + '">' + uri
 			+ '</a></span></li><br />';
-	content += '<form name="ValidationData">'
-			+ '<p>Decide The correctness of Marking</p>'
-			+ '<input type="radio" class = "entityCheck" name="decision" value="correct" checked="checked">Correct</input><br />'
-			+ '<input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input><br />'
-			+ '<input type="radio" class = "entityCheck" name="decision" value="added" >Added</input><br />'
-			+ '<input type="radio" class = "entityCheck" name="decision" value="missing" >Missing</input><br />'
-			+ '</form>'
+	if (uri != null) {
+		content += '<form name="ValidationData">'
+				+ '<p>Decide The correctness of Marking</p>'
+				+ '<input type="radio" class = "entityCheck" name="decision" value="correct" checked="checked">Correct</input><br />'
+				+ '<input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input><br />'
+				+ '<input type="radio" class = "entityCheck" name="decision" value="added" >Added</input><br />'
+				+ '</form>'
+	} else {
+		content += '<form name="ValidationData">'
+				+ '<p>Decide The correctness of Marking</p>'
+				+ '<input type="radio" class = "entityCheck" name="decision" value="correct" >Correct</input><br />'
+				+ '<input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input><br />'
+				+ '<input type="radio" class = "entityCheck" name="decision" value="added" checked="checked" >Added</input><br />'
+				+ '</form>'
+	}
+
 	content += '</ul> <button onclick="removeelement(' + counter
 			+ ')">Delete</button> <br /></div><hr>';
 

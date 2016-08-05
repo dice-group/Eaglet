@@ -19,7 +19,7 @@ public class NamedEntityCorrections extends NamedEntity {
 	}
 
 	public enum DecisionValue {
-		CORRECT, WRONG, MISSING, ADDED
+		CORRECT, WRONG, ADDED
 	}
 
 	private DecisionValue userDecision;

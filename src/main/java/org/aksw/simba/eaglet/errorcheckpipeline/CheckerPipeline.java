@@ -122,6 +122,9 @@ public class CheckerPipeline {
 										+ correction.getLength()));
 				nifModel.add(annotationResource, EAGLET.hasCheckResult,
 						EAGLET.getCheckResult(correction.getResult()));
+				nifModel.add(annotationResource, EAGLET.hasErrorType,
+						EAGLET.getCheckResult(correction.getResult()));
+
 				partner = correction.getPartner();
 				if ((partner != null)) {
 					nifModel.add(annotationResource, EAGLET.hasPairPartner,

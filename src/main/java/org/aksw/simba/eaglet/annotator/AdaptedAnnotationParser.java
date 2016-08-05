@@ -222,8 +222,6 @@ public class AdaptedAnnotationParser extends AnnotationParser {
 	private DecisionValue parseUserDecision(Resource resource) {
 		if (EAGLET.Added.equals(resource)) {
 			return DecisionValue.ADDED;
-		} else if (EAGLET.Missing.equals(resource)) {
-			return DecisionValue.MISSING;
 		} else if (EAGLET.Correct.equals(resource)) {
 			return DecisionValue.CORRECT;
 		} else if (EAGLET.Wrong.equals(resource)) {

@@ -54,7 +54,7 @@ public class EagletController {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/DBpediaSpotlight-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "/Users/Kunal/workspace/gscheck/eaglet_data/result_pipe/ACE2004-result-nif.ttl" };
 
 	@Autowired
 	private EagletDatabaseStatements database;
@@ -335,8 +335,7 @@ public class EagletController {
 			return DecisionValue.CORRECT;
 		} else if (errortype.toUpperCase().equals("WRONG")) {
 			return DecisionValue.WRONG;
-		} else if (errortype.toUpperCase().equals("MISSING")) {
-			return DecisionValue.MISSING;
+
 		} else if (errortype.toUpperCase().equals("ADDED")) {
 			return DecisionValue.ADDED;
 		} else {

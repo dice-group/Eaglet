@@ -74,7 +74,6 @@ public class EAGLET {
 	public static final Resource DisambiguationUriErr = resource("DisambiguationUriErr");
 	public static final Resource Correct = resource("Correct");
 	public static final Resource Wrong = resource("Wrong");
-	public static final Resource Missing = resource("Missing");
 	public static final Resource Added = resource("Added");
 
 	public static final Property hasErrorType = property("hasErrorType");
@@ -88,8 +87,7 @@ public class EAGLET {
 			return Added;
 		case CORRECT:
 			return Correct;
-		case MISSING:
-			return Missing;
+
 		case WRONG:
 			return Wrong;
 
