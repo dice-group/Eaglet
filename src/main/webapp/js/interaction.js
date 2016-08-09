@@ -96,8 +96,8 @@ function printEntity(name, start, length, checkResult, uri, errortype) {
 		content += '<li > Error Type : <span id="error' + counter
 				+ '" class="error">' + errortype + '</span></li><br />';
 	}
-	content += '<li > Uris : <span id="uri' + counter
-			+ '" class="uri"> <a href ="' + uri + '">' + uri
+	content += '<li > Uris : <span id="uri'
+			+ '" class="uri">  ' + uri
 			+ '</a></span></li><br />';
 	if (uri != null) {
 		content += '<form name="ValidationData">'
@@ -120,6 +120,10 @@ function printEntity(name, start, length, checkResult, uri, errortype) {
 
 	$('#main-content .innerContainer').append($(content));
 	counter += 1;
+	
+	$("span.uri").each(function() {
+		makeUrisEditable(this);
+	});
 }
 /**
  * The method to print the text of the document for user reference.
@@ -143,7 +147,7 @@ function printDocument(data) {
 
 	// make the URIs editable
 
-	$("span.error").each(function() {
+	$("span.uri").each(function() {
 		makeUrisEditable(this);
 	});
 
@@ -279,5 +283,6 @@ Selector.mouseup = function() {
 		printEntity(st, selection.start, (selection.end - selection.start),
 				null, null);
 		updateText();
+		
 	}
 };
