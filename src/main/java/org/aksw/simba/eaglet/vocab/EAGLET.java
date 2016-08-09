@@ -64,7 +64,7 @@ public class EAGLET {
 	public static final Resource InvalidUri = resource("InvalidUri");
 	public static final Resource OutdatedUri = resource("OutdatedUri");
 	public static final Resource DisambiguationUri = resource("DisambiguationUri");
-	public static final Resource Combined = resource("Combined");
+	public static final Resource Combined = resource("Combined Tagging");
 	public static final Resource Overlapping = resource("Overlapping");
 	public static final Resource Erratic = resource("Combined");
 	public static final Resource WrongPos = resource("WrongPos");
@@ -96,8 +96,9 @@ public class EAGLET {
 		return null;
 	}
 
-	public static Resource getErrorType(ErrorType errorkind) {
-		switch (errorkind) {
+	public static Resource getErrorType(ErrorType list) {
+
+		switch (list) {
 		case OVERLAPPING:
 			return Overlapping;
 		case COMBINED:
@@ -116,7 +117,7 @@ public class EAGLET {
 			return WrongPos;
 
 		}
-		LOGGER.error("Got an unknown matching type: " + errorkind.name());
+		LOGGER.error("Got an unknown matching type: " + list.name());
 		return null;
 	}
 

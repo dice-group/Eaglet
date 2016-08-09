@@ -18,6 +18,7 @@ import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.annotator.AnnotatorResult;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.simba.eaglet.error.CombinedTaggingError;
 import org.aksw.simba.eaglet.error.ErraticMarkingError;
 import org.aksw.simba.eaglet.error.ErrorChecker;
@@ -122,9 +123,10 @@ public class CheckerPipeline {
 										+ correction.getLength()));
 				nifModel.add(annotationResource, EAGLET.hasCheckResult,
 						EAGLET.getCheckResult(correction.getResult()));
-				nifModel.add(annotationResource, EAGLET.hasErrorType,
-						EAGLET.getCheckResult(correction.getResult()));
-
+				for (ErrorType error : correction.getError()) {
+					nifModel.add(annotationResource, EAGLET.hasErrorType,
+							EAGLET.getErrorType(error));
+				}
 				partner = correction.getPartner();
 				if ((partner != null)) {
 					nifModel.add(annotationResource, EAGLET.hasPairPartner,

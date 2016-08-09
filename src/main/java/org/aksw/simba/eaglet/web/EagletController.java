@@ -54,7 +54,7 @@ public class EagletController {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "/Users/Kunal/workspace/gscheck/eaglet_data/result_pipe/ACE2004-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "/Users/Kunal/workspace/gscheck/eaglet_data/result_pipe/OKE 2015 Task 1 evaluation dataset-result-nif.ttl" };
 
 	@Autowired
 	private EagletDatabaseStatements database;
@@ -166,7 +166,7 @@ public class EagletController {
 							.substring(nec.getStartPosition(),
 									nec.getStartPosition() + nec.getLength())
 							.toUpperCase());
-			ne.append("error", nec.getError());
+			ne.append("error", nec.getError().toString());
 			array.put(ne);
 		}
 		doc.append("markings", array);
