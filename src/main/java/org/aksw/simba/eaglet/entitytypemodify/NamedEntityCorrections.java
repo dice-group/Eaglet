@@ -24,8 +24,6 @@ public class NamedEntityCorrections extends NamedEntity {
 
 	private DecisionValue userDecision;
 
-	// TODO: Check Hashcode.
-
 	public enum ErrorType {
 		COMBINED, ERRATIC, LONGDESC, OVERLAPPING, WRONGPOSITION, INVALIDURIERR, DISAMBIGURIERR, OUTDATEDURIERR
 	}

@@ -53,6 +53,8 @@ public class ErraticMarkingError implements ErrorChecker {
 		for (Document doc : documents) {
 			List<StanfordParsedMarking> stanfordAnns = doc
 					.getMarkings(StanfordParsedMarking.class);
+			List<NamedEntityCorrections> entities = doc
+					.getMarkings(NamedEntityCorrections.class);
 			StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
 			List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(
 					TokensAnnotation.class);
@@ -106,20 +108,43 @@ public class ErraticMarkingError implements ErrorChecker {
 							// if there is no matching named entity, we have
 							// found a new one
 							if (found == false) {
-								NamedEntityCorrections newentity = new NamedEntityCorrections(
+								// A check for non-overlapping marking.
+								BitSet nePositions = new BitSet(doc.getText()
+										.length());
+								int start[] = new int[entities.size()];
+								int end[] = new int[entities.size()];
+								Collections.sort(entities,
+										new StartPosBasedComparator());
+								for (int iter = 0; iter < entities.size(); ++iter) {
+									start[iter] = entities.get(iter)
+											.getStartPosition();
+									end[iter] = entities.get(iter)
+											.getStartPosition()
+											+ entities.get(iter).getLength();
+									nePositions.set(start[iter], end[iter]);
+								}
+								if (nePositions.get(
 										currentToken.beginPosition(),
-										tokens.get(
-												i
-														+ surfaceformvar.surfaceForm.length
-														- 1).endPosition()
-												- currentToken.beginPosition(),
-										new HashSet<String>(surfaceformvar.nes
-												.get(0).getUris()),
-										Check.INSERTED);
-								newentity.setError(ErrorType.ERRATIC);
-								doc.addMarking(newentity);
+										currentToken.endPosition())
+										.cardinality() == 0) {
+									NamedEntityCorrections newentity = new NamedEntityCorrections(
+											currentToken.beginPosition(),
+											tokens.get(
+													i
+															+ surfaceformvar.surfaceForm.length
+															- 1).endPosition()
+													- currentToken
+															.beginPosition(),
+											new HashSet<String>(
+													surfaceformvar.nes.get(0)
+															.getUris()),
+											Check.INSERTED);
+									newentity.setError(ErrorType.ERRATIC);
+									doc.addMarking(newentity);
+								}
+
+								matchedSurfaceFormLength = surfaceformvar.surfaceForm.length;
 							}
-							matchedSurfaceFormLength = surfaceformvar.surfaceForm.length;
 						}
 					}
 					// if we have found something that matched increase our
@@ -148,28 +173,28 @@ public class ErraticMarkingError implements ErrorChecker {
 
 			for (NamedEntityCorrections entity : entities) {
 				entity.setDoc(doc.getDocumentURI());
-				if (map.containsKey(entity.getEntity_name())) {
-					for (NamedEntitySurfaceForm ns : map.get(entity
-							.getEntity_name())) {
-						if (Arrays.equals(ns.surfaceForm, entity.entity_text)) {
-							ns.nes.add(entity);
+				if (entity.getResult() == Check.GOOD) {
+					if (map.containsKey(entity.getEntity_name())) {
+						for (NamedEntitySurfaceForm ns : map.get(entity
+								.getEntity_name())) {
+							if (Arrays.equals(ns.surfaceForm,
+									entity.entity_text)) {
+								ns.nes.add(entity);
+							}
 						}
+
+					} else {
+						List<NamedEntitySurfaceForm> sub = new ArrayList<NamedEntitySurfaceForm>();
+						List<NamedEntityCorrections> sub_entity = new ArrayList<NamedEntityCorrections>();
+						NamedEntitySurfaceForm nesf = new NamedEntitySurfaceForm();
+						nesf.surfaceForm = entity.entity_text;
+						sub_entity.add(entity);
+						nesf.nes = sub_entity;
+						sub.add(nesf);
+						map.put(entity.getEntity_name(), sub);
 					}
-
-				}
-
-				else {
-					List<NamedEntitySurfaceForm> sub = new ArrayList<NamedEntitySurfaceForm>();
-					List<NamedEntityCorrections> sub_entity = new ArrayList<NamedEntityCorrections>();
-					NamedEntitySurfaceForm nesf = new NamedEntitySurfaceForm();
-					nesf.surfaceForm = entity.entity_text;
-					sub_entity.add(entity);
-					nesf.nes = sub_entity;
-					sub.add(nesf);
-					map.put(entity.getEntity_name(), sub);
 				}
 			}
-
 		}
 
 		return map;

@@ -77,10 +77,11 @@ public class CheckerPipeline {
 		// checkers.add(new MissingEntityCompletion(annotators));
 		checkers.add(new LongDescriptionError());
 		checkers.add(new SubsetMarkingError());
-		checkers.add(new ErraticMarkingError());
 		checkers.add(new OverLappingError());
 		checkers.add(new CombinedTaggingError());
 		checkers.add(new UriError());
+		checkers.add(new ErraticMarkingError());
+
 		// start pipeline
 		for (ErrorChecker checker : checkers) {
 			checker.check(documents);
