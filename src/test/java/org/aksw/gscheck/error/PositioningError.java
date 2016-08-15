@@ -1,7 +1,5 @@
 package org.aksw.gscheck.error;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,12 +10,11 @@ import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
-import org.aksw.simba.eaglet.error.SubsetMarkingError;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SubsetMarkingErrorTest {
+public class PositioningError {
 	private static final String TEXTS[] = new String[] {
 			"Florence May Harding studied at a school in Sydney, and with Douglas Robert Dundas , but in effect had no formal training in either botany or art.",
 			"Such notables include James Carville, who was the senior political adviser to Bill Clinton, and Donna Brazile, the campaign manager of the 2000 presidential campaign of Vice-President Al Gore.",
@@ -83,8 +80,8 @@ public class SubsetMarkingErrorTest {
 	@Test
 	public void test() throws GerbilException {
 		// fail("Not yet implemented");
-		SubsetMarkingError test_var = new SubsetMarkingError();
-		test_var.check(doc);
+		PositioningError test_var ;
+
 
 		List<NamedEntityCorrections> markings;
 		Check[] expectedResult;

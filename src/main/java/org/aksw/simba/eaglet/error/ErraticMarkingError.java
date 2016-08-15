@@ -108,6 +108,7 @@ public class ErraticMarkingError implements ErrorChecker {
 							// if there is no matching named entity, we have
 							// found a new one
 							if (found == false) {
+								String text = doc.getText();
 								// A check for non-overlapping marking.
 								BitSet nePositions = new BitSet(doc.getText()
 										.length());
@@ -123,27 +124,47 @@ public class ErraticMarkingError implements ErrorChecker {
 											+ entities.get(iter).getLength();
 									nePositions.set(start[iter], end[iter]);
 								}
-								if (nePositions.get(
+								if ((nePositions.get(
 										currentToken.beginPosition(),
 										currentToken.endPosition())
-										.cardinality() == 0) {
-									NamedEntityCorrections newentity = new NamedEntityCorrections(
-											currentToken.beginPosition(),
-											tokens.get(
-													i
-															+ surfaceformvar.surfaceForm.length
-															- 1).endPosition()
-													- currentToken
-															.beginPosition(),
-											new HashSet<String>(
-													surfaceformvar.nes.get(0)
-															.getUris()),
-											Check.INSERTED);
-									newentity.setError(ErrorType.ERRATIC);
-									doc.addMarking(newentity);
-								}
+										.cardinality() == 0)) {
 
-								matchedSurfaceFormLength = surfaceformvar.surfaceForm.length;
+									if (currentToken.beginPosition() > 0) {
+										if ((!Character.isWhitespace(text
+												.charAt(currentToken
+														.beginPosition() - 1)))) {
+											if (currentToken.endPosition() + 1 < text
+													.length()) {
+												if (Character
+														.isWhitespace(text
+																.charAt(currentToken
+																		.endPosition() + 1))) {
+
+													NamedEntityCorrections newentity = new NamedEntityCorrections(
+															currentToken
+																	.beginPosition(),
+															tokens.get(
+																	i
+																			+ surfaceformvar.surfaceForm.length
+																			- 1)
+																	.endPosition()
+																	- currentToken
+																			.beginPosition(),
+															new HashSet<String>(
+																	surfaceformvar.nes
+																			.get(0)
+																			.getUris()),
+															Check.INSERTED);
+													newentity
+															.setError(ErrorType.ERRATIC);
+													doc.addMarking(newentity);
+												}
+
+												matchedSurfaceFormLength = surfaceformvar.surfaceForm.length;
+											}
+										}
+									}
+								}
 							}
 						}
 					}

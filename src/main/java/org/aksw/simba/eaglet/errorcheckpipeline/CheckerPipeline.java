@@ -17,15 +17,10 @@ import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.annotator.AnnotatorResult;
+import org.aksw.simba.eaglet.completion.MissingEntityCompletion;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
-import org.aksw.simba.eaglet.error.CombinedTaggingError;
-import org.aksw.simba.eaglet.error.ErraticMarkingError;
 import org.aksw.simba.eaglet.error.ErrorChecker;
-import org.aksw.simba.eaglet.error.LongDescriptionError;
-import org.aksw.simba.eaglet.error.OverLappingError;
-import org.aksw.simba.eaglet.error.SubsetMarkingError;
-import org.aksw.simba.eaglet.error.UriError;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.slf4j.LoggerFactory;
 
@@ -72,15 +67,16 @@ public class CheckerPipeline {
 	 */
 	public void startPipe(List<Document> documents, String name)
 			throws GerbilException, IOException {
+		List<A2KBAnnotator> annotators = callAnnotator("/Users/Kunal/workspace/gscheck/eaglet_data/Result_Annotator");
 		// prepare the pipeline
 		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
-		// checkers.add(new MissingEntityCompletion(annotators));
-		checkers.add(new LongDescriptionError());
-		checkers.add(new SubsetMarkingError());
-		checkers.add(new OverLappingError());
-		checkers.add(new CombinedTaggingError());
-		checkers.add(new UriError());
-		checkers.add(new ErraticMarkingError());
+		checkers.add(new MissingEntityCompletion(annotators));
+		/*
+		 * checkers.add(new LongDescriptionError()); checkers.add(new
+		 * PositioningError()); checkers.add(new OverLappingError());
+		 * checkers.add(new CombinedTaggingError()); checkers.add(new
+		 * UriError()); checkers.add(new ErraticMarkingError());
+		 */
 
 		// start pipeline
 		for (ErrorChecker checker : checkers) {
@@ -88,7 +84,8 @@ public class CheckerPipeline {
 		}
 		Model nifModel = generateModel(documents);
 		File resultfile = new File("eaglet_data" + File.separator
-				+ "result_pipe" + File.separator + name + "-result-nif.ttl");
+				+ "result_completion" + File.separator + name
+				+ "-result-nif.ttl");
 		if (!resultfile.exists()) {
 			resultfile.getParentFile().mkdirs();
 			resultfile.createNewFile();
