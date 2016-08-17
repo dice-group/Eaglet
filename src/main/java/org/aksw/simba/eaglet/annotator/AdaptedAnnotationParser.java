@@ -246,9 +246,9 @@ public class AdaptedAnnotationParser extends AnnotationParser {
 			return ErrorType.LONGDESC;
 		} else if (EAGLET.InvalidUriErr.equals(resource)) {
 			return ErrorType.INVALIDURIERR;
-		} else if (EAGLET.DisambiguationUri.equals(resource)) {
+		} else if (EAGLET.DisambiguationUriErr.equals(resource)) {
 			return ErrorType.DISAMBIGURIERR;
-		} else if (EAGLET.OutdatedUri.equals(resource)) {
+		} else if (EAGLET.OutdatedUriErr.equals(resource)) {
 			return ErrorType.OUTDATEDURIERR;
 
 		} else {
