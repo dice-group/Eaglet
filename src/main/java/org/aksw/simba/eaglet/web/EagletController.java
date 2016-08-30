@@ -53,18 +53,18 @@ import com.hp.hpl.jena.rdf.model.Resource;
 @Controller
 public class EagletController {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(EagletController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/OKE 2015 Task 1 evaluation dataset-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/ACE2004-result-nif.ttl" };
+	// "eaglet_data/result_pipe/OKE 2015 Task 1 evaluation dataset-result-nif.ttl"
+	// };
 
 	private static final boolean USE_DOCUMENT_WHITELIST = true;
 	private static final String WHITELIST_SOURCE_DIR = "eaglet_data/result_user/Result Kunal";
 
 	@Autowired
 	private EagletDatabaseStatements database;
-	private DocumentListParser parser = new DocumentListParser(
-			new DocumentParser(new AdaptedAnnotationParser()));
+	private DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
 	private List<Document> documents;
 	private int counter;
 
@@ -111,8 +111,7 @@ public class EagletController {
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(value = "/next", produces = "application/json;charset=utf-8")
-	public ResponseEntity<String> nextDocument(
-			@RequestParam(value = "username") String userName) {
+	public ResponseEntity<String> nextDocument(@RequestParam(value = "username") String userName) {
 		LOGGER.info("Got a message to /next!");
 		int userId = getUser(userName);
 
@@ -120,19 +119,16 @@ public class EagletController {
 		Document document = getNextDocument(userId);
 		if (document == null) {
 			// TODO return that this was the last document
-			return new ResponseEntity<String>("redirect:thankyou.html", null,
-					HttpStatus.OK);
+			return new ResponseEntity<String>("redirect:thankyou.html", null, HttpStatus.OK);
 		}
 		// transform the document and its markings into a JSON String
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-		return new ResponseEntity<String>(transformDocToJson(document),
-				responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<String>(transformDocToJson(document), responseHeaders, HttpStatus.OK);
 	}
 
 	private Document getNextDocument(int userId) {
-		Set<String> alreadySeenDocuments = new HashSet<String>(
-				database.getDocumentUser(userId));
+		Set<String> alreadySeenDocuments = new HashSet<String>(database.getDocumentUser(userId));
 		for (Document document : documents) {
 			if (!alreadySeenDocuments.contains(document.getDocumentURI())) {
 				return document;
@@ -155,8 +151,7 @@ public class EagletController {
 		doc.append("uri", document.getDocumentURI());
 		JSONArray array = new JSONArray();
 		JSONObject ne;
-		List<NamedEntityCorrections> necs = document
-				.getMarkings(NamedEntityCorrections.class);
+		List<NamedEntityCorrections> necs = document.getMarkings(NamedEntityCorrections.class);
 		necs.sort(new StartPosBasedComparator());
 		for (NamedEntityCorrections nec : necs) {
 			ne = new JSONObject();
@@ -166,11 +161,8 @@ public class EagletController {
 			ne.append("result", nec.getResult());
 			ne.append("doc", nec.getDoc());
 			ne.append("uris", nec.getUris());
-			ne.append(
-					"name",
-					document.getText()
-							.substring(nec.getStartPosition(),
-									nec.getStartPosition() + nec.getLength())
+			ne.append("name",
+					document.getText().substring(nec.getStartPosition(), nec.getStartPosition() + nec.getLength())
 							.toUpperCase());
 			ne.append("error", nec.getError().toString());
 			array.put(ne);
@@ -196,10 +188,9 @@ public class EagletController {
 			List<ErrorType> error = new ArrayList<ErrorType>();
 			String errortype = markings.getJSONObject(i).getString("error");
 			error.add(parseErroResult(errortype));
-			Marking entity = new NamedEntityCorrections(markings.getJSONObject(
-					i).getInt("start"), markings.getJSONObject(i).getInt(
-					"length"), uris, error, parseDecisionType(markings
-					.getJSONObject(i).getString("decision")));
+			Marking entity = new NamedEntityCorrections(markings.getJSONObject(i).getInt("start"), markings
+					.getJSONObject(i).getInt("length"), uris, error, parseDecisionType(markings.getJSONObject(i)
+					.getString("decision")));
 			userAcceptedEntities.add(entity);
 		}
 		return userAcceptedEntities;
@@ -215,10 +206,8 @@ public class EagletController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/submitResults", method = RequestMethod.POST)
-	public String submitResults(
-			@RequestParam(value = "documenturi") String document,
-			@RequestParam(value = "markings") String userInput,
-			@RequestParam(value = "username") String userName)
+	public String submitResults(@RequestParam(value = "documenturi") String document,
+			@RequestParam(value = "markings") String userInput, @RequestParam(value = "username") String userName)
 			throws IOException {
 		int userId = getUser(userName);
 		List<Marking> changes = transformEntityFromJson(userInput);
@@ -238,13 +227,11 @@ public class EagletController {
 			counter++;
 		}
 
-		Document newdoc = new DocumentImpl(result.getText(),
-				result.getDocumentURI(), changes);
+		Document newdoc = new DocumentImpl(result.getText(), result.getDocumentURI(), changes);
 		Model nifModel = generateModifiedModel(newdoc);
 
-		File resultfile = new File("eaglet_data" + File.separator
-				+ "result_user" + File.separator + userId + File.separator
-				+ filename + "_" + counter + "-nif.ttl");
+		File resultfile = new File("eaglet_data" + File.separator + "result_user" + File.separator + userId
+				+ File.separator + filename + "_" + counter + "-nif.ttl");
 		if (!resultfile.exists()) {
 			resultfile.getParentFile().mkdirs();
 			resultfile.createNewFile();
@@ -272,13 +259,10 @@ public class EagletController {
 		DocumentListWriter writer = new DocumentListWriter();
 		writer.writeDocumentsToModel(nifModel, Arrays.asList(document));
 		Resource annotationResource;
-		for (NamedEntityCorrections correction : document
-				.getMarkings(NamedEntityCorrections.class)) {
-			annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(
-					document.getDocumentURI(), correction.getStartPosition(),
-					correction.getStartPosition() + correction.getLength()));
-			System.out.println(correction.getUris().toString() + " -> "
-					+ correction.getUserDecision());
+		for (NamedEntityCorrections correction : document.getMarkings(NamedEntityCorrections.class)) {
+			annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
+					correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
+			System.out.println(correction.getUris().toString() + " -> " + correction.getUserDecision());
 			nifModel.add(annotationResource, EAGLET.hasUserDecision,
 					nifModel.createTypedLiteral(correction.getUserDecision()));
 
@@ -306,6 +290,7 @@ public class EagletController {
 
 		if (USE_DOCUMENT_WHITELIST) {
 			Set<String> whitelist = generateWhiteList();
+			LOGGER.info("Whitelist contains {} document URIs.", whitelist.size());
 			temp = new ArrayList<Document>();
 			for (Document document : loadedDocuments) {
 				if (whitelist.contains(document.getDocumentURI())) {
@@ -313,6 +298,7 @@ public class EagletController {
 				}
 			}
 			loadedDocuments = temp;
+			LOGGER.info("There are {} documents matching the white list.", loadedDocuments.size());
 		}
 		return loadedDocuments;
 	}
@@ -386,8 +372,9 @@ public class EagletController {
 			fin = new FileInputStream(file);
 			// BUG FIX NEEDED TO READ CORRUPTED FILES:
 			String fileContent = IOUtils.toString(fin);
-			fileContent = fileContent.replace("<  ", "<").replace("/  ", "/")
-					.replace("<null>", "<http://aksw.org/notInWiki/null>");
+			fileContent = correctNIF(fileContent);
+			// .replace("<  ", "<").replace("/  ", "/")
+			// .replace("<null>", "<http://aksw.org/notInWiki/null>");
 			nifModel.read(new StringReader(fileContent), "", "TTL");
 			// nifModel.read(fin, "", "TTL");
 			documents.addAll(parser.parseDocuments(nifModel));
@@ -397,6 +384,33 @@ public class EagletController {
 			IOUtils.closeQuietly(fin);
 		}
 		return documents;
+	}
+
+	private static String correctNIF(String nif) {
+		char[] chars = nif.toCharArray();
+		StringBuilder builder = new StringBuilder(chars.length);
+		boolean inUri = false;
+		for (int i = 0; i < chars.length; ++i) {
+			switch (chars[i]) {
+			case '<':
+				inUri = true;
+				builder.append('<');
+				break;
+			case '>':
+				inUri = false;
+				builder.append('>');
+				break;
+			case ' ':
+				if (!inUri) {
+					builder.append(' ');
+				}
+				break;
+			default:
+				builder.append(chars[i]);
+				break;
+			}
+		}
+		return builder.toString().replace("<null>", "<http://aksw.org/notInWiki/null>");
 	}
 
 	public static void main(String[] args) {
