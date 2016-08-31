@@ -409,11 +409,11 @@ public class EagletController {
         }
         return builder.toString().replace("<null>", "<http://aksw.org/notInWiki/null>")
                 .replace(
-                        "\"CORRECT\"^^java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue",
+                        "\"CORRECT\"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue>",
                         "<" + EAGLET.Correct.getURI() + ">")
-                .replace("\"ADDED\"^^java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue",
+                .replace("\"ADDED\"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue>",
                         "<" + EAGLET.Added.getURI() + ">")
-                .replace("\"WRONG\"^^java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue",
+                .replace("\"WRONG\"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue>",
                         "<" + EAGLET.Wrong.getURI() + ">");
     }
 
