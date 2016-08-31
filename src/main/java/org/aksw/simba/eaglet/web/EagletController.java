@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -271,8 +270,7 @@ public class EagletController {
                     correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
             System.out.println(correction.getUris().toString() + " -> " + correction.getUserDecision());
             nifModel.add(annotationResource, EAGLET.hasUserDecision,
-                    nifModel.createTypedLiteral(correction.getUserDecision()));
-
+                    EAGLET.getUserDecision(correction.getUserDecision()));
         }
         return nifModel;
     }
@@ -378,7 +376,8 @@ public class EagletController {
             fin = new FileInputStream(file);
             // BUG FIX NEEDED TO READ CORRUPTED FILES:
             String fileContent = IOUtils.toString(fin);
-            fileContent = fileContent.replace("<  ", "<").replace("/  ", "/").replace("<null>", "<http://aksw.org/notInWiki/null>");
+            fileContent = fileContent.replace("<  ", "<").replace("/  ", "/").replace("<null>",
+                    "<http://aksw.org/notInWiki/null>");
             nifModel.read(new StringReader(fileContent), "", "TTL");
             // nifModel.read(fin, "", "TTL");
             documents.addAll(parser.parseDocuments(nifModel));
