@@ -55,6 +55,7 @@ public class EAGLET {
 		return ResourceFactory.createProperty(uri, local);
 	}
 
+	// Check Result
 	public static final Resource Inserted = resource("Inserted");
 	public static final Resource Deleted = resource("Deleted");
 	public static final Resource Good = resource("Good");
@@ -64,6 +65,8 @@ public class EAGLET {
 	public static final Resource InvalidUri = resource("InvalidUri");
 	public static final Resource OutdatedUri = resource("OutdatedUri");
 	public static final Resource DisambiguationUri = resource("DisambiguationUri");
+
+	// ErrorType
 	public static final Resource Combined = resource("Combined Tagging");
 	public static final Resource Overlapping = resource("Overlapping");
 	public static final Resource Erratic = resource("Combined");
@@ -72,6 +75,8 @@ public class EAGLET {
 	public static final Resource InvalidUriErr = resource("InvalidUriErr");
 	public static final Resource OutdatedUriErr = resource("OutdatedUriErr");
 	public static final Resource DisambiguationUriErr = resource("DisambiguationUriErr");
+
+	// User Decision Value
 	public static final Resource Correct = resource("Correct");
 	public static final Resource Wrong = resource("Wrong");
 	public static final Resource Added = resource("Added");
@@ -87,7 +92,6 @@ public class EAGLET {
 			return Added;
 		case CORRECT:
 			return Correct;
-
 		case WRONG:
 			return Wrong;
 
@@ -97,7 +101,6 @@ public class EAGLET {
 	}
 
 	public static Resource getErrorType(ErrorType list) {
-
 		switch (list) {
 		case OVERLAPPING:
 			return Overlapping;

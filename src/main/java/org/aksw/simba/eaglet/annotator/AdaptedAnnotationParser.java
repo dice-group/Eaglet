@@ -123,7 +123,7 @@ public class AdaptedAnnotationParser extends AnnotationParser {
 								annotationResource, EAGLET.hasUserDecision);
 						if (nodeIter.hasNext()) {
 							DecisionValue decision = parseUserDecision(nodeIter
-									.next().asLiteral().asResource());
+									.next().asResource());
 							markings.add(new NamedEntityCorrections(start, end
 									- start, entityUris, decision));
 						} else {
