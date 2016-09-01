@@ -381,7 +381,7 @@ public class EagletController {
 		return documents;
 	}
 
-	private static String correctNIF(String nif) {
+	public static final String correctNIF(String nif) {
 		char[] chars = nif.toCharArray();
 		StringBuilder builder = new StringBuilder(chars.length);
 		boolean inUri = false;
