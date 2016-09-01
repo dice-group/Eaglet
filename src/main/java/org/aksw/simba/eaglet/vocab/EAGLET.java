@@ -67,7 +67,7 @@ public class EAGLET {
 	public static final Resource DisambiguationUri = resource("DisambiguationUri");
 
 	// ErrorType
-	public static final Resource Combined = resource("Combined Tagging");
+	public static final Resource Combined = resource("CombinedTagging");
 	public static final Resource Overlapping = resource("Overlapping");
 	public static final Resource Erratic = resource("Combined");
 	public static final Resource WrongPos = resource("WrongPos");
