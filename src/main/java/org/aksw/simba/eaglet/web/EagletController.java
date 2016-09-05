@@ -55,7 +55,7 @@ public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/CoNLL-Complete-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/CoNLL-Test A-result-nif.ttl" };
 
 	private static final boolean USE_DOCUMENT_WHITELIST = true;
 	private static final String WHITELIST_SOURCE_DIR = "eaglet_data/result_user/Result Kunal";
