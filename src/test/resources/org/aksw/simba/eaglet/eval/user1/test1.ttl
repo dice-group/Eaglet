@@ -1,0 +1,587 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix itsrdf: <http://www.w3.org/2005/11/its/rdf#> .
+@prefix nif:   <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://AIDA/CoNLL-TestA/1099#char=0,2072>
+        a               nif:RFC5147String , nif:String , nif:Context ;
+        nif:beginIndex  "0"^^xsd:nonNegativeInteger ;
+        nif:endIndex    "2072"^^xsd:nonNegativeInteger ;
+        nif:isString    "SOCCER- AUSTRIA DOMINATE SCOTLAND IN WORLD CUP QUALIFIER. Steve Pagani VIENNA 1996-08-31 Austria dominated their World Cup group four qualifier against Scotland on Saturday with wave after wave of attacks but were unable to penetrate the visitors' defence and had to settle for a goalless draw. Scotland, who thrashed Belarus 5-1 in their opening group four match, were unable to repeat their performance. Austria's best chance came in the 63rd minute with Stephan Marasek of SC Freiburg taking advantage of a scramble in the Scottish penalty area but his shot narrowly passing the left-hand post. They also went close a minute before the interval when a promising attack saw the ball fall to Markus Schopp but he hit his shot wide. Everton's Duncan Ferguson went close for Scotland in the 65th minute when he forced Austrian goalkeeper Michael Konsel to a diving save. Two Scotland players were shown yellow cards, captain Gary McAllister for bringing down Andreas Heraf and Ferguson for arguing against the referee's decision.\" The result is acceptable,\" Scottish coach Craig Brown told reporters.\" We'd hoped not to lose and we tried not to play for a draw but the Austrian defence was simply too good.\" SK Rapid's Dietmar Kuehbauer, who gave an impressive performance, said the team started off well but let the game slip after the first 30 minutes.\" Somehow it seemed there were less than 11 players on the pitch. We have lost two points. The Scots are not really a great team and we should have won,\" he said. Austrian coach Herbert Prohaska said his team had displayed great fighting spirit but sometimes lacked ideas. Teams: Austria: Michael Konsel, Markus Schopp, Peter Schoettel, Anton Pfeffer, Wolfgang Feiersinger, Stephan Marasek, Dieter Ramusch( Andreas Ogris 77th), Dietmar Kuehbauer, Anton Polster(( Herfried Sabitzer 68th), Andreas Herzog, Andreas Heraf. Scotland: Andrew Goram, Craig Burley, Thomas Boyd, Colin Calderwood, Colin Hendry, Thomas McKinley, Duncan Ferguson, Stuart McCall, Alistair McCoist( Gordon Durie 75th), Gary McAllister, John Collins."^^xsd:string .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1705,1725>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Wolfgang Feiersinger"^^xsd:string ;
+        nif:beginIndex        "1705"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1725"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Wolfgang_Feiersinger> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=2004,2020>
+        a                     nif:Phrase , nif:RFC5147String , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Alistair McCoist"^^xsd:string ;
+        nif:beginIndex        "2004"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "2020"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Ally_McCoist> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1923,1939>
+        a                     nif:Phrase , nif:RFC5147String , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Colin Calderwood"^^xsd:string ;
+        nif:beginIndex        "1923"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1939"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Colin_Calderwood> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1168,1176>
+        a                     nif:String , nif:RFC5147String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Austrian"^^xsd:string ;
+        nif:beginIndex        "1168"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1176"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Austria_national_football_team> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1633,1640>
+        a                     nif:Phrase , nif:String , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Austria"^^xsd:string ;
+        nif:beginIndex        "1633"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1640"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Austria_national_football_team> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=976,984>
+        a                     nif:String , nif:Phrase , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Ferguson"^^xsd:string ;
+        nif:beginIndex        "976"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "984"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Duncan_Ferguson> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=2059,2071>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#InvalidUri> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "John Collins"^^xsd:string ;
+        nif:beginIndex        "2059"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "2071"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/John_Collins_u0028footballeru0029> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=25,33>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "SCOTLAND"^^xsd:string ;
+        nif:beginIndex        "25"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "33"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Scotland_national_football_team> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1910,1921>
+        a                     nif:Phrase , nif:String , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#InvalidUri> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Thomas Boyd"^^xsd:string ;
+        nif:beginIndex        "1910"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1921"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Tom_Boyd_u0028footballeru0029> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=58,70>
+        a                     nif:String , nif:RFC5147String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#NeedToPair> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Steve Pagani"^^xsd:string ;
+        nif:beginIndex        "58"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "70"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://AIDA/CoNLL-TestA/notInWiki/Steve+Pagani> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=526,534>
+        a                     nif:String , nif:Phrase , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Scottish"^^xsd:string ;
+        nif:beginIndex        "526"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "534"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Scotland_national_football_team> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1642,1656>
+        a                     nif:String , nif:RFC5147String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Michael Konsel"^^xsd:string ;
+        nif:beginIndex        "1642"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1656"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Michael_Konsel> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1941,1953>
+        a                     nif:String , nif:RFC5147String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Colin Hendry"^^xsd:string ;
+        nif:beginIndex        "1941"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1953"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Colin_Hendry> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=37,46>
+        a                     nif:Phrase , nif:String , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "WORLD CUP"^^xsd:string ;
+        nif:beginIndex        "37"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "46"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/1998_FIFA_World_Cup> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1673,1688>
+        a                     nif:String , nif:Phrase , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#InvalidUri> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Peter Schoettel"^^xsd:string ;
+        nif:beginIndex        "1673"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1688"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Peter_Schu00f6ttel> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1760,1773>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Andreas Ogris"^^xsd:string ;
+        nif:beginIndex        "1760"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1773"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Andreas_Ogris> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1057,1065>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Scottish"^^xsd:string ;
+        nif:beginIndex        "1057"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1065"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Scotland> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=457,472>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Stephan Marasek"^^xsd:string ;
+        nif:beginIndex        "457"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "472"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Stephan_Marasek> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=733,740>
+        a                     nif:String , nif:RFC5147String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#InvalidUri> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Everton"^^xsd:string ;
+        nif:beginIndex        "733"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "740"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Everton_Fu002eCu002e> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1841,1855>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#OutdatedUri> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Andreas Herzog"^^xsd:string ;
+        nif:beginIndex        "1841"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1855"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Andreas_Herzog> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1072,1083>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#InvalidUri> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Craig Brown"^^xsd:string ;
+        nif:beginIndex        "1072"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1083"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Craig_Brown_u0028footballeru0029> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=743,758>
+        a                     nif:Phrase , nif:RFC5147String , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Duncan Ferguson"^^xsd:string ;
+        nif:beginIndex        "743"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "758"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Duncan_Ferguson> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1896,1908>
+        a                     nif:Phrase , nif:RFC5147String , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Craig Burley"^^xsd:string ;
+        nif:beginIndex        "1896"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1908"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Craig_Burley> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1207,1215>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "SK Rapid"^^xsd:string ;
+        nif:beginIndex        "1207"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1215"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://AIDA/CoNLL-TestA/notInWiki/SK+Rapid> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=8,15>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "AUSTRIA"^^xsd:string ;
+        nif:beginIndex        "8"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "15"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Austria_national_football_team> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=874,882>
+        a                     nif:Phrase , nif:RFC5147String , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Scotland"^^xsd:string ;
+        nif:beginIndex        "874"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "882"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Scotland> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=89,96>
+        a                     nif:String , nif:RFC5147String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Austria"^^xsd:string ;
+        nif:beginIndex        "89"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "96"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Austria_national_football_team> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=924,939>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Gary McAllister"^^xsd:string ;
+        nif:beginIndex        "924"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "939"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Gary_McAllister> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=152,160>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Scotland"^^xsd:string ;
+        nif:beginIndex        "152"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "160"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Scotland_national_football_team> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=71,77>
+        a                     nif:String , nif:Phrase , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#NeedToPair> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "VIENNA"^^xsd:string ;
+        nif:beginIndex        "71"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "77"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Vienna> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1658,1671>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Markus Schopp"^^xsd:string ;
+        nif:beginIndex        "1658"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1671"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Markus_Schopp> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1516,1524>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Austrian"^^xsd:string ;
+        nif:beginIndex        "1516"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1524"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Austria> .
+
+<http://AIDA/CoNLL-TestA/1099#char=1531,1547>
+        a                     nif:Phrase , nif:RFC5147String , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Herbert Prohaska"^^xsd:string ;
+        nif:beginIndex        "1531"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1547"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Herbert_Prohaska> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=318,325>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Belarus"^^xsd:string ;
+        nif:beginIndex        "318"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "325"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Belarus_national_football_team> .
+		
+<http://AIDA/CoNLL-TestA/1099#char=1989,2002>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Stuart McCall"^^xsd:string ;
+        nif:beginIndex        "1989"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "2002"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Stuart_McCall> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1800,1813>
+        a                     nif:Phrase , nif:RFC5147String , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Anton Polster"^^xsd:string ;
+        nif:beginIndex        "1800"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1813"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Toni_Polster> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=774,782>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Scotland"^^xsd:string ;
+        nif:beginIndex        "774"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "782"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Scotland_national_football_team> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1882,1894>
+        a                     nif:Phrase , nif:String , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Andrew Goram"^^xsd:string ;
+        nif:beginIndex        "1882"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1894"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Andy_Goram> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1218,1235>
+        a                     nif:Phrase , nif:RFC5147String , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#InvalidUri> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Dietmar Kuehbauer"^^xsd:string ;
+        nif:beginIndex        "1218"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1235"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Dietmar_Ku00fchbauer> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=1872,1880>
+        a                     nif:String , nif:Phrase , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Scotland"^^xsd:string ;
+        nif:beginIndex        "1872"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1880"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Scotland_national_football_team> .
+		
+		<http://AIDA/CoNLL-TestA/1099#char=295,303>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Scotland"^^xsd:string ;
+        nif:beginIndex        "295"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "303"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Scotland_national_football_team> .
+		
+<http://AIDA/CoNLL-TestA/1099#char=958,971>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Andreas Heraf"^^xsd:string ;
+        nif:beginIndex        "958"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "971"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Andreas_Heraf> .
+
+<http://AIDA/CoNLL-TestA/1099#char=1857,1870>
+        a                     nif:RFC5147String , nif:Phrase , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Andreas Heraf"^^xsd:string ;
+        nif:beginIndex        "1857"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1870"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Andreas_Heraf> .
+
+<http://AIDA/CoNLL-TestA/1099#char=1690,1703>
+        a                     nif:String , nif:Phrase , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Anton Pfeffer"^^xsd:string ;
+        nif:beginIndex        "1690"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1703"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Anton_Pfeffer> .
+
+<http://AIDA/CoNLL-TestA/1099#char=1955,1970>
+        a                     nif:String , nif:Phrase , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Thomas McKinley"^^xsd:string ;
+        nif:beginIndex        "1955"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "1970"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://AIDA/CoNLL-TestA/notInWiki/Thomas+McKinley> .
+
+<http://AIDA/CoNLL-TestA/1099#char=113,122>
+        a                     nif:Phrase , nif:String , nif:RFC5147String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "World Cup"^^xsd:string ;
+        nif:beginIndex        "113"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "122"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/1998_FIFA_World_Cup> .
+
+<http://AIDA/CoNLL-TestA/1099#char=406,413>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Austria"^^xsd:string ;
+        nif:beginIndex        "406"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "413"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Austria_national_football_team> .
+
+<http://AIDA/CoNLL-TestA/1099#char=837,851>
+        a                     nif:Phrase , nif:RFC5147String , nif:String ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasCheckResult>
+                <http://gerbil.aksw.org/eaglet/vocab#Good> ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                <http://gerbil.aksw.org/eaglet/vocab#Correct> ;
+        nif:anchorOf          "Michael Konsel"^^xsd:string ;
+        nif:beginIndex        "837"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "851"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://AIDA/CoNLL-TestA/1099#char=0,2072> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Michael_Konsel> .

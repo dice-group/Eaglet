@@ -1,0 +1,141 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix itsrdf: <http://www.w3.org/2005/11/its/rdf#> .
+@prefix nif:   <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=107,112>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "Bothe"^^xsd:string ;
+        nif:beginIndex        "107"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "112"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Walther_Bothe,http://dbpedia.org/resource/Walther_Bothe,http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Walter_Bothe> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,11>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "Hans Geiger"^^xsd:string ;
+        nif:beginIndex        "0"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "11"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Hans_Geiger,http://dbpedia.org/resource/Hans_Geiger> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=261,269>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "director"^^xsd:string ;
+        nif:beginIndex        "261"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "269"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Director_(business),http://dbpedia.org/resource/Director_(business)> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=277,305>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "Laboratory for Radioactivity"^^xsd:string ;
+        nif:beginIndex        "277"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "305"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Laboratory_for_Radioactivity> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=51,79>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "Laboratory for Radioactivity"^^xsd:string ;
+        nif:beginIndex        "51"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "79"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Laboratory_for_Radioactivity> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=238,240>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "WRONG"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "he"^^xsd:string ;
+        nif:beginIndex        "238"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "240"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Walther_Bothe,http://dbpedia.org/resource/Walther_Bothe,http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Walter_Bothe> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=133,139>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "Geiger"^^xsd:string ;
+        nif:beginIndex        "133"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "139"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Hans_Geiger,http://dbpedia.org/resource/Hans_Geiger> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=182,196>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "Geiger's staff"^^xsd:string ;
+        nif:beginIndex        "182"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "196"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Geiger's_staff> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306>
+        a               nif:RFC5147String , nif:String , nif:Context ;
+        nif:beginIndex  "0"^^xsd:nonNegativeInteger ;
+        nif:endIndex    "306"^^xsd:nonNegativeInteger ;
+        nif:isString    "Hans Geiger had been appointed director of the new Laboratory for Radioactivity there in 1912. At the PTR, Bothe was an assistant to Geiger from 1913 to 1920, a scientific member of Geiger's staff from 1920 to 1927, and from 1927 to 1930 he succeeded Geiger as director of the Laboratory for Radioactivity."^^xsd:string .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=102,105>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "PTR"^^xsd:string ;
+        nif:beginIndex        "102"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "105"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-PTR> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=120,129>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "assistant"^^xsd:string ;
+        nif:beginIndex        "120"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "129"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://dbpedia.org/resource/Research_assistant,http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Research_assistant,http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Research_Assistant> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=161,178>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "scientific member"^^xsd:string ;
+        nif:beginIndex        "161"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "178"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-scientific_member> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=31,39>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "director"^^xsd:string ;
+        nif:beginIndex        "31"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "39"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Director_(business),http://dbpedia.org/resource/Director_(business)> .
+
+<http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=251,257>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        <http://gerbil.aksw.org/eaglet/vocab#hasUserDecision>
+                "CORRECT"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue> ;
+        nif:anchorOf          "Geiger"^^xsd:string ;
+        nif:beginIndex        "251"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "257"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4#char=0,306> ;
+        itsrdf:taIdentRef     <  http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-Hans_Geiger,http://dbpedia.org/resource/Hans_Geiger> .

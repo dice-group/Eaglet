@@ -1,9 +1,8 @@
 package org.aksw.simba.eaglet.eval;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,8 +26,6 @@ import org.aksw.gerbil.evaluate.impl.ClassConsideringFMeasureCalculator;
 import org.aksw.gerbil.evaluate.impl.FMeasureCalculator;
 import org.aksw.gerbil.evaluate.impl.filter.MarkingFilteringEvaluatorDecorator;
 import org.aksw.gerbil.exceptions.GerbilException;
-import org.aksw.gerbil.io.nif.DocumentListParser;
-import org.aksw.gerbil.io.nif.DocumentParser;
 import org.aksw.gerbil.matching.Matching;
 import org.aksw.gerbil.matching.MatchingsSearcher;
 import org.aksw.gerbil.matching.MatchingsSearcherFactory;
@@ -38,21 +35,13 @@ import org.aksw.gerbil.matching.impl.MatchingsCounterImpl;
 import org.aksw.gerbil.matching.impl.clas.EmergingEntityMeaningClassifier;
 import org.aksw.gerbil.matching.impl.clas.UriBasedMeaningClassifier;
 import org.aksw.gerbil.transfer.nif.Document;
-import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.gerbil.utils.filter.AbstractMarkingFilter;
-import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.entitytypemodify.ClassifiedEntityCheck;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
-import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
-import org.aksw.simba.eaglet.web.EagletController;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class InterRaterAgreement {
 
@@ -60,12 +49,28 @@ public class InterRaterAgreement {
 
     private static final int USER_IDS[] = new int[] { 1, 2 };
     private static final String USER_OUTPUT_FOLDER = "eaglet_data/result_user/KORE50";
-     private static final String[] USER_OUTPUT_FOLDERS = new String[] {
-     "eaglet_data/result_user/Result Kunal/OKE 2015 Task 1 evaluation dataset-result-nif.ttl",
-     "eaglet_data/result_user/Micha_OKE" };
 
-//    private static final String[] USER_OUTPUT_FOLDERS = new String[] { "eaglet_data/result_user/Result Kunal/ACE",
-//            "eaglet_data/result_user/Micha_ACE" };
+    private static final int MAX_NUMBER_OF_DOCUMENTS = 30;
+
+    private static final String[] USER_OUTPUT_FOLDERS = new String[] { "eaglet_data/result_user/AIDA_Micha.ttl",
+            "eaglet_data/result_user/AIDA_Kunal.ttl" };
+
+    // private static final String[] USER_OUTPUT_FOLDERS = new String[] {
+    // "src/test/resources/org/aksw/simba/eaglet/eval/user1",
+    // "src/test/resources/org/aksw/simba/eaglet/eval/user2" };
+
+    // private static final String[] USER_OUTPUT_FOLDERS = new String[] {
+    // "eaglet_data/result_user/Result Kunal/AIDA_CoNLL-Test A-result-nif",
+    // "eaglet_data/result_user/Micha_AIDA" };
+
+    // private static final String[] USER_OUTPUT_FOLDERS = new String[] {
+    // "eaglet_data/result_user/Result Kunal/OKE 2015 Task 1 evaluation
+    // dataset-result-nif.ttl",
+    // "eaglet_data/result_user/Micha_OKE" };
+
+    // private static final String[] USER_OUTPUT_FOLDERS = new String[] {
+    // "eaglet_data/result_user/Result Kunal/ACE",
+    // "eaglet_data/result_user/Micha_ACE" };
 
     public static void main(String[] args) {
         InterRaterAgreement raterAgreement = new InterRaterAgreement();
@@ -117,6 +122,14 @@ public class InterRaterAgreement {
 
     protected List<List<List<NamedEntityCorrections>>> loadAnnotations(int[] userIds, File userOutputFolder) {
         List<List<Document>> documents = loadDocuments(userIds, userOutputFolder);
+//        // FIXME REMOVE THIS FILTERING!
+//        for (List<Document> documentList : documents) {
+//            for (int i = documentList.size() - 1; i >= 0; --i) {
+//                if (!documentList.get(i).getDocumentURI().equals("http://AIDA/CoNLL-TestA/1099")) {
+//                    documentList.remove(i);
+//                }
+//            }
+//        }
         List<Map<String, List<NamedEntityCorrections>>> documentAnnotations = new ArrayList<Map<String, List<NamedEntityCorrections>>>(
                 documents.size());
         Set<String> uris = generateMappings(documents, documentAnnotations);
@@ -162,22 +175,39 @@ public class InterRaterAgreement {
         // String expectedPrefix;
         for (int i = 0; i < USER_OUTPUT_FOLDERS.length; ++i) {
             userDocuments = new ArrayList<Document>();
-            userOutputFolder = new File(USER_OUTPUT_FOLDERS[i]);
-            // expectedPrefix = "result-" + userIds[i];
-            for (File file : userOutputFolder.listFiles()) {
-                // if (file.getName().startsWith(expectedPrefix))
-                try {
-                    Model nifModel = ModelFactory.createDefaultModel();
-                    nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-                    FileInputStream fin = new FileInputStream(file);
-                    nifModel.read(new StringReader(EagletController.correctNIF(IOUtils.toString(fin))), "", "TTL");
-                    fin.close();
-                    DocumentListParser parser = new DocumentListParser(
-                            new DocumentParser(new AdaptedAnnotationParser()));
-                    userDocuments.addAll(parser.parseDocuments(nifModel));
-                } catch (Exception e) {
-                    LOGGER.error("Couldn't load the dataset!", e);
+            // userOutputFolder = new File(USER_OUTPUT_FOLDERS[i]);
+            // // expectedPrefix = "result-" + userIds[i];
+            // for (File file : userOutputFolder.listFiles()) {
+            // // if (file.getName().startsWith(expectedPrefix))
+            // try {
+            // Model nifModel = ModelFactory.createDefaultModel();
+            // nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+            // FileInputStream fin = new FileInputStream(file);
+            // nifModel.read(new
+            // StringReader(EagletController.correctNIF(IOUtils.toString(fin))),
+            // "", "TTL");
+            // fin.close();
+            // DocumentListParser parser = new DocumentListParser(
+            // new DocumentParser(new AdaptedAnnotationParser()));
+            // userDocuments.addAll(parser.parseDocuments(nifModel));
+            // } catch (Exception e) {
+            // LOGGER.error("Couldn't load the dataset!", e);
+            // }
+            // }
+            AnnotationMerger.loadDocuments(new File(USER_OUTPUT_FOLDERS[i]), userDocuments);
+            userDocuments.sort(new Comparator<Document>() {
+                @Override
+                public int compare(Document o1, Document o2) {
+                    String uri1 = o1.getDocumentURI();
+                    String uri2 = o2.getDocumentURI();
+                    if (uri1 == null) {
+                        return uri2 == null ? 0 : -1;
+                    }
+                    return uri1.compareTo(uri2);
                 }
+            });
+            if (userDocuments.size() > MAX_NUMBER_OF_DOCUMENTS) {
+                userDocuments = userDocuments.subList(0, MAX_NUMBER_OF_DOCUMENTS);
             }
             loadedDocuments.add(userDocuments);
         }
@@ -222,8 +252,10 @@ public class InterRaterAgreement {
                             },
                             new FMeasureCalculator<NamedEntityCorrections>(
                                     new MatchingsCounterImpl<NamedEntityCorrections>(
-                                            (MatchingsSearcher<NamedEntityCorrections>) MatchingsSearcherFactory
-                                                    .createSpanMatchingsSearcher(Matching.STRONG_ANNOTATION_MATCH))))));
+                                            new CompoundMatchingsSearcher<>(new DecisionMatchingsSearcher(),
+                                                    (MatchingsSearcher<NamedEntityCorrections>) MatchingsSearcherFactory
+                                                            .createSpanMatchingsSearcher(
+                                                                    Matching.STRONG_ANNOTATION_MATCH)))))));
             evaluators.add(new MarkingFilteringEvaluatorDecorator<NamedEntityCorrections>(
                     new AbstractMarkingFilter<NamedEntityCorrections>() {
                         @Override
