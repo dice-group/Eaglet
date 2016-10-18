@@ -10,6 +10,7 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.simba.eaglet.uri.UriCheckerManager;
 import org.aksw.simba.eaglet.uri.impl.FileBasedCachingUriCheckerManager;
 import org.aksw.simba.eaglet.uri.impl.HttpBasedUriChecker;
@@ -85,6 +86,18 @@ public class UriError implements ErrorChecker, Closeable {
 				result = checkUris(entity.getUris());
 				if (result != Check.GOOD) {
 					entity.setResult(result);
+					if(result.equals(Check.DISAMBIG_URI))
+					{
+						entity.setError(ErrorType.DISAMBIGURIERR);
+					}
+					else if(result.equals(Check.INVALID_URI))
+					{
+						entity.setError(ErrorType.INVALIDURIERR);
+					}
+					else if(result.equals(Check.OUTDATED_URI))
+					{
+						entity.setError(ErrorType.OUTDATEDURIERR);
+					}
 				}
 			}
 		}

@@ -16,6 +16,7 @@
  */
 package org.aksw.simba.eaglet.annotator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,9 +34,10 @@ import org.aksw.gerbil.transfer.nif.data.SpanImpl;
 import org.aksw.gerbil.transfer.nif.data.TypedNamedEntity;
 import org.aksw.gerbil.transfer.nif.vocabulary.ITSRDF;
 import org.aksw.gerbil.transfer.nif.vocabulary.NIF;
-import org.aksw.simba.eaglet.entitytypemodify.EntityCheck;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,12 @@ import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
 
+/**
+ * The modified annotation parser to write into the NIF file.
+ *
+ * @author Michael
+ * @author Kunal
+ */
 public class AdaptedAnnotationParser extends AnnotationParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdaptedAnnotationParser.class);
@@ -61,6 +69,7 @@ public class AdaptedAnnotationParser extends AnnotationParser {
         this.removeUsedProperties = removeUsedProperties;
     }
 
+    @Override
     public void parseAnnotations(Model nifModel, Document document, Resource documentResource) {
         // get the annotations from the model
         List<Marking> markings = document.getMarkings();
@@ -91,12 +100,29 @@ public class AdaptedAnnotationParser extends AnnotationParser {
                     nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasCheckResult);
                     if (nodeIter.hasNext()) {
                         Check result = parseCheckResult(nodeIter.next().asResource());
-                        markings.add(new NamedEntityCorrections(start, end - start, entityUris, result));
-                    } else {
-                        nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.isNamedEntity);
+                        nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasErrorType);
+                        List<ErrorType> error_list = new ArrayList<ErrorType>();
                         if (nodeIter.hasNext()) {
-                            boolean namedentity = nodeIter.next().asLiteral().getBoolean();
-                            markings.add(new EntityCheck(start, end - start, entityUris, namedentity));
+                            error_list = new ArrayList<ErrorType>();
+                            while (nodeIter.hasNext()) {
+                                ErrorType error = parseErroResult(nodeIter.next().asResource());
+                                error_list.add(error);
+                            }
+                        }
+                        nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasUserDecision);
+                        if (nodeIter.hasNext()) {
+                            DecisionValue decision = parseUserDecision(nodeIter.next().asResource());
+                            markings.add(new NamedEntityCorrections(start, end - start, entityUris, error_list, result,
+                                    decision));
+                        } else {
+                            markings.add(
+                                    new NamedEntityCorrections(start, end - start, entityUris, result, error_list));
+                        }
+                    } else {
+                        nodeIter = nifModel.listObjectsOfProperty(annotationResource, EAGLET.hasUserDecision);
+                        if (nodeIter.hasNext()) {
+                            DecisionValue decision = parseUserDecision(nodeIter.next().asResource());
+                            markings.add(new NamedEntityCorrections(start, end - start, entityUris, decision));
                         } else {
                             nodeIter = nifModel.listObjectsOfProperty(annotationResource, ITSRDF.taClassRef);
                             if (nodeIter.hasNext()) {
@@ -173,6 +199,43 @@ public class AdaptedAnnotationParser extends AnnotationParser {
             return Check.OUTDATED_URI;
         } else if (EAGLET.DisambiguationUri.equals(resource)) {
             return Check.DISAMBIG_URI;
+        } else {
+            LOGGER.error("Got an unknown matching type: " + resource);
+            return null;
+        }
+    }
+
+    private DecisionValue parseUserDecision(Resource resource) {
+        if (EAGLET.Added.equals(resource)) {
+            return DecisionValue.ADDED;
+        } else if (EAGLET.Correct.equals(resource)) {
+            return DecisionValue.CORRECT;
+        } else if (EAGLET.Wrong.equals(resource)) {
+            return DecisionValue.WRONG;
+
+        } else {
+            LOGGER.error("Got an unknown Decision type: " + resource);
+            return null;
+        }
+    }
+
+    private ErrorType parseErroResult(Resource resource) {
+        if (EAGLET.Overlapping.equals(resource)) {
+            return ErrorType.OVERLAPPING;
+        } else if (EAGLET.Combined.equals(resource)) {
+            return ErrorType.COMBINED;
+        } else if (EAGLET.Erratic.equals(resource)) {
+            return ErrorType.ERRATIC;
+        } else if (EAGLET.WrongPos.equals(resource)) {
+            return ErrorType.WRONGPOSITION;
+        } else if (EAGLET.LongDesc.equals(resource)) {
+            return ErrorType.LONGDESC;
+        } else if (EAGLET.InvalidUriErr.equals(resource)) {
+            return ErrorType.INVALIDURIERR;
+        } else if (EAGLET.DisambiguationUriErr.equals(resource)) {
+            return ErrorType.DISAMBIGURIERR;
+        } else if (EAGLET.OutdatedUriErr.equals(resource)) {
+            return ErrorType.OUTDATEDURIERR;
         } else {
             LOGGER.error("Got an unknown matching type: " + resource);
             return null;

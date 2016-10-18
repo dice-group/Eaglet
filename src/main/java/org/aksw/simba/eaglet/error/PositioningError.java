@@ -1,37 +1,37 @@
 package org.aksw.simba.eaglet.error;
 
-import java.util.*;
+import java.util.List;
+
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SubsetMarkingError implements ErrorChecker {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SubsetMarkingError.class);
-	/*
-	 * private static final DatasetConfiguration DATASET = new
-	 * NIFFileDatasetConfig("DBpedia",
-	 * "C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl",
-	 * false, ExperimentType.A2KB);
-	 */
+public class PositioningError implements ErrorChecker {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(PositioningError.class);
 
 	static String text;
 	static String entity_name;
 
-	public void subsetmark(List<Document> documents) throws GerbilException {
-		LOGGER.info(" SUBSET MARKING MODULE RUNNING");
+	public void positioningError(List<Document> documents)
+			throws GerbilException {
+		LOGGER.info(" POSITIONING MODULE RUNNING");
 
 		// DATASET.getDataset(ExperimentType.A2KB).getInstances();
 
 		for (Document doc : documents) { // getting list of documents
 			text = doc.getText();
-			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
+			List<NamedEntityCorrections> entities = doc
+					.getMarkings(NamedEntityCorrections.class);
 			for (NamedEntityCorrections entity : entities) {
 				if (entity.getResult().equals(Check.GOOD)) {
 					if (entity.getStartPosition() > 0) {
-						if ((!Character.isWhitespace(text.charAt(entity.getStartPosition() - 1)))
+						if ((!Character.isWhitespace(text.charAt(entity
+								.getStartPosition() - 1)))
 								&& (text.charAt(entity.getStartPosition() - 1) != '@')
 								&& (text.charAt(entity.getStartPosition() - 1) != '\'')
 								&& (text.charAt(entity.getStartPosition() - 1) != '\"')
@@ -53,19 +53,19 @@ public class SubsetMarkingError implements ErrorChecker {
 								&& (text.charAt(entity.getStartPosition()) != '[')
 								&& (text.charAt(entity.getStartPosition()) != '$')) {
 							entity.setResult(Check.DELETED);
+							entity.setError(ErrorType.WRONGPOSITION);
 						}
 					}
 					// If there are letters behind check for letters or digits
-					if (entity.getStartPosition() + entity.getLength() < text.length()) {
-						if (Character.isLetterOrDigit(text.charAt(entity.getStartPosition() + entity.getLength()))) {
+					if (entity.getStartPosition() + entity.getLength() < text
+							.length()) {
+						if (Character.isLetterOrDigit(text.charAt(entity
+								.getStartPosition() + entity.getLength()))) {
 							entity.setResult(Check.DELETED);
+							entity.setError(ErrorType.WRONGPOSITION);
 						}
 					}
 				}
-				/*
-				 * if (!) { break; }
-				 */
-				// If there are letters in front check for a whitespace
 
 			}
 		}
@@ -75,19 +75,8 @@ public class SubsetMarkingError implements ErrorChecker {
 	@Override
 	public void check(List<Document> documents) throws GerbilException {
 		// TODO Auto-generated method stub
-		this.subsetmark(documents);
+		this.positioningError(documents);
 
 	}
-
-	/*
-	 * public static void printlist(Set<Problem_Entity> pe2) { for
-	 * (Problem_Entity x : pe2) { System.out.println("DOC ID " + x.getDoc());
-	 * System.out.println("ENTITY NAME: " + x.getEntity_name());
-	 * System.out.println("ENTITY LENGTH " + x.getLength()); System.out.println(
-	 * "ENTITY TEXT " + x.getProblem_text()); System.out.println(
-	 * "ENTITY START POS " + x.getStart_pos()); System.out.println(
-	 * "ENTITY TEXT " + x.getEntity_text()); System.out.println(
-	 * "=================================================================="); }
-	 */
 
 }

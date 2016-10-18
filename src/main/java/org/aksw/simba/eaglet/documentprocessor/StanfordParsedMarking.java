@@ -4,23 +4,31 @@ import org.aksw.gerbil.transfer.nif.Marking;
 
 import edu.stanford.nlp.pipeline.Annotation;
 
-public  class StanfordParsedMarking implements Marking {
+/**
+ * This class is a modified marking containing the Stanford NLP information.
+ *
+ * @author Kunal
+ * @author Michael
+ *
+ */
+public class StanfordParsedMarking implements Marking {
 
-    private Annotation annotation;
+	private Annotation annotation;
 
-    public StanfordParsedMarking(Annotation annotation) {
-        this.annotation = annotation;
-    }
+	public StanfordParsedMarking(Annotation annotation) {
+		this.annotation = annotation;
+	}
 
-    public Object clone() {
-        return null;
-    }
+	@Override
+	public Object clone() {
+		return null;
+	}
 
-    public Annotation getAnnotation() {
-        return annotation;
-    }
+	public Annotation getAnnotation() {
+		return annotation;
+	}
 
-    public void setAnnotation(Annotation annotation) {
-        this.annotation = annotation;
-    }
+	public void setAnnotation(Annotation annotation) {
+		this.annotation = annotation;
+	}
 }

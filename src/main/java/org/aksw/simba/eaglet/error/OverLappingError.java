@@ -8,38 +8,45 @@ import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class handles the OverLapping Error.
+ *
+ * @author Kunal
+ * @author Michael
+ *
+ */
 public class OverLappingError implements ErrorChecker {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ErraticEntityError.class);
+	/** Value - {@value} , LOGGER used for log information. */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(OverLappingError.class);
 
-	/*
-	 * private static final DatasetConfiguration DATASET = new
-	 * NIFFileDatasetConfig("DBpedia",
-	 * "gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
-	 * ExperimentType.A2KB);
+	/**
+	 * The method checks for multiple markings coincide with other marking(s).
+	 *
+	 * @param documents
+	 *            : A List of Documents passing through the pipeline.
+	 * @throws GerbilException
 	 */
-
-	public void overlapcheck(List<Document> documents) throws GerbilException {
-		// List<Document> documents =
-		// DATASET.getDataset(ExperimentType.A2KB).getInstances();
-
+	public void overLapCheck(List<Document> documents) throws GerbilException {
 		LOGGER.info(" OVERLAPPING ENTITY MODULE RUNNING");
 		for (Document doc : documents) {
-
-			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
+			List<NamedEntityCorrections> entities = doc
+					.getMarkings(NamedEntityCorrections.class);
 			Collections.sort(entities, new StartPosBasedComparator());
 			for (int i = 0; i < entities.size() - 1; i++) {
 				if (entities.get(i).getResult().equals(Check.GOOD)) {
-
-					if ((entities.get(i).getStartPosition() + entities.get(i).getLength()) >= entities.get(i + 1)
+					if ((entities.get(i).getStartPosition() + entities.get(i)
+							.getLength()) >= entities.get(i + 1)
 							.getStartPosition()) {
-
 						entities.get(i).setResult(Check.OVERLAPS);
-
+						entities.get(i).setError(ErrorType.OVERLAPPING);
 						entities.get(i).setPartner(entities.get(i + 1));
-
+						entities.get(i + 1).setResult(Check.OVERLAPS);
+						entities.get(i + 1).setError(ErrorType.OVERLAPPING);
 					}
 				}
 
@@ -47,10 +54,12 @@ public class OverLappingError implements ErrorChecker {
 		}
 	}
 
+	/**
+	 * The interface method to pass the Documents through the pipeline.
+	 */
 	@Override
 	public void check(List<Document> documents) throws GerbilException {
-		// TODO Auto-generated method stub
-		this.overlapcheck(documents);
+		this.overLapCheck(documents);
 
 	}
 
