@@ -94,6 +94,7 @@ public class InputforPipeline {
 			throws GerbilException, IOException {
 		CheckerPipeline cp = new CheckerPipeline();
 		cp.runPipe(doc, datasetname);
+		//cp.runPipeNoWrite(documents, name);
 	}
 
 	/**
