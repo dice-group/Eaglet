@@ -86,8 +86,7 @@ public class CheckerPipeline {
 	}
 
 	/**
-	 * This method takes care of running the Pipe. It calls the other required
-	 * function and begins the pipe and writes the output to a file.
+	 * This method takes care of running the Pipe. It creates and runs the pipeline and writes the output to a file.
 	 *
 	 * @param documents
 	 * @param name
@@ -95,22 +94,7 @@ public class CheckerPipeline {
 	 * @throws IOException
 	 */
 	public void runPipe(List<Document> documents, String name) throws GerbilException, IOException {
-		List<ErrorChecker> checkers = null;
-
-		try {
-			checkers = this.setupPipe();
-		} catch (Exception e) {
-			LOGGER.error("Got an exception while creating the pipeline.", e);
-		}
-		// start pipeline
-		try {
-			for (ErrorChecker checker : checkers) {
-				checker.check(documents);
-			}
-		} catch (Exception e) {
-			LOGGER.error("Got an exception while running the pipe.", e);
-		}
-
+		runPipe(documents);
 		try {
 			this.writeDataInFile(documents, name);
 
@@ -126,11 +110,10 @@ public class CheckerPipeline {
 	 * function and begins the pipe and writes the output to a file.
 	 *
 	 * @param documents
-	 * @param name
 	 * @throws GerbilException
 	 * @throws IOException
 	 */
-	public void runPipeNoWrite(List<Document> documents, String name) throws GerbilException, IOException {
+	public void runPipe(List<Document> documents) throws GerbilException, IOException {
 		List<ErrorChecker> checkers = null;
 
 		try {
@@ -138,8 +121,21 @@ public class CheckerPipeline {
 		} catch (Exception e) {
 		}
 		// start pipeline
+		runPipe(documents, checkers);
+	}
+
+	/**
+	 * This method takes care of running the Pipe. It calls the other required
+	 * function and begins the pipe and writes the output to a file.
+	 *
+	 * @param documents
+	 * @throws GerbilException
+	 * @throws IOException
+	 */
+	public void runPipe(List<Document> documents, List<ErrorChecker> pipe) throws GerbilException, IOException {
+		// start pipeline
 		try {
-			for (ErrorChecker checker : checkers) {
+			for (ErrorChecker checker : pipe) {
 				checker.check(documents);
 			}
 		} catch (Exception e) {
