@@ -71,6 +71,7 @@ public class CheckerPipeline {
 	public List<ErrorChecker> setupPipe() throws GerbilException {
 		List<A2KBAnnotator> annotators = callAnnotator("/Users/Kunal/workspace/gscheck/eaglet_data/Annotator");
 		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
+
 		checkers.add(new MissingEntityCompletion(annotators));
 		checkers.add(new LongDescriptionError());
 		checkers.add(new PositioningError());
@@ -78,6 +79,7 @@ public class CheckerPipeline {
 		checkers.add(new CombinedTaggingError());
 		checkers.add(new UriError());
 		checkers.add(new ErraticMarkingError());
+
 		return checkers;
 
 	}
@@ -92,12 +94,29 @@ public class CheckerPipeline {
 	 * @throws IOException
 	 */
 	public void runPipe(List<Document> documents, String name) throws GerbilException, IOException {
-		List<ErrorChecker> checkers = this.setupPipe();
-		// start pipeline
-		for (ErrorChecker checker : checkers) {
-			checker.check(documents);
+		List<ErrorChecker> checkers = null;
+
+		try {
+			checkers = this.setupPipe();
+		} catch (Exception e) {
+			LOGGER.error("Got an exception while creating the pipeline.", e);
 		}
-		this.writeDataInFile(documents, name);
+		// start pipeline
+		try {
+			for (ErrorChecker checker : checkers) {
+				checker.check(documents);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Got an exception while running the pipe.", e);
+		}
+
+		try {
+			this.writeDataInFile(documents, name);
+
+		} catch (Exception e) {
+			LOGGER.error("Got an exception while writing the result of the pipeline.", e);
+
+		}
 
 	}
 
