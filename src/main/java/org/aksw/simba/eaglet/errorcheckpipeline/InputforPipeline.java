@@ -61,7 +61,7 @@ public class InputforPipeline {
 
 			this.prePipeProcessor(documents);
 			// Starting the Pipe.
-			this.callPipe(documents, dataset.getName());
+			this.setupPipe(documents, dataset.getName());
 		}
 
 	}
@@ -90,10 +90,10 @@ public class InputforPipeline {
 	 * @param doc
 	 * @param datasetname
 	 */
-	public void callPipe(List<Document> doc, String datasetname)
+	public void setupPipe(List<Document> doc, String datasetname)
 			throws GerbilException, IOException {
 		CheckerPipeline cp = new CheckerPipeline();
-		cp.startPipe(doc, datasetname);
+		cp.runPipe(doc, datasetname);
 	}
 
 	/**

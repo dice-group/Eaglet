@@ -45,8 +45,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  */
 public class CheckerPipeline {
 	/** Value - {@value} , LOGGER used for log information. */
-	private static final org.slf4j.Logger LOGGER = LoggerFactory
-			.getLogger(CheckerPipeline.class);
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CheckerPipeline.class);
 
 	/**
 	 * This method call all the annotators results. Utility method for pipeline.
@@ -55,44 +54,67 @@ public class CheckerPipeline {
 	 * @return List of A2KB Annotators Object.
 	 * @throws GerbilException
 	 */
-	public List<A2KBAnnotator> callAnnotator(String path)
-			throws GerbilException {
+	public List<A2KBAnnotator> callAnnotator(String path) throws GerbilException {
 		AnnotatorResult ar = new AnnotatorResult(path);
 		List<A2KBAnnotator> annotators = ar.getAnnotators();
 		return annotators;
 	}
 
 	/**
-	 * This method defines the structure of the pipe and starts the error
-	 * checker pipeline.
+	 * This method sets up the basic structure of the pipe.
 	 *
-	 * @param documents
-	 * @param name
+	 * 
+	 * @return List of ErrorChecker Object.
 	 * @throws GerbilException
-	 * @throws IOException
 	 */
-	public void startPipe(List<Document> documents, String name)
-			throws GerbilException, IOException {
+
+	public List<ErrorChecker> setupPipe() throws GerbilException {
 		List<A2KBAnnotator> annotators = callAnnotator("/Users/Kunal/workspace/gscheck/eaglet_data/Annotator");
-		// prepare the pipeline
 		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
 		checkers.add(new MissingEntityCompletion(annotators));
-
 		checkers.add(new LongDescriptionError());
 		checkers.add(new PositioningError());
 		checkers.add(new OverLappingError());
 		checkers.add(new CombinedTaggingError());
 		checkers.add(new UriError());
 		checkers.add(new ErraticMarkingError());
+		return checkers;
 
+	}
+
+	/**
+	 * This method takes care of running the Pipe. It calls the other required
+	 * function and begins the pipe and writes the output to a file.
+	 *
+	 * @param documents
+	 * @param name
+	 * @throws GerbilException
+	 * @throws IOException
+	 */
+	public void runPipe(List<Document> documents, String name) throws GerbilException, IOException {
+		List<ErrorChecker> checkers = this.setupPipe();
 		// start pipeline
 		for (ErrorChecker checker : checkers) {
 			checker.check(documents);
 		}
+		this.writeDataInFile(documents, name);
+
+	}
+
+	/**
+	 * This method writes the data into the file once the documents are
+	 * processed by the pipeline.
+	 *
+	 * @param documents
+	 * @param name
+	 * @throws GerbilException
+	 * @throws IOException
+	 */
+
+	public void writeDataInFile(List<Document> documents, String name) throws GerbilException, IOException {
 		Model nifModel = generateModel(documents);
-		File resultfile = new File("eaglet_data" + File.separator
-				+ "result_completion" + File.separator + name
-				+ "-result-nif.ttl");
+		File resultfile = new File(
+				"eaglet_data" + File.separator + "result_completion" + File.separator + name + "-result-nif.ttl");
 		if (!resultfile.exists()) {
 			resultfile.getParentFile().mkdirs();
 			resultfile.createNewFile();
@@ -118,28 +140,18 @@ public class CheckerPipeline {
 		Resource annotationResource;
 		NamedEntityCorrections partner;
 		for (Document document : documents) {
-			for (NamedEntityCorrections correction : document
-					.getMarkings(NamedEntityCorrections.class)) {
-				annotationResource = nifModel.getResource(NIFUriHelper
-						.getNifUri(
-								document.getDocumentURI(),
-								correction.getStartPosition(),
-								correction.getStartPosition()
-										+ correction.getLength()));
-				nifModel.add(annotationResource, EAGLET.hasCheckResult,
-						EAGLET.getCheckResult(correction.getResult()));
+			for (NamedEntityCorrections correction : document.getMarkings(NamedEntityCorrections.class)) {
+				annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
+						correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
+				nifModel.add(annotationResource, EAGLET.hasCheckResult, EAGLET.getCheckResult(correction.getResult()));
 				for (ErrorType error : correction.getError()) {
-					nifModel.add(annotationResource, EAGLET.hasErrorType,
-							EAGLET.getErrorType(error));
+					nifModel.add(annotationResource, EAGLET.hasErrorType, EAGLET.getErrorType(error));
 				}
 				partner = correction.getPartner();
 				if ((partner != null)) {
 					nifModel.add(annotationResource, EAGLET.hasPairPartner,
-							nifModel.getResource(NIFUriHelper.getNifUri(
-									document.getDocumentURI(),
-									partner.getStartPosition(),
-									partner.getStartPosition()
-											+ partner.getLength())));
+							nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
+									partner.getStartPosition(), partner.getStartPosition() + partner.getLength())));
 				}
 			}
 		}
@@ -161,11 +173,9 @@ public class CheckerPipeline {
 		nifModel.read(fin, "", "TTL");
 		fin.close();
 
-		DocumentListParser parser = new DocumentListParser(new DocumentParser(
-				new AdaptedAnnotationParser()));
+		DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
 		List<Document> documents = parser.parseDocuments(nifModel);
-		StmtIterator iterator = nifModel.listStatements(null,
-				EAGLET.hasPairPartner, (RDFNode) null);
+		StmtIterator iterator = nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode) null);
 		Statement s;
 		String subjectUri, objectUri, documentUri;
 		NamedEntityCorrections subject = null, object = null;
@@ -177,25 +187,18 @@ public class CheckerPipeline {
 			// TODO search the document from the list
 			for (Document doc : documents) {
 				if (documentUri.equals(doc.getDocumentURI())) {
-					int startsbj = Character.getNumericValue(subjectUri
-							.charAt(subjectUri.length() - 3));
-					int endsbj = Character.getNumericValue(subjectUri
-							.charAt(subjectUri.length() - 1));
-					int startobj = Character.getNumericValue(objectUri
-							.charAt(subjectUri.length() - 3));
-					int endobj = Character.getNumericValue(objectUri
-							.charAt(subjectUri.length() - 1));
-					List<NamedEntityCorrections> entity_set = doc
-							.getMarkings(NamedEntityCorrections.class);
+					int startsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 3));
+					int endsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 1));
+					int startobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 3));
+					int endobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 1));
+					List<NamedEntityCorrections> entity_set = doc.getMarkings(NamedEntityCorrections.class);
 					for (NamedEntityCorrections entity : entity_set) {
 						if ((entity.getStartPosition() == startsbj)
-								&& (entity.getStartPosition()
-										+ entity.getLength() == endsbj)) {
+								&& (entity.getStartPosition() + entity.getLength() == endsbj)) {
 							subject = entity;
 						}
 						if ((entity.getStartPosition() == startobj)
-								&& (entity.getStartPosition()
-										+ entity.getLength() == endobj)) {
+								&& (entity.getStartPosition() + entity.getLength() == endobj)) {
 							object = entity;
 						}
 					}
