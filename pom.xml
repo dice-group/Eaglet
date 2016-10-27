@@ -50,12 +50,48 @@
 					<artifactId>stanpost341</artifactId>
 					<groupId>edu.stanford</groupId>
 				</exclusion>
+				<exclusion>
+					<groupId>it.unipi.di.acube</groupId>
+					<artifactId>bat-framework</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.babelnet</groupId>
+					<artifactId>bfycomm099</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.babelnet</groupId>
+					<artifactId>bfyonline099</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>fr.eurecom.nerd</groupId>
+					<artifactId>client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache</groupId>
+					<artifactId>commconf15</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.babelnet</groupId>
+					<artifactId>jltutils203</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache</groupId>
+					<artifactId>commcoll32</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache</groupId>
+					<artifactId>commlang23</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache</groupId>
+					<artifactId>commlogg113</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.aksw</groupId>
 			<artifactId>gerbil.nif.transfer</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>1.2.3-SNAPSHOT</version>
 		</dependency>
 		<!-- Stanford NLP -->
 		<dependency>
@@ -122,6 +158,11 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
 		</dependency>
 
 		<!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
