@@ -73,7 +73,7 @@ public class CheckerPipeline {
 	 */
 	public void startPipe(List<Document> documents, String name)
 			throws GerbilException, IOException {
-		List<A2KBAnnotator> annotators = callAnnotator("/Users/Kunal/workspace/gscheck/eaglet_data/Annotator");
+		List<A2KBAnnotator> annotators = callAnnotator("/Users/Kunal/workspace/gscheck/eaglet_data/Result_Annotator");
 		// prepare the pipeline
 		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
 		checkers.add(new MissingEntityCompletion(annotators));

@@ -408,6 +408,7 @@ public class EagletController {
 		return builder
 				.toString()
 				.replace("<null>", "<http://aksw.org/notInWiki/null>")
+                .replace(",http://", "> , <http://")
 				.replace(
 						"\"CORRECT\"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue>",
 						"<" + EAGLET.Correct.getURI() + ">")

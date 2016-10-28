@@ -7,8 +7,10 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
@@ -19,6 +21,8 @@ import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.aksw.simba.eaglet.web.EagletController;
 import org.apache.commons.io.IOUtils;
@@ -40,13 +44,36 @@ public class AnnotationMerger {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationMerger.class);
 
+//     private static final String INPUT_FOLDER =
+//     "eaglet_data/result_user/Micha_ACE";
+     private static final String INPUT_FOLDER =
+     "eaglet_data/result_user/Result Kunal/ACE";
+     private static final String PIPE_RESULT_FILE =
+     "eaglet_data/result_pipe/ACE2004-result-nif.ttl";
+//     private static final String OUTPUT_FILE =
+//     "eaglet_data/result_user/ACE_Micha.ttl";
+     private static final String OUTPUT_FILE =
+     "eaglet_data/result_user/ACE_Kunal.ttl";
+
     // private static final String INPUT_FOLDER =
-    // "eaglet_data/result_user/Micha_AIDA";
-    private static final String INPUT_FOLDER = "eaglet_data/result_user/Result Kunal/AIDA_CoNLL-Test A-result-nif";
-    private static final String PIPE_RESULT_FILE = "eaglet_data/result_pipe/CoNLL-Test A-result-nif.ttl";
+    // "eaglet_data/result_user/Micha_OKE";
+    //// private static final String INPUT_FOLDER =
+    // "eaglet_data/result_user/Result Kunal/OKE";
+    // private static final String PIPE_RESULT_FILE =
+    // "eaglet_data/result_pipe/OKE 2015 Task 1 evaluation
+    // dataset-result-nif.ttl";
     // private static final String OUTPUT_FILE =
-    // "eaglet_data/result_user/AIDA_Micha.ttl";
-    private static final String OUTPUT_FILE = "eaglet_data/result_user/AIDA_Kunal.ttl";
+    // "eaglet_data/result_user/OKE_Micha.ttl";
+    //// private static final String OUTPUT_FILE =
+    // "eaglet_data/result_user/OKE_Kunal.ttl";
+
+//    private static final String INPUT_FOLDER = "eaglet_data/result_user/Micha_AIDA";
+//    // private static final String INPUT_FOLDER =
+//    // "eaglet_data/result_user/Result Kunal/AIDA_CoNLL-Test A-result-nif";
+//    private static final String PIPE_RESULT_FILE = "eaglet_data/result_pipe/CoNLL-Test A-result-nif.ttl";
+//    private static final String OUTPUT_FILE = "eaglet_data/result_user/AIDA_Micha.ttl";
+//    // private static final String OUTPUT_FILE =
+//    // "eaglet_data/result_user/AIDA_Kunal.ttl";
 
     public static void main(String[] args) {
         List<Document> userDocuments = new ArrayList<Document>();
@@ -54,6 +81,8 @@ public class AnnotationMerger {
 
         List<Document> pipeDocuments = new ArrayList<Document>();
         loadDocuments(new File(PIPE_RESULT_FILE), pipeDocuments);
+
+        printCounts(userDocuments, pipeDocuments);
 
         Map<String, NamedEntityCorrections[]> pipeResultDocs = new HashMap<String, NamedEntityCorrections[]>();
         List<NamedEntityCorrections> markings;
@@ -76,6 +105,11 @@ public class AnnotationMerger {
                         if ((pipeMarkings[i].getStartPosition() == marking.getStartPosition())
                                 && (pipeMarkings[i].getLength() == marking.getLength())) {
                             marking.setResult(pipeMarkings[i].getResult());
+                            if (pipeMarkings[i].getError() != null) {
+                                for (ErrorType error : pipeMarkings[i].getError()) {
+                                    marking.setError(error);
+                                }
+                            }
                         }
                     }
                 }
@@ -87,7 +121,38 @@ public class AnnotationMerger {
         writeDocuments(userDocuments, new File(OUTPUT_FILE));
     }
 
-    private static void writeDocuments(List<Document> userDocuments, File file) {
+    private static void printCounts(List<Document> userDocuments, List<Document> pipeDocuments) {
+        // temporary debug method...
+        Set<String> uris = new HashSet<String>();
+        for (Document d : userDocuments) {
+            uris.add(d.getDocumentURI());
+        }
+
+        int annoCount = 0, localCount = 0, zero = 0;
+        List<NamedEntityCorrections> necs;
+        for (Document d : pipeDocuments) {
+            if (uris.contains(d.getDocumentURI())) {
+                necs = d.getMarkings(NamedEntityCorrections.class);
+                localCount = 0;
+                for (NamedEntityCorrections nec : necs) {
+                    if (nec.getResult() != Check.INSERTED) {
+                        ++localCount;
+                    }
+                }
+                if (localCount == 0) {
+                    ++zero;
+                } else {
+                    annoCount += localCount;
+                }
+            }
+        }
+        System.out.print(zero);
+        System.out.println(" documents don't have a single annotation");
+        System.out.print(annoCount);
+        System.out.println(" annotations are present in the original dataset");
+    }
+
+    public static void writeDocuments(List<Document> userDocuments, File file) {
         Model nifModel = generateModel(userDocuments);
 
         if (!file.exists()) {
@@ -140,7 +205,7 @@ public class AnnotationMerger {
             DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
             documents.addAll(parser.parseDocuments(nifModel));
         } catch (Exception e) {
-            LOGGER.error("Couldn't load the dataset!", e);
+            LOGGER.error("Couldn't load the dataset! File=" + file.toString(), e);
         }
     }
 

@@ -40,6 +40,7 @@ import org.aksw.simba.eaglet.entitytypemodify.ClassifiedEntityCheck;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,27 +51,22 @@ public class InterRaterAgreement {
     private static final int USER_IDS[] = new int[] { 1, 2 };
     private static final String USER_OUTPUT_FOLDER = "eaglet_data/result_user/KORE50";
 
-    private static final int MAX_NUMBER_OF_DOCUMENTS = 30;
+    public static final int MAX_NUMBER_OF_DOCUMENTS = 30;
 
-    private static final String[] USER_OUTPUT_FOLDERS = new String[] { "eaglet_data/result_user/AIDA_Micha.ttl",
-            "eaglet_data/result_user/AIDA_Kunal.ttl" };
+     private static final String[] USER_OUTPUT_FOLDERS = new String[] {
+     "eaglet_data/result_user/AIDA_Micha.ttl",
+     "eaglet_data/result_user/AIDA_Kunal.ttl" };
 
     // private static final String[] USER_OUTPUT_FOLDERS = new String[] {
     // "src/test/resources/org/aksw/simba/eaglet/eval/user1",
     // "src/test/resources/org/aksw/simba/eaglet/eval/user2" };
 
-    // private static final String[] USER_OUTPUT_FOLDERS = new String[] {
-    // "eaglet_data/result_user/Result Kunal/AIDA_CoNLL-Test A-result-nif",
-    // "eaglet_data/result_user/Micha_AIDA" };
+//     private static final String[] USER_OUTPUT_FOLDERS = new String[] {
+//     "eaglet_data/result_user/OKE_Kunal.ttl",
+//     "eaglet_data/result_user/OKE_Micha.ttl" };
 
-    // private static final String[] USER_OUTPUT_FOLDERS = new String[] {
-    // "eaglet_data/result_user/Result Kunal/OKE 2015 Task 1 evaluation
-    // dataset-result-nif.ttl",
-    // "eaglet_data/result_user/Micha_OKE" };
-
-    // private static final String[] USER_OUTPUT_FOLDERS = new String[] {
-    // "eaglet_data/result_user/Result Kunal/ACE",
-    // "eaglet_data/result_user/Micha_ACE" };
+//    private static final String[] USER_OUTPUT_FOLDERS = new String[] { "eaglet_data/result_user/ACE_Kunal.ttl",
+//            "eaglet_data/result_user/ACE_Micha.ttl" };
 
     public static void main(String[] args) {
         InterRaterAgreement raterAgreement = new InterRaterAgreement();
@@ -83,17 +79,36 @@ public class InterRaterAgreement {
         List<List<List<NamedEntityCorrections>>> annotations = loadAnnotations(userIds, userOutputFolder);
         List<Evaluator<NamedEntityCorrections>> evaluators;
         EvaluationResultContainer result;
+        int checkCount;
         for (int i = 0; i < USER_OUTPUT_FOLDERS.length; ++i) {
             for (int j = i + 1; j < USER_OUTPUT_FOLDERS.length; ++j) {
-
                 for (Check checkResult : Check.values()) {
-                    LOGGER.info("Comparing user {} and {}.", USER_OUTPUT_FOLDERS[i], USER_OUTPUT_FOLDERS[j]);
-                    evaluators = factory.createEvaluator4PipeDecisions(checkResult, USER_OUTPUT_FOLDERS[i],
-                            USER_OUTPUT_FOLDERS[j]);
-                    result = (EvaluationResultContainer) evaluate(evaluators, annotations.get(i), annotations.get(j));
-                    System.out.println("Decision for result " + checkResult + " user " + USER_OUTPUT_FOLDERS[i]
-                            + " vs. " + USER_OUTPUT_FOLDERS[j]);
-                    printResult(result);
+                    checkCount = countMarkingsWithResult(checkResult, annotations.get(i))
+                            + countMarkingsWithResult(checkResult, annotations.get(j));
+                    if (checkCount > 0) {
+                        LOGGER.info("Comparing user {} and {}.", USER_OUTPUT_FOLDERS[i], USER_OUTPUT_FOLDERS[j]);
+                        evaluators = factory.createEvaluator4PipeDecisions(checkResult, USER_OUTPUT_FOLDERS[i],
+                                USER_OUTPUT_FOLDERS[j]);
+                        result = (EvaluationResultContainer) evaluate(evaluators, annotations.get(i),
+                                annotations.get(j));
+                        System.out.println("Decision for result " + checkResult + " (" + checkCount
+                                + " annotations) user " + USER_OUTPUT_FOLDERS[i] + " vs. " + USER_OUTPUT_FOLDERS[j]);
+                        printResult(result);
+                    }
+                }
+                for (ErrorType errorType : ErrorType.values()) {
+                    checkCount = countMarkingsWithResult(errorType, annotations.get(i))
+                            + countMarkingsWithResult(errorType, annotations.get(j));
+                    if (checkCount > 0) {
+                        LOGGER.info("Comparing user {} and {}.", USER_OUTPUT_FOLDERS[i], USER_OUTPUT_FOLDERS[j]);
+                        evaluators = factory.createEvaluator4ErrorType(errorType, USER_OUTPUT_FOLDERS[i],
+                                USER_OUTPUT_FOLDERS[j]);
+                        result = (EvaluationResultContainer) evaluate(evaluators, annotations.get(i),
+                                annotations.get(j));
+                        System.out.println("Decision for error type " + errorType + " (" + checkCount
+                                + " annotations) user " + USER_OUTPUT_FOLDERS[i] + " vs. " + USER_OUTPUT_FOLDERS[j]);
+                        printResult(result);
+                    }
                 }
                 LOGGER.info("Comparing user {} and {}.", USER_OUTPUT_FOLDERS[i], USER_OUTPUT_FOLDERS[j]);
                 evaluators = factory.createEvaluator4PipeDecisions(null, USER_OUTPUT_FOLDERS[i],
@@ -111,6 +126,30 @@ public class InterRaterAgreement {
         }
     }
 
+    private int countMarkingsWithResult(Check checkResult, List<List<NamedEntityCorrections>> annotations) {
+        int count = 0;
+        for (List<NamedEntityCorrections> list : annotations) {
+            for (NamedEntityCorrections annotation : list) {
+                if (annotation.getResult() == checkResult) {
+                    ++count;
+                }
+            }
+        }
+        return count;
+    }
+
+    private int countMarkingsWithResult(ErrorType error, List<List<NamedEntityCorrections>> annotations) {
+        int count = 0;
+        for (List<NamedEntityCorrections> list : annotations) {
+            for (NamedEntityCorrections annotation : list) {
+                if ((annotation.getError() != null) && (annotation.getError().contains(error))) {
+                    ++count;
+                }
+            }
+        }
+        return count;
+    }
+
     protected EvaluationResult evaluate(List<Evaluator<NamedEntityCorrections>> evaluators,
             List<List<NamedEntityCorrections>> annotatorResults, List<List<NamedEntityCorrections>> goldStandard) {
         EvaluationResultContainer evalResults = new EvaluationResultContainer();
@@ -122,14 +161,16 @@ public class InterRaterAgreement {
 
     protected List<List<List<NamedEntityCorrections>>> loadAnnotations(int[] userIds, File userOutputFolder) {
         List<List<Document>> documents = loadDocuments(userIds, userOutputFolder);
-//        // FIXME REMOVE THIS FILTERING!
-//        for (List<Document> documentList : documents) {
-//            for (int i = documentList.size() - 1; i >= 0; --i) {
-//                if (!documentList.get(i).getDocumentURI().equals("http://AIDA/CoNLL-TestA/1099")) {
-//                    documentList.remove(i);
-//                }
-//            }
-//        }
+        // // FIXME REMOVE THIS FILTERING!
+        // for (List<Document> documentList : documents) {
+        // for (int i = documentList.size() - 1; i >= 0; --i) {
+        // if
+        // (!documentList.get(i).getDocumentURI().equals("http://AIDA/CoNLL-TestA/1099"))
+        // {
+        // documentList.remove(i);
+        // }
+        // }
+        // }
         List<Map<String, List<NamedEntityCorrections>>> documentAnnotations = new ArrayList<Map<String, List<NamedEntityCorrections>>>(
                 documents.size());
         Set<String> uris = generateMappings(documents, documentAnnotations);
@@ -207,11 +248,29 @@ public class InterRaterAgreement {
                 }
             });
             if (userDocuments.size() > MAX_NUMBER_OF_DOCUMENTS) {
-                userDocuments = userDocuments.subList(0, MAX_NUMBER_OF_DOCUMENTS);
+                userDocuments = shrinkCorpus(userDocuments);
             }
             loadedDocuments.add(userDocuments);
         }
         return loadedDocuments;
+    }
+
+    public static List<Document> shrinkCorpus(List<Document> corpus) {
+        List<Document> shrinkedCorpus = new ArrayList<Document>(corpus.size());
+        Set<String> uris = new HashSet<String>();
+        for (Document document : corpus) {
+            uris.add(document.getDocumentURI());
+        }
+        String sortedUris[] = uris.toArray(new String[uris.size()]);
+        for (int i = MAX_NUMBER_OF_DOCUMENTS; i < sortedUris.length; ++i) {
+            uris.remove(sortedUris[i]);
+        }
+        for (Document document : corpus) {
+            if (uris.contains(document.getDocumentURI())) {
+                shrinkedCorpus.add(document);
+            }
+        }
+        return shrinkedCorpus;
     }
 
     public static void printResult(EvaluationResult result) {
@@ -273,6 +332,48 @@ public class InterRaterAgreement {
         }
 
         @SuppressWarnings("unchecked")
+        public List<Evaluator<NamedEntityCorrections>> createEvaluator4ErrorType(ErrorType errorType, String name1,
+                String name2) {
+            List<Evaluator<NamedEntityCorrections>> evaluators = new ArrayList<Evaluator<NamedEntityCorrections>>();
+
+            // The URIs are not interesting. It is sufficient to look at the
+            // positions
+            evaluators.add(new MarkingFilteringEvaluatorDecorator<NamedEntityCorrections>(
+                    new AbstractMarkingFilter<NamedEntityCorrections>() {
+                        @Override
+                        public boolean isMarkingGood(NamedEntityCorrections marking) {
+                            return marking.getUserDecision() != DecisionValue.ADDED;
+                        }
+                    }, new MarkingFilteringEvaluatorDecorator<NamedEntityCorrections>(
+                            new AbstractMarkingFilter<NamedEntityCorrections>() {
+                                @Override
+                                public boolean isMarkingGood(NamedEntityCorrections marking) {
+                                    return ((marking.getError() != null) && (marking.getError().contains(errorType)));
+                                }
+                            },
+                            new FMeasureCalculator<NamedEntityCorrections>(
+                                    new MatchingsCounterImpl<NamedEntityCorrections>(
+                                            new CompoundMatchingsSearcher<>(new DecisionMatchingsSearcher(),
+                                                    (MatchingsSearcher<NamedEntityCorrections>) MatchingsSearcherFactory
+                                                            .createSpanMatchingsSearcher(
+                                                                    Matching.STRONG_ANNOTATION_MATCH)))))));
+            evaluators.add(new MarkingFilteringEvaluatorDecorator<NamedEntityCorrections>(
+                    new AbstractMarkingFilter<NamedEntityCorrections>() {
+                        @Override
+                        public boolean isMarkingGood(NamedEntityCorrections marking) {
+                            return marking.getUserDecision() != DecisionValue.ADDED;
+                        }
+                    }, new MarkingFilteringEvaluatorDecorator<NamedEntityCorrections>(
+                            new AbstractMarkingFilter<NamedEntityCorrections>() {
+                                @Override
+                                public boolean isMarkingGood(NamedEntityCorrections marking) {
+                                    return ((marking.getError() != null) && (marking.getError().contains(errorType)));
+                                }
+                            }, new CorrectnessAccuracy())));
+            return evaluators;
+        }
+
+        @SuppressWarnings("unchecked")
         public List<Evaluator<NamedEntityCorrections>> createEvaluator4UserAdditions(String name1, String name2) {
             List<Evaluator<NamedEntityCorrections>> evaluators = new ArrayList<Evaluator<NamedEntityCorrections>>();
 
@@ -287,6 +388,19 @@ public class InterRaterAgreement {
                         }
                     },
                     new FMeasureCalculator<NamedEntityCorrections>(new MatchingsCounterImpl<NamedEntityCorrections>(
+                            (MatchingsSearcher<NamedEntityCorrections>) MatchingsSearcherFactory
+                                    .createSpanMatchingsSearcher(Matching.WEAK_ANNOTATION_MATCH)))));
+
+            // The URIs are not interesting. It is sufficient to look at the
+            // positions
+            evaluators.add(new MarkingFilteringEvaluatorDecorator<NamedEntityCorrections>(
+                    new AbstractMarkingFilter<NamedEntityCorrections>() {
+                        @Override
+                        public boolean isMarkingGood(NamedEntityCorrections marking) {
+                            return marking.getUserDecision() == DecisionValue.ADDED;
+                        }
+                    },
+                    new AddedMarkingsCountingEvaluator(new MatchingsCounterImpl<NamedEntityCorrections>(
                             (MatchingsSearcher<NamedEntityCorrections>) MatchingsSearcherFactory
                                     .createSpanMatchingsSearcher(Matching.WEAK_ANNOTATION_MATCH)))));
 
