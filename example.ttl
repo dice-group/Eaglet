@@ -1,0 +1,81 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix itsrdf: <http://www.w3.org/2005/11/its/rdf#> .
+@prefix nif:   <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://example.org/Example1FromThePaper#char=12,16>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        nif:anchorOf          "2012"^^xsd:string ;
+        nif:beginIndex        "12"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "16"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://example.org/Example1FromThePaper#char=0,95> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/2012> .
+
+<http://example.org/Example2FromThePaper#char=0,157>
+        a               nif:RFC5147String , nif:String , nif:Context ;
+        nif:beginIndex  "0"^^xsd:nonNegativeInteger ;
+        nif:endIndex    "157"^^xsd:nonNegativeInteger ;
+        nif:isString    "John played football for Seattle after he spent a semester in China. Such a team that won Supporters' Shield in 2014 boosts players like him in their career."^^xsd:string .
+
+<http://example.org/Example1FromThePaper#char=48,60>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        nif:anchorOf          "Cup Playoffs"^^xsd:string ;
+        nif:beginIndex        "48"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "60"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://example.org/Example1FromThePaper#char=0,95> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Playoffs> .
+
+<http://example.org/Example2FromThePaper#char=12,16>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        nif:anchorOf          "foot"^^xsd:string ;
+        nif:beginIndex        "12"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "16"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://example.org/Example2FromThePaper#char=0,157> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Foot> .
+
+<http://example.org/Example1FromThePaper#char=44,51>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        nif:anchorOf          "MLS Cup"^^xsd:string ;
+        nif:beginIndex        "44"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "51"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://example.org/Example1FromThePaper#char=0,95> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/MLS_Cup> .
+
+<http://example.org/Example2FromThePaper#char=76,116>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        nif:anchorOf          "team that won Supporters' Shield in 2014"^^xsd:string ;
+        nif:beginIndex        "76"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "116"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://example.org/Example2FromThePaper#char=0,157> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Seattle_Sounders_FC> .
+
+<http://example.org/Example1FromThePaper#char=0,95>
+        a               nif:RFC5147String , nif:String , nif:Context ;
+        nif:beginIndex  "0"^^xsd:nonNegativeInteger ;
+        nif:endIndex    "95"^^xsd:nonNegativeInteger ;
+        nif:isString    "In December 2012, Seattle qualified for the MLS Cup Playoffs in each of its first five seasons."^^xsd:string .
+
+<http://example.org/Example1FromThePaper#char=3,11>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        nif:anchorOf          "December"^^xsd:string ;
+        nif:beginIndex        "3"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "11"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://example.org/Example1FromThePaper#char=0,95> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/December> .
+
+<http://example.org/Example1FromThePaper#char=18,25>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        nif:anchorOf          "Seattle"^^xsd:string ;
+        nif:beginIndex        "18"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "25"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://example.org/Example1FromThePaper#char=0,95> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/Seattle> .
+
+<http://example.org/Example2FromThePaper#char=62,67>
+        a                     nif:RFC5147String , nif:String , nif:Phrase ;
+        nif:anchorOf          "China"^^xsd:string ;
+        nif:beginIndex        "62"^^xsd:nonNegativeInteger ;
+        nif:endIndex          "67"^^xsd:nonNegativeInteger ;
+        nif:referenceContext  <http://example.org/Example2FromThePaper#char=0,157> ;
+        itsrdf:taIdentRef     <http://dbpedia.org/resource/People's_Republic_of_China> .
