@@ -12,7 +12,7 @@ import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.Check;
-import org.aksw.simba.eaglet.error.SubsetMarkingError;
+import org.aksw.simba.eaglet.error.OverLappingError;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class SubsetMarkingErrorTest {
 						(Marking) new NamedEntityCorrections(61, 21,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas"))));
 
-		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD ,Check.GOOD });
+		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD });
 
 		// Complete subset overlap
 
@@ -66,8 +66,7 @@ public class SubsetMarkingErrorTest {
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore"))));
-		expectedResults
-				.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.DELETED, Check.GOOD, Check.GOOD });
+		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.DELETED, Check.GOOD, Check.GOOD });
 
 		// Partial Overlap
 		doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
@@ -77,13 +76,12 @@ public class SubsetMarkingErrorTest {
 
 		expectedResults.add(new Check[] { Check.GOOD, Check.DELETED });
 
-
 	}
 
 	@Test
 	public void test() throws GerbilException {
 		// fail("Not yet implemented");
-		SubsetMarkingError test_var = new SubsetMarkingError();
+		OverLappingError test_var = new OverLappingError();
 		test_var.check(doc);
 
 		List<NamedEntityCorrections> markings;
@@ -97,7 +95,8 @@ public class SubsetMarkingErrorTest {
 			// Assert.assertEquals(partner_list.get(i).length, markings.size());
 
 			for (int j = 0; j < markings.size(); j++) {
-				Assert.assertEquals("Error at marking #" +j +" in doc"+ i, expectedResult[j], markings.get(j).getResult());
+				Assert.assertEquals("Error at marking #" + j + " in doc" + i, expectedResult[j],
+						markings.get(j).getResult());
 
 				// Assert.assertEquals(partner[j],
 				// markings.get(j).getPartner());

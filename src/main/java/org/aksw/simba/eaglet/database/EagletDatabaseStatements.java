@@ -10,16 +10,21 @@ import javax.sql.DataSource;
 
 import org.aksw.gerbil.database.IntegerRowMapper;
 import org.aksw.gerbil.database.StringRowMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+/**
+ * The class handles the database for user results and userid. It works on the
+ * eaglet-schema.sql
+ *
+ * @author Kunal
+ * @author Michael
+ *
+ */
 public class EagletDatabaseStatements implements Closeable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EagletDatabaseStatements.class);
 	private final static String INSERT_USER = "INSERT INTO Users (name) VALUES (:userName)";
 	private final static String INSERT_DOCUMENT = "INSERT INTO Documents (userId, documentUri,fileName) VALUES (:userId, :documentUri, :fileName)";
 	private final static String GET_USER = "SELECT id FROM Users WHERE name=:userName";
@@ -32,14 +37,26 @@ public class EagletDatabaseStatements implements Closeable {
 
 	private final NamedParameterJdbcTemplate template;
 
+	/**
+	 * Constructor
+	 *
+	 * @param dataSource
+	 */
 	public EagletDatabaseStatements(DataSource dataSource) {
 		this.template = new NamedParameterJdbcTemplate(dataSource);
 	}
 
+	/**
+	 * The method to get the user's data.
+	 *
+	 * @param userName
+	 * @return Userid
+	 */
 	public int getUser(String userName) {
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("userName", userName);
-		List<Integer> result = this.template.query(GET_USER, parameters, new IntegerRowMapper());
+		List<Integer> result = this.template.query(GET_USER, parameters,
+				new IntegerRowMapper());
 		if (result.size() >= 1) {
 			return result.get(0);
 		} else {
@@ -47,10 +64,17 @@ public class EagletDatabaseStatements implements Closeable {
 		}
 	}
 
+	/**
+	 * The method return the list of all the fileNames.
+	 *
+	 * @param documentUri
+	 * @return List of filenames
+	 */
 	public List<String> getDocumentFilenames(String documentUri) {
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("documentUri", documentUri);
-		List<String> result = this.template.query(GET_DOCUMENT_FILES, parameters, new StringRowMapper());
+		List<String> result = this.template.query(GET_DOCUMENT_FILES,
+				parameters, new StringRowMapper());
 		if (result.size() >= 1) {
 			return result;
 		} else {
@@ -58,10 +82,19 @@ public class EagletDatabaseStatements implements Closeable {
 		}
 	}
 
+	/**
+	 * The method returns all the documents evaluated by the user.
+	 *
+	 * @param userId
+	 * @return List of documents evaluated by user.
+	 */
+
 	public List<String> getDocumentUser(int userId) {
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("userId", userId);
-		List<String> result = this.template.query(GET_DOCUMENTS_REVIEWED_BY_USER, parameters, new StringRowMapper());
+		List<String> result = this.template.query(
+				GET_DOCUMENTS_REVIEWED_BY_USER, parameters,
+				new StringRowMapper());
 		if (result.size() >= 1) {
 			return result;
 		} else {
@@ -69,6 +102,11 @@ public class EagletDatabaseStatements implements Closeable {
 		}
 	}
 
+	/**
+	 * The method adds a new user to the database.
+	 *
+	 * @param name
+	 */
 	public void addUser(String name) {
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 
@@ -89,12 +127,14 @@ public class EagletDatabaseStatements implements Closeable {
 
 	@Override
 	public void close() {
-		this.template.execute(SHUTDOWN, new PreparedStatementCallback<Object>() {
-			@Override
-			public Object doInPreparedStatement(PreparedStatement arg0) throws SQLException, DataAccessException {
-				// nothing to do
-				return null;
-			}
-		});
+		this.template.execute(SHUTDOWN,
+				new PreparedStatementCallback<Object>() {
+					@Override
+					public Object doInPreparedStatement(PreparedStatement arg0)
+							throws SQLException, DataAccessException {
+						// nothing to do
+						return null;
+					}
+				});
 	}
 }

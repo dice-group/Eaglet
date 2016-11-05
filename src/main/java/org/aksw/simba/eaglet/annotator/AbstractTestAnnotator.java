@@ -30,53 +30,77 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.utils.ClosePermitionGranter;
 
+/**
+ * The class reads the resulted markings list by various annotators.
+ *
+ * @author Kunal
+ * @author Michael
+ *
+ */
 
+public class AbstractTestAnnotator extends AbstractAdapterConfiguration
+		implements Annotator, AnnotatorConfiguration {
+	/** Value - {@value} , Map used for uri and instance. */
 
-public class AbstractTestAnnotator extends AbstractAdapterConfiguration implements Annotator, AnnotatorConfiguration {
+	protected Map<String, Document> uriInstanceMapping;
 
-    protected Map<String, Document> uriInstanceMapping;
+	/**
+	 * Constructor
+	 *
+	 * @param annotatorName
+	 * @param couldBeCached
+	 * @param instances
+	 * @param applicableForExperiment
+	 */
+	public AbstractTestAnnotator(String annotatorName, boolean couldBeCached,
+			List<Document> instances, ExperimentType applicableForExperiment) {
+		super(annotatorName, couldBeCached, applicableForExperiment);
+		this.uriInstanceMapping = new HashMap<String, Document>(
+				instances.size());
+		for (Document document : instances) {
+			uriInstanceMapping.put(document.getDocumentURI(), document);
+		}
+	}
 
-    public AbstractTestAnnotator(String annotatorName, boolean couldBeCached, List<Document> instances,
-            ExperimentType applicableForExperiment) {
-        super(annotatorName, couldBeCached, applicableForExperiment);
-        this.uriInstanceMapping = new HashMap<String, Document>(instances.size());
-        for (Document document : instances) {
-            uriInstanceMapping.put(document.getDocumentURI(), document);
-        }
-    }
+	/**
+	 * The method to get annotator of the desired experiment type.
+	 *
+	 * @param experimentType
+	 *            : The ExperimentType of the GERBIL experiment.
+	 */
+	@Override
+	public Annotator getAnnotator(ExperimentType experimentType)
+			throws GerbilException {
+		if (applicableForExperiment.equalsOrContainsType(experimentType)) {
+			try {
+				return loadAnnotator(experimentType);
+			} catch (Exception e) {
+				throw new GerbilException(e, ErrorTypes.ANNOTATOR_LOADING_ERROR);
+			}
+		}
+		return null;
+	}
 
-    @Override
-    public Annotator getAnnotator(ExperimentType experimentType) throws GerbilException {
-        if (applicableForExperiment.equalsOrContainsType(experimentType)) {
-            try {
-                return loadAnnotator(experimentType);
-            } catch (Exception e) {
-                throw new GerbilException(e, ErrorTypes.ANNOTATOR_LOADING_ERROR);
-            }
-        }
-        return null;
-    }
+	protected Annotator loadAnnotator(ExperimentType type) throws Exception {
+		return this;
+	}
 
-    protected Annotator loadAnnotator(ExperimentType type) throws Exception {
-        return this;
-    }
+	protected Document getDocument(String uri) {
+		if (uriInstanceMapping.containsKey(uri)) {
+			return uriInstanceMapping.get(uri);
+		} else {
+			return null;
+		}
+	}
 
-    protected Document getDocument(String uri) {
-        if (uriInstanceMapping.containsKey(uri)) {
-            return uriInstanceMapping.get(uri);
-        } else {
-            return null;
-        }
-    }
+	@Override
+	public void close() throws IOException {
+		// nothing to do
+	}
 
-    @Override
-    public void close() throws IOException {
-        // nothing to do
-    }
-
-    @Override
-    public void setClosePermitionGranter(ClosePermitionGranter granter) {
-        // nothing to do
-    }
+	@Override
+	public void setClosePermitionGranter(ClosePermitionGranter granter) {
+		// nothing to do
+	}
 
 }

@@ -16,17 +16,43 @@ import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class handles the Completion tasks of the pipeline. The class takes all
+ * the suggestions.
+ *
+ * @author Kunal
+ * @author Michael
+ *
+ */
 public class MissingEntityCompletion implements ErrorChecker {
-
 	private List<A2KBAnnotator> annotators;
-	private static final Logger LOGGER = LoggerFactory.getLogger(MissingEntityCompletion.class);
+	/** Value - {@value} , LOGGER used for log information. */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(MissingEntityCompletion.class);
 
+	/**
+	 * Constructor
+	 *
+	 * @param annotators
+	 */
 	public MissingEntityCompletion(List<A2KBAnnotator> annotators) {
 		this.annotators = annotators;
 	}
 
-	public void addMissingEntity(List<List<MeaningSpan>> annotator_result, Document doc) throws GerbilException {
-		List<NamedEntityCorrections> existingEntities = doc.getMarkings(NamedEntityCorrections.class);
+	/**
+	 * The method that adds the annotators suggestions in the document.
+	 *
+	 * @param annotator_result
+	 *            : A 2 dimensional list containing all annotators markings for
+	 *            the document.
+	 * @param doc
+	 *            : Document being evaluated.
+	 * @throws GerbilException
+	 */
+	public void addMissingEntity(List<List<MeaningSpan>> annotator_result,
+			Document doc) throws GerbilException {
+		List<NamedEntityCorrections> existingEntities = doc
+				.getMarkings(NamedEntityCorrections.class);
 		Set<MeaningSpan> newEntities = new HashSet<MeaningSpan>();
 		NamedEntityCorrections existingEntity;
 		boolean found = false;
@@ -36,8 +62,10 @@ public class MissingEntityCompletion implements ErrorChecker {
 				found = false;
 				for (int i = 0; !found && (i < existingEntities.size()); ++i) {
 					existingEntity = existingEntities.get(i);
-					if ((existingEntity.getStartPosition() == annotatorentity.getStartPosition())
-							&& (existingEntity.getLength() == annotatorentity.getLength())) {
+					if ((existingEntity.getStartPosition() == annotatorentity
+							.getStartPosition())
+							&& (existingEntity.getLength() == annotatorentity
+									.getLength())) {
 						found = true;
 					}
 				}
@@ -48,21 +76,33 @@ public class MissingEntityCompletion implements ErrorChecker {
 		}
 		// add new entities
 		for (MeaningSpan newEntity : newEntities) {
-			doc.addMarking(new NamedEntityCorrections(newEntity.getStartPosition(), newEntity.getLength(),
-					newEntity.getUris(), Check.COMPLETED));
+			doc.addMarking(new NamedEntityCorrections(newEntity
+					.getStartPosition(), newEntity.getLength(), newEntity
+					.getUris(), Check.COMPLETED));
 		}
 	}
 
-	public List<List<NamedEntityCorrections>> adjustAnnotatorresult(Document doc,
-			List<List<MeaningSpan>> annotator_resutl) {
+	/**
+	 * A utility method to convert annotator's result into the required form.
+	 *
+	 * @param doc: The document to be evaluated.
+	 * @param annotator_result: The result of the
+	 * @return
+	 */
+	public List<List<NamedEntityCorrections>> adjustAnnotatorresult(
+			Document doc, List<List<MeaningSpan>> annotator_result) {
 		List<List<NamedEntityCorrections>> formatedList = new ArrayList<List<NamedEntityCorrections>>();
-		for (List<MeaningSpan> lis : annotator_resutl) {
-			List<NamedEntityCorrections> new_list = EntityTypeChange.changeListType(lis);
+		for (List<MeaningSpan> lis : annotator_result) {
+			List<NamedEntityCorrections> new_list = EntityTypeChange
+					.changeListType(lis);
 			formatedList.add(new_list);
 		}
 		return formatedList;
 	}
 
+	/**
+	 * The interface method to pass the Documents through the pipeline.
+	 */
 	@Override
 	public void check(List<Document> documents) throws GerbilException {
 		LOGGER.info("COMPLETION MODULE RUNNING!!");
