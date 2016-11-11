@@ -6,3 +6,6 @@
 eaglet_data
 gerbil_data
 gerbil_key*
+/idea/
+*.idea
+*.iml

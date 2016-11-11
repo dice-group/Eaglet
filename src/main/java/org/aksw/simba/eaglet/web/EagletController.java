@@ -1,16 +1,8 @@
 package org.aksw.simba.eaglet.web;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.DocumentParser;
@@ -40,9 +32,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
+import java.io.*;
+import java.util.*;
 
 /**
  * The controller class for the EAGLET web service.
@@ -55,7 +46,7 @@ public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/CoNLL-Test A-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "/data1/Workspace/Eaglet/example.ttl" };
 
 	private static final boolean USE_DOCUMENT_WHITELIST = true;
 	private static final String WHITELIST_SOURCE_DIR = "eaglet_data/result_user/Result Kunal";
@@ -273,7 +264,7 @@ public class EagletController {
 	 *
 	 * @return List of Documents
 	 */
-	protected List<Document> loadDocuments() {
+	public List<Document> loadDocuments() {
 		List<Document> loadedDocuments = new ArrayList<Document>();
 		List<Document> temp;
 		for (int i = 0; i < DATASET_FILES.length; ++i) {
