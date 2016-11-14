@@ -36,9 +36,9 @@ public class WebErrorController  {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebErrorController.class);
     private List<Document> documents;
 
-    private DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
+    private static DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
     private static final String DATASET_FILES[] = new String[] { "/data1/Workspace/Eaglet/example.ttl" };
-    private static final boolean USE_DOCUMENT_WHITELIST = false;
+    private static final boolean USE_DOCUMENT_WHITELIST = true;
     private static final String WHITELIST_SOURCE_DIR = "eaglet_data/result_user/Result Hendrik";
 
     /**
@@ -48,7 +48,7 @@ public class WebErrorController  {
      * @param document
      * @return Json string
      */
-    private String transformDocToJson(Document document) {
+    private static String transformDocToJson(Document document) {
         JSONObject doc = new JSONObject();
         doc.append("text", document.getText());
         doc.append("uri", document.getDocumentURI());
@@ -215,7 +215,7 @@ public class WebErrorController  {
         }
     }
 
-    private List<Document> readDocuments(File file) {
+    private static List<Document> readDocuments(File file) {
         List<Document> documents = new ArrayList<Document>();
         FileInputStream fin = null;
         try {
@@ -275,12 +275,14 @@ public class WebErrorController  {
     }
 
     public static void main(String[] args) throws IOException, GerbilException {
-       WebErrorController web = new WebErrorController();
-        web.documents = web.loadDocuments();
+        List<Document> documents;
+        documents = readDocuments(new File("/data1/Workspace/Eaglet/example.ttl"));
         InputforPipeline pipeline = new InputforPipeline();
-        pipeline.setupPipe(web.documents,"example");
+        pipeline.setupPipe(documents,"example");
         CheckerPipeline checkerPipeline = new CheckerPipeline();
-        checkerPipeline.runPipe(web.documents);
-        System.out.println(web.documents.size());
+        checkerPipeline.runPipe(documents);
+        System.out.println(transformDocToJson(documents.get(0)));
     }
+
+
 }
