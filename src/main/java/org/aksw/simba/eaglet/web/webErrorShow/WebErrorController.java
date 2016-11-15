@@ -1,15 +1,8 @@
 package org.aksw.simba.eaglet.web.webErrorShow;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
@@ -29,11 +22,18 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.*;
 
 @Controller
 public class WebErrorController {
@@ -244,9 +244,41 @@ public class WebErrorController {
                         "<" + EAGLET.Wrong.getURI() + ">");
     }
 
+    @RequestMapping(value = "/get-jsonld-doc", method = RequestMethod.GET)
+    public ResponseEntity<String> sendTurtleText() throws IOException, GerbilException {
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("Content-Type", "application/json;charset=utf-8");
+
+        // get the Document
+        List<Document> documents;
+        documents = readDocuments(new File("/data1/Workspace/Eaglet/example.ttl"));
+
+        // Document equils Null
+        if (documents == null) {
+            // TODO return that this was the last document
+            return new ResponseEntity<String>("No Document found", null, HttpStatus.NOT_FOUND);
+        }
+
+        // Data for input Pipline and initialization
+        InputforPipeline preprocessor = new InputforPipeline();
+        preprocessor.prePipeProcessor(documents);
+        // After the preprocessing, we can use the pipeline to search for errors
+        CheckerPipeline pipeline = new CheckerPipeline();
+        pipeline.runPipe(documents);
+        System.out.println((documents.get(0)));
+        String jasonLDString = null;
+
+        for (Document d : documents) {
+            jasonLDString += transformDocToJson(d);
+        }
+
+        return new ResponseEntity<String>(jasonLDString, responseHeaders, HttpStatus.OK);
+    }
+
     public static void main(String[] args) throws IOException, GerbilException {
         List<Document> documents;
-        documents = readDocuments(new File("example.ttl"));
+        documents = readDocuments(new File("/data1/Workspace/Eaglet/example.ttl"));
         // We have to preprocess the documents before we can insert them into
         // the pipeline (Note that later on, the preprocess as well as the
         // checker pipeline should be attributes of this class, so that they are
