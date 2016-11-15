@@ -31,12 +31,13 @@ import java.io.StringReader;
 import java.util.*;
 
 @Controller
-public class WebErrorController  {
+public class WebErrorController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebErrorController.class);
     private List<Document> documents;
 
-    private static DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
+    private static DocumentListParser parser = new DocumentListParser(
+            new DocumentParser(new AdaptedAnnotationParser()));
     private static final String DATASET_FILES[] = new String[] { "/data1/Workspace/Eaglet/example.ttl" };
     private static final boolean USE_DOCUMENT_WHITELIST = true;
     private static final String WHITELIST_SOURCE_DIR = "eaglet_data/result_user/Result Hendrik";
@@ -64,9 +65,8 @@ public class WebErrorController  {
             ne.append("result", nec.getResult());
             ne.append("doc", nec.getDoc());
             ne.append("uris", nec.getUris());
-            ne.append("name",
-                    document.getText().substring(nec.getStartPosition(), nec.getStartPosition() + nec.getLength())
-                            .toUpperCase());
+            ne.append("name", document.getText()
+                    .substring(nec.getStartPosition(), nec.getStartPosition() + nec.getLength()).toUpperCase());
             ne.append("error", nec.getError().toString());
             array.put(ne);
         }
@@ -91,14 +91,13 @@ public class WebErrorController  {
             List<NamedEntityCorrections.ErrorType> error = new ArrayList<NamedEntityCorrections.ErrorType>();
             String errortype = markings.getJSONObject(i).getString("error");
             error.add(parseErroResult(errortype));
-            Marking entity = new NamedEntityCorrections(markings.getJSONObject(i).getInt("start"), markings
-                    .getJSONObject(i).getInt("length"), uris, error, parseDecisionType(markings.getJSONObject(i)
-                    .getString("decision")));
+            Marking entity = new NamedEntityCorrections(markings.getJSONObject(i).getInt("start"),
+                    markings.getJSONObject(i).getInt("length"), uris, error,
+                    parseDecisionType(markings.getJSONObject(i).getString("decision")));
             userAcceptedEntities.add(entity);
         }
         return userAcceptedEntities;
     }
-
 
     /**
      * The method writes the output to the NIF file.
@@ -242,27 +241,25 @@ public class WebErrorController  {
         boolean inUri = false;
         for (int i = 0; i < chars.length; ++i) {
             switch (chars[i]) {
-                case '<':
-                    inUri = true;
-                    builder.append('<');
-                    break;
-                case '>':
-                    inUri = false;
-                    builder.append('>');
-                    break;
-                case ' ':
-                    if (!inUri) {
-                        builder.append(' ');
-                    }
-                    break;
-                default:
-                    builder.append(chars[i]);
-                    break;
+            case '<':
+                inUri = true;
+                builder.append('<');
+                break;
+            case '>':
+                inUri = false;
+                builder.append('>');
+                break;
+            case ' ':
+                if (!inUri) {
+                    builder.append(' ');
+                }
+                break;
+            default:
+                builder.append(chars[i]);
+                break;
             }
         }
-        return builder
-                .toString()
-                .replace("<null>", "<http://aksw.org/notInWiki/null>")
+        return builder.toString().replace("<null>", "<http://aksw.org/notInWiki/null>")
                 .replace(
                         "\"CORRECT\"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue>",
                         "<" + EAGLET.Correct.getURI() + ">")
@@ -276,13 +273,18 @@ public class WebErrorController  {
 
     public static void main(String[] args) throws IOException, GerbilException {
         List<Document> documents;
-        documents = readDocuments(new File("/data1/Workspace/Eaglet/example.ttl"));
-        InputforPipeline pipeline = new InputforPipeline();
-        pipeline.setupPipe(documents,"example");
-        CheckerPipeline checkerPipeline = new CheckerPipeline();
-        checkerPipeline.runPipe(documents);
+        documents = readDocuments(new File("example.ttl"));
+        // We have to preprocess the documents before we can insert them into
+        // the pipeline (Note that later on, the preprocess as well as the
+        // checker pipeline should be attributes of this class, so that they are
+        // only created once).
+        InputforPipeline preprocessor = new InputforPipeline();
+        preprocessor.prePipeProcessor(documents);
+        // After the preprocessing, we can use the pipeline to search for errors
+        CheckerPipeline pipeline = new CheckerPipeline();
+        pipeline.runPipe(documents);
+        // Done. Print the result.
         System.out.println(transformDocToJson(documents.get(0)));
     }
-
 
 }
