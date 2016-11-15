@@ -1,34 +1,39 @@
 package org.aksw.simba.eaglet.web.webErrorShow;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import org.aksw.gerbil.exceptions.GerbilException;
-import org.aksw.gerbil.io.nif.DocumentListParser;
-import org.aksw.gerbil.io.nif.DocumentListWriter;
-import org.aksw.gerbil.io.nif.DocumentParser;
-import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
-import org.aksw.gerbil.transfer.nif.Document;
-import org.aksw.gerbil.transfer.nif.Marking;
-import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
-import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
-import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
-import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.simba.eaglet.errorcheckpipeline.CheckerPipeline;
-import org.aksw.simba.eaglet.errorcheckpipeline.InputforPipeline;
-import org.aksw.simba.eaglet.vocab.EAGLET;
-import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.aksw.gerbil.exceptions.GerbilException;
+import org.aksw.gerbil.io.nif.DocumentListParser;
+import org.aksw.gerbil.io.nif.DocumentListWriter;
+import org.aksw.gerbil.io.nif.DocumentParser;
+import org.aksw.gerbil.io.nif.utils.NIFTransferPrefixMapping;
+import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
+import org.aksw.gerbil.transfer.nif.Document;
+import org.aksw.gerbil.transfer.nif.Marking;
+import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
+import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
+import org.aksw.simba.eaglet.errorcheckpipeline.CheckerPipeline;
+import org.aksw.simba.eaglet.errorcheckpipeline.InputforPipeline;
+import org.aksw.simba.eaglet.io.nif.impl.EagletAnnotationWriter;
+import org.aksw.simba.eaglet.io.nif.impl.JsonLDNIFWriter;
+import org.aksw.simba.eaglet.vocab.EAGLET;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 @Controller
 public class WebErrorController {
@@ -39,8 +44,6 @@ public class WebErrorController {
     private static DocumentListParser parser = new DocumentListParser(
             new DocumentParser(new AdaptedAnnotationParser()));
     private static final String DATASET_FILES[] = new String[] { "/data1/Workspace/Eaglet/example.ttl" };
-    private static final boolean USE_DOCUMENT_WHITELIST = true;
-    private static final String WHITELIST_SOURCE_DIR = "eaglet_data/result_user/Result Hendrik";
 
     /**
      * The method transforms the document into Json for parsing in the
@@ -50,28 +53,34 @@ public class WebErrorController {
      * @return Json string
      */
     private static String transformDocToJson(Document document) {
-        JSONObject doc = new JSONObject();
-        doc.append("text", document.getText());
-        doc.append("uri", document.getDocumentURI());
-        JSONArray array = new JSONArray();
-        JSONObject ne;
-        List<NamedEntityCorrections> necs = document.getMarkings(NamedEntityCorrections.class);
-        necs.sort(new StartPosBasedComparator());
-        for (NamedEntityCorrections nec : necs) {
-            ne = new JSONObject();
-            ne.append("start", nec.getStartPosition());
-            ne.append("length", nec.getLength());
-            ne.append("partner", nec.getPartner());
-            ne.append("result", nec.getResult());
-            ne.append("doc", nec.getDoc());
-            ne.append("uris", nec.getUris());
-            ne.append("name", document.getText()
-                    .substring(nec.getStartPosition(), nec.getStartPosition() + nec.getLength()).toUpperCase());
-            ne.append("error", nec.getError().toString());
-            array.put(ne);
-        }
-        doc.append("markings", array);
-        return doc.toString();
+        // JSONObject doc = new JSONObject();
+        // doc.append("text", document.getText());
+        // doc.append("uri", document.getDocumentURI());
+        // JSONArray array = new JSONArray();
+        // JSONObject ne;
+        // List<NamedEntityCorrections> necs =
+        // document.getMarkings(NamedEntityCorrections.class);
+        // necs.sort(new StartPosBasedComparator());
+        // for (NamedEntityCorrections nec : necs) {
+        // ne = new JSONObject();
+        // ne.append("start", nec.getStartPosition());
+        // ne.append("length", nec.getLength());
+        // ne.append("partner", nec.getPartner());
+        // ne.append("result", nec.getResult());
+        // ne.append("doc", nec.getDoc());
+        // ne.append("uris", nec.getUris());
+        // ne.append("name", document.getText()
+        // .substring(nec.getStartPosition(), nec.getStartPosition() +
+        // nec.getLength()).toUpperCase());
+        // ne.append("error", nec.getError().toString());
+        // array.put(ne);
+        // }
+        // doc.append("markings", array);
+        // return doc.toString();
+
+        JsonLDNIFWriter writer = new JsonLDNIFWriter();
+        writer.getDocumentListWriter().getDocumentWriter().setAnnotationWriter(new EagletAnnotationWriter());
+        return writer.writeNIF(Arrays.asList(document));
     }
 
     /**
@@ -138,19 +147,6 @@ public class WebErrorController {
                 LOGGER.error("Couldn't load the dataset!");
             }
         }
-
-        if (USE_DOCUMENT_WHITELIST) {
-            Set<String> whitelist = generateWhiteList();
-            LOGGER.info("Whitelist contains {} document URIs.", whitelist.size());
-            temp = new ArrayList<Document>();
-            for (Document document : loadedDocuments) {
-                if (whitelist.contains(document.getDocumentURI())) {
-                    temp.add(document);
-                }
-            }
-            loadedDocuments = temp;
-            LOGGER.info("There are {} documents matching the white list.", loadedDocuments.size());
-        }
         return loadedDocuments;
     }
 
@@ -188,29 +184,6 @@ public class WebErrorController {
         } else {
 
             return null;
-        }
-    }
-
-    private Set<String> generateWhiteList() {
-        Set<String> whitelist = new HashSet<String>();
-        generateWhiteList(whitelist, new File(WHITELIST_SOURCE_DIR));
-        return whitelist;
-    }
-
-    private void generateWhiteList(Set<String> whitelist, File file) {
-        if (file.exists()) {
-            if (file.isDirectory()) {
-                for (File f : file.listFiles()) {
-                    generateWhiteList(whitelist, f);
-                }
-            } else {
-                List<Document> documents = readDocuments(file);
-                if (documents != null) {
-                    for (Document document : documents) {
-                        whitelist.add(document.getDocumentURI());
-                    }
-                }
-            }
         }
     }
 
@@ -285,6 +258,7 @@ public class WebErrorController {
         pipeline.runPipe(documents);
         // Done. Print the result.
         System.out.println(transformDocToJson(documents.get(0)));
+        System.out.println(transformDocToJson(documents.get(1)));
     }
 
 }

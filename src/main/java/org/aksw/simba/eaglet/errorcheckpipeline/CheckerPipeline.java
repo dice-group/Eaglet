@@ -12,9 +12,10 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.DocumentParser;
+import org.aksw.gerbil.io.nif.utils.NIFModelHelper;
+import org.aksw.gerbil.io.nif.utils.NIFTransferPrefixMapping;
 import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
-import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.annotator.AnnotatorResult;
 import org.aksw.simba.eaglet.completion.MissingEntityCompletion;
@@ -176,8 +177,7 @@ public class CheckerPipeline {
 	 * @return NIF Model
 	 */
 	public static Model generateModel(List<Document> documents) {
-		Model nifModel = ModelFactory.createDefaultModel();
-		nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+		Model nifModel = NIFModelHelper.getDefaultModel();
 		DocumentListWriter writer = new DocumentListWriter();
 		writer.writeDocumentsToModel(nifModel, documents);
 		Resource annotationResource;
