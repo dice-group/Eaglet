@@ -245,7 +245,7 @@ public class WebErrorController {
     }
 
     @RequestMapping(value = "/get-jsonld-doc", method = RequestMethod.GET)
-    public ResponseEntity<String> sendTurtleText() throws IOException, GerbilException {
+    public ResponseEntity<String> getTurtleText() throws IOException, GerbilException {
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "application/json;charset=utf-8");
