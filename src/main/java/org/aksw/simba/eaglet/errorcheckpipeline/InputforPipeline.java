@@ -1,4 +1,5 @@
 package org.aksw.simba.eaglet.errorcheckpipeline;
+
 /**
  * <h1>EAGLET</h1>
  * <p>The tool allows user to the pass their gold standard through a series of
@@ -10,7 +11,6 @@ package org.aksw.simba.eaglet.errorcheckpipeline;
  * @version 1.0
  * @since   2016-05-31
  */
-
 
 import java.io.IOException;
 import java.util.List;
@@ -61,8 +61,22 @@ public class InputforPipeline {
 
 			this.prePipeProcessor(documents);
 			// Starting the Pipe.
-			this.setupPipe(documents, dataset.getName());
+			this.startPipe(documents, dataset.getName());
 		}
+
+	}
+
+	public InputforPipeline(DatasetConfiguration DATASET, String path)
+			throws GerbilException, IOException {
+
+		Dataset dataset = DATASET.getDataset(ExperimentType.A2KB);
+		List<Document> documents = dataset.getInstances();
+
+		this.prePipeProcessor(documents);
+		// Starting the Pipe.
+		CheckerPipeline cp = new CheckerPipeline();
+
+		cp.runPipeAfterEval(documents, path);
 
 	}
 
@@ -90,11 +104,11 @@ public class InputforPipeline {
 	 * @param doc
 	 * @param datasetname
 	 */
-	public void setupPipe(List<Document> doc, String datasetname)
+	public void startPipe(List<Document> doc, String datasetname)
 			throws GerbilException, IOException {
 		CheckerPipeline cp = new CheckerPipeline();
 		cp.runPipe(doc, datasetname);
-		//cp.runPipeNoWrite(documents, name);
+		// cp.runPipeNoWrite(documents, name);
 	}
 
 	/**

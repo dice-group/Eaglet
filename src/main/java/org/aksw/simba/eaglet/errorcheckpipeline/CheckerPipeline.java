@@ -12,12 +12,11 @@ import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.DocumentParser;
+import org.aksw.gerbil.io.nif.utils.NIFTransferPrefixMapping;
 import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
-import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.annotator.AnnotatorResult;
-import org.aksw.simba.eaglet.completion.MissingEntityCompletion;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.simba.eaglet.error.CombinedTaggingError;
@@ -26,7 +25,6 @@ import org.aksw.simba.eaglet.error.ErrorChecker;
 import org.aksw.simba.eaglet.error.LongDescriptionError;
 import org.aksw.simba.eaglet.error.OverLappingError;
 import org.aksw.simba.eaglet.error.PositioningError;
-import org.aksw.simba.eaglet.error.UriError;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +43,8 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  */
 public class CheckerPipeline {
 	/** Value - {@value} , LOGGER used for log information. */
-	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CheckerPipeline.class);
+	private static final org.slf4j.Logger LOGGER = LoggerFactory
+			.getLogger(CheckerPipeline.class);
 
 	/**
 	 * This method call all the annotators results. Utility method for pipeline.
@@ -54,16 +53,17 @@ public class CheckerPipeline {
 	 * @return List of A2KB Annotators Object.
 	 * @throws GerbilException
 	 */
-	public List<A2KBAnnotator> callAnnotator(String path) throws GerbilException {
+	public List<A2KBAnnotator> callAnnotator(String path)
+			throws GerbilException {
 		AnnotatorResult ar = new AnnotatorResult(path);
 		List<A2KBAnnotator> annotators = ar.getAnnotators();
 		return annotators;
 	}
 
 	/**
-	 * This method sets up the basic structure of the pipe.
+	 * This method sets up the basic structure of the pipe. PIPE STRUCTURE 1
 	 *
-	 * 
+	 *
 	 * @return List of ErrorChecker Object.
 	 * @throws GerbilException
 	 */
@@ -78,7 +78,7 @@ public class CheckerPipeline {
 		checkers.add(new PositioningError());
 		checkers.add(new OverLappingError());
 		checkers.add(new CombinedTaggingError());
-		checkers.add(new UriError());
+		// checkers.add(new UriError());
 		checkers.add(new ErraticMarkingError());
 
 		return checkers;
@@ -86,22 +86,21 @@ public class CheckerPipeline {
 	}
 
 	/**
-	 * This method takes care of running the Pipe. It creates and runs the pipeline and writes the output to a file.
+	 * This method sets up the portion of the pipe after the user evaluation.
+	 * PIPE STRUCTURE 2
 	 *
-	 * @param documents
-	 * @param name
+	 *
+	 * @return List of ErrorChecker Object.
 	 * @throws GerbilException
-	 * @throws IOException
 	 */
-	public void runPipe(List<Document> documents, String name) throws GerbilException, IOException {
-		runPipe(documents);
-		try {
-			this.writeDataInFile(documents, name);
+	public List<ErrorChecker> setupPostUserEvaluationPipe()
+			throws GerbilException {
+		List<ErrorChecker> checkers = new ArrayList<ErrorChecker>();
 
-		} catch (Exception e) {
-			LOGGER.error("Got an exception while writing the result of the pipeline.", e);
+		checkers.add(new PositioningError());
+		checkers.add(new OverLappingError());
 
-		}
+		return checkers;
 
 	}
 
@@ -113,35 +112,71 @@ public class CheckerPipeline {
 	 * @throws GerbilException
 	 * @throws IOException
 	 */
-	public void runPipe(List<Document> documents) throws GerbilException, IOException {
-		List<ErrorChecker> checkers = null;
-
+	public void runPipe(List<Document> documents, String name)
+			throws GerbilException, IOException {
+		List<ErrorChecker> pipe = null;
+		pipe = this.setupPipe();
 		try {
-			checkers = this.setupPipe();
-		} catch (Exception e) {
-		}
-		// start pipeline
-		runPipe(documents, checkers);
-	}
 
-	/**
-	 * This method takes care of running the Pipe. It calls the other required
-	 * function and begins the pipe and writes the output to a file.
-	 *
-	 * @param documents
-	 * @throws GerbilException
-	 * @throws IOException
-	 */
-	public void runPipe(List<Document> documents, List<ErrorChecker> pipe) throws GerbilException, IOException {
-		// start pipeline
-		try {
 			for (ErrorChecker checker : pipe) {
 				checker.check(documents);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Got an exception while running the pipe.", e);
 		}
+		// start pipeline
 
+		this.writeDataInFile(documents, name);
+	}
+
+	/**
+	 * This method takes care of running the Pipe. It calls the other required
+	 * function and begins the pipe and writes the output to a file.
+	 *
+	 * @param documents
+	 * @throws GerbilException
+	 * @throws IOException
+	 */
+	public void runPipeAfterEval(List<Document> documents, String path)
+			throws GerbilException, IOException {
+		List<ErrorChecker> pipe = null;
+		pipe = this.setupPostUserEvaluationPipe();
+		try {
+
+			for (ErrorChecker checker : pipe) {
+				checker.check(documents);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Got an exception while running the pipe.", e);
+		}
+		// start pipeline
+
+		this.writeFinalOuput(documents, path);
+	}
+
+	/**
+	 * This method writes the data into the file once the documents are
+	 * processed by the pipeline after user eval.
+	 *
+	 * @param documents
+	 * @param name
+	 * @throws GerbilException
+	 * @throws IOException
+	 */
+
+	public void writeFinalOuput(List<Document> documents, String path)
+			throws GerbilException, IOException {
+		Model nifModel = generateModel(documents);
+		File resultfile = new File(path);
+		if (!resultfile.exists()) {
+			resultfile.getParentFile().mkdirs();
+			resultfile.createNewFile();
+		}
+		FileOutputStream fout = new FileOutputStream(resultfile);
+		fout.flush();
+		nifModel.write(fout, "TTL");
+		fout.close();
+		LOGGER.info("Final Results generated");
 	}
 
 	/**
@@ -154,10 +189,12 @@ public class CheckerPipeline {
 	 * @throws IOException
 	 */
 
-	public void writeDataInFile(List<Document> documents, String name) throws GerbilException, IOException {
+	public void writeDataInFile(List<Document> documents, String name)
+			throws GerbilException, IOException {
 		Model nifModel = generateModel(documents);
-		File resultfile = new File(
-				"eaglet_data" + File.separator + "result_completion" + File.separator + name + "-result-nif.ttl");
+		File resultfile = new File("eaglet_data" + File.separator
+				+ "result_pipe" + File.separator + name
+				+ "-result-nif.ttl");
 		if (!resultfile.exists()) {
 			resultfile.getParentFile().mkdirs();
 			resultfile.createNewFile();
@@ -183,18 +220,28 @@ public class CheckerPipeline {
 		Resource annotationResource;
 		NamedEntityCorrections partner;
 		for (Document document : documents) {
-			for (NamedEntityCorrections correction : document.getMarkings(NamedEntityCorrections.class)) {
-				annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
-						correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
-				nifModel.add(annotationResource, EAGLET.hasCheckResult, EAGLET.getCheckResult(correction.getResult()));
+			for (NamedEntityCorrections correction : document
+					.getMarkings(NamedEntityCorrections.class)) {
+				annotationResource = nifModel.getResource(NIFUriHelper
+						.getNifUri(
+								document.getDocumentURI(),
+								correction.getStartPosition(),
+								correction.getStartPosition()
+										+ correction.getLength()));
+				nifModel.add(annotationResource, EAGLET.hasCheckResult,
+						EAGLET.getCheckResult(correction.getResult()));
 				for (ErrorType error : correction.getError()) {
-					nifModel.add(annotationResource, EAGLET.hasErrorType, EAGLET.getErrorType(error));
+					nifModel.add(annotationResource, EAGLET.hasErrorType,
+							EAGLET.getErrorType(error));
 				}
 				partner = correction.getPartner();
 				if ((partner != null)) {
 					nifModel.add(annotationResource, EAGLET.hasPairPartner,
-							nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
-									partner.getStartPosition(), partner.getStartPosition() + partner.getLength())));
+							nifModel.getResource(NIFUriHelper.getNifUri(
+									document.getDocumentURI(),
+									partner.getStartPosition(),
+									partner.getStartPosition()
+											+ partner.getLength())));
 				}
 			}
 		}
@@ -216,9 +263,11 @@ public class CheckerPipeline {
 		nifModel.read(fin, "", "TTL");
 		fin.close();
 
-		DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
+		DocumentListParser parser = new DocumentListParser(new DocumentParser(
+				new AdaptedAnnotationParser()));
 		List<Document> documents = parser.parseDocuments(nifModel);
-		StmtIterator iterator = nifModel.listStatements(null, EAGLET.hasPairPartner, (RDFNode) null);
+		StmtIterator iterator = nifModel.listStatements(null,
+				EAGLET.hasPairPartner, (RDFNode) null);
 		Statement s;
 		String subjectUri, objectUri, documentUri;
 		NamedEntityCorrections subject = null, object = null;
@@ -230,18 +279,25 @@ public class CheckerPipeline {
 			// TODO search the document from the list
 			for (Document doc : documents) {
 				if (documentUri.equals(doc.getDocumentURI())) {
-					int startsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 3));
-					int endsbj = Character.getNumericValue(subjectUri.charAt(subjectUri.length() - 1));
-					int startobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 3));
-					int endobj = Character.getNumericValue(objectUri.charAt(subjectUri.length() - 1));
-					List<NamedEntityCorrections> entity_set = doc.getMarkings(NamedEntityCorrections.class);
+					int startsbj = Character.getNumericValue(subjectUri
+							.charAt(subjectUri.length() - 3));
+					int endsbj = Character.getNumericValue(subjectUri
+							.charAt(subjectUri.length() - 1));
+					int startobj = Character.getNumericValue(objectUri
+							.charAt(subjectUri.length() - 3));
+					int endobj = Character.getNumericValue(objectUri
+							.charAt(subjectUri.length() - 1));
+					List<NamedEntityCorrections> entity_set = doc
+							.getMarkings(NamedEntityCorrections.class);
 					for (NamedEntityCorrections entity : entity_set) {
 						if ((entity.getStartPosition() == startsbj)
-								&& (entity.getStartPosition() + entity.getLength() == endsbj)) {
+								&& (entity.getStartPosition()
+										+ entity.getLength() == endsbj)) {
 							subject = entity;
 						}
 						if ((entity.getStartPosition() == startobj)
-								&& (entity.getStartPosition() + entity.getLength() == endobj)) {
+								&& (entity.getStartPosition()
+										+ entity.getLength() == endobj)) {
 							object = entity;
 						}
 					}

@@ -1,31 +1,36 @@
 @import url(http://fonts.googleapis.com/css?family=Lobster);
-@import url(http://fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic);
+
+@import
+	url(http://fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic)
+	;
 
 * {
 	-webkit-user-select: none; /* Chrome/Safari */
 	-moz-user-select: -moz-none; /* Firefox */
 	-ms-user-select: none; /* IE10+ */
-
 	/* Rules below not implemented in browsers yet */
 	-o-user-select: none;
 	user-select: none;
-
 	font-family: 'Libre Baskerville', Verdana, sans-serif;
 }
+
 .overlay {
-    position: absolute;
-    border: 1px solid red;
-    background: #dff;
-    margin: -1px;
-    z-index: -1;
+	position: absolute;
+	border: 1px solid red;
+	background: #dff;
+	margin: -1px;
+	z-index: -1;
 }
+
 p {
-    width: 250px;
-    margin: 24px 65px;
+	width: 250px;
+	margin: 24px 65px;
 }
+
 p.span {
-    font-weight: bold;
+	font-weight: bold;
 }
+
 body {
 	background-color: #eee;
 	margin: 0px;
@@ -57,7 +62,6 @@ textarea {
 	-webkit-user-select: auto; /* Chrome/Safari */
 	-moz-user-select: text; /* Firefox */
 	-ms-user-select: auto; /* IE10+ */
-
 	/* Rules below not implemented in browsers yet */
 	-o-user-select: auto;
 	user-select: auto;
@@ -91,16 +95,13 @@ textarea {
 	width: 25%;
 	float: left;
 }*/
-
 #sidebar-content {
 	-webkit-user-select: auto; /* Chrome/Safari */
 	-moz-user-select: text; /* Firefox */
 	-ms-user-select: auto; /* IE10+ */
-
 	/* Rules below not implemented in browsers yet */
 	-o-user-select: auto;
 	user-select: auto;
-
 	padding-bottom: 20px;
 	width: 100%;
 }
@@ -109,11 +110,9 @@ textarea {
 	-webkit-user-select: auto; /* Chrome/Safari */
 	-moz-user-select: auto; /* Firefox */
 	-ms-user-select: auto; /* IE10+ */
-
 	/* Rules below not implemented in browsers yet */
 	-o-user-select: auto;
 	user-select: auto;
-
 	cursor: pointer;
 }
 
@@ -137,7 +136,6 @@ textarea {
 	-moz-border-radius: 15px;
 	-webkit-border-radius: 15px;
 	border-radius: 15px;
-
 	background-color: #fff;
 	border: 1px #eee solid;
 	font-size: 10pt;
@@ -155,15 +153,16 @@ textarea {
 .items {
 	display: none;
 }
+
 .selectable {
 	-webkit-user-select: auto; /* Chrome/Safari */
 	-moz-user-select: text; /* Firefox */
 	-ms-user-select: auto; /* IE10+ */
-
 	/* Rules below not implemented in browsers yet */
 	-o-user-select: auto;
 	user-select: auto;
 }
+
 .subtitle {
 	font-family: 'Lobster', cursive;
 	width: 100%;
@@ -180,14 +179,17 @@ span.multiple_candidate_label {
 	color: #000000;
 	background-color: #FFDD00;
 }
+
 span.single_candidate_label {
 	color: #000000;
 	background-color: lightgreen;
 }
+
 span.no_candidates_label {
 	color: #000000;
 	background-color: #FF6A6A;
 }
+
 span.user_decided {
 	color: #000000;
 	background-color: lightblue;

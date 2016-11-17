@@ -11,13 +11,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.aksw.gerbil.dataset.DatasetConfiguration;
+import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
+import org.aksw.gerbil.datatypes.ExperimentType;
+import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.DocumentParser;
+import org.aksw.gerbil.io.nif.utils.NIFTransferPrefixMapping;
 import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
-import org.aksw.gerbil.transfer.nif.NIFTransferPrefixMapping;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
@@ -25,6 +29,8 @@ import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
+import org.aksw.simba.eaglet.error.ErraticMarkingUserInput;
+import org.aksw.simba.eaglet.errorcheckpipeline.InputforPipeline;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -53,25 +59,48 @@ import com.hp.hpl.jena.rdf.model.Resource;
 @Controller
 public class EagletController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/CoNLL-Test A-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "Oke",
+			"./eaglet_data/result_pipe/OKE 2015 Task 1 gold standard sample-result-nif.ttl" };
 
 	private static final boolean USE_DOCUMENT_WHITELIST = true;
 	private static final String WHITELIST_SOURCE_DIR = "eaglet_data/result_user/Result Kunal";
 
 	@Autowired
 	private EagletDatabaseStatements database;
-	private DocumentListParser parser = new DocumentListParser(new DocumentParser(new AdaptedAnnotationParser()));
+	private DocumentListParser parser = new DocumentListParser(
+			new DocumentParser(new AdaptedAnnotationParser()));
 	private List<Document> documents;
-	private int counter;
+	private List<Document> userDocuments;
+	private File resultfile;
+	private ErraticMarkingUserInput er = new ErraticMarkingUserInput();
 
 	/**
 	 * Constructor
 	 */
 	public EagletController() {
 		this.documents = loadDocuments();
-		this.counter = 0;
+
+		this.userDocuments = documents;
+		for (int i = 1; i < DATASET_FILES.length; i += 2) {
+
+			// CREate a common result file
+			this.resultfile = new File("eaglet_data" + File.separator
+					+ "result_user" + File.separator + DATASET_FILES[i - 1]
+					+ File.separator + "-nif.ttl");
+			if (!this.resultfile.exists()) {
+				this.resultfile.getParentFile().mkdirs();
+				try {
+					this.resultfile.createNewFile();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					LOGGER.debug("Cannot Generate result file");
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**
@@ -109,7 +138,8 @@ public class EagletController {
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(value = "/next", produces = "application/json;charset=utf-8")
-	public ResponseEntity<String> nextDocument(@RequestParam(value = "username") String userName) {
+	public ResponseEntity<String> nextDocument(
+			@RequestParam(value = "username") String userName) {
 		LOGGER.info("Got a message to /next!");
 		int userId = getUser(userName);
 
@@ -117,16 +147,20 @@ public class EagletController {
 		Document document = getNextDocument(userId);
 		if (document == null) {
 			// TODO return that this was the last document
-			return new ResponseEntity<String>("redirect:thankyou.html", null, HttpStatus.OK);
+
+			return new ResponseEntity<String>("redirect:thankyou.html", null,
+					HttpStatus.OK);
 		}
 		// transform the document and its markings into a JSON String
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-		return new ResponseEntity<String>(transformDocToJson(document), responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<String>(transformDocToJson(document),
+				responseHeaders, HttpStatus.OK);
 	}
 
 	private Document getNextDocument(int userId) {
-		Set<String> alreadySeenDocuments = new HashSet<String>(database.getDocumentUser(userId));
+		Set<String> alreadySeenDocuments = new HashSet<String>(
+				database.getDocumentUser(userId));
 		for (Document document : documents) {
 			if (!alreadySeenDocuments.contains(document.getDocumentURI())) {
 				return document;
@@ -149,7 +183,8 @@ public class EagletController {
 		doc.append("uri", document.getDocumentURI());
 		JSONArray array = new JSONArray();
 		JSONObject ne;
-		List<NamedEntityCorrections> necs = document.getMarkings(NamedEntityCorrections.class);
+		List<NamedEntityCorrections> necs = document
+				.getMarkings(NamedEntityCorrections.class);
 		necs.sort(new StartPosBasedComparator());
 		for (NamedEntityCorrections nec : necs) {
 			ne = new JSONObject();
@@ -159,8 +194,11 @@ public class EagletController {
 			ne.append("result", nec.getResult());
 			ne.append("doc", nec.getDoc());
 			ne.append("uris", nec.getUris());
-			ne.append("name",
-					document.getText().substring(nec.getStartPosition(), nec.getStartPosition() + nec.getLength())
+			ne.append(
+					"name",
+					document.getText()
+							.substring(nec.getStartPosition(),
+									nec.getStartPosition() + nec.getLength())
 							.toUpperCase());
 			ne.append("error", nec.getError().toString());
 			array.put(ne);
@@ -186,9 +224,10 @@ public class EagletController {
 			List<ErrorType> error = new ArrayList<ErrorType>();
 			String errortype = markings.getJSONObject(i).getString("error");
 			error.add(parseErroResult(errortype));
-			Marking entity = new NamedEntityCorrections(markings.getJSONObject(i).getInt("start"), markings
-					.getJSONObject(i).getInt("length"), uris, error, parseDecisionType(markings.getJSONObject(i)
-					.getString("decision")));
+			Marking entity = new NamedEntityCorrections(markings.getJSONObject(
+					i).getInt("start"), markings.getJSONObject(i).getInt(
+					"length"), uris, error, parseDecisionType(markings
+					.getJSONObject(i).getString("decision")));
 			userAcceptedEntities.add(entity);
 		}
 		return userAcceptedEntities;
@@ -202,11 +241,14 @@ public class EagletController {
 	 * @param userName
 	 * @return Json String of entities.
 	 * @throws IOException
+	 * @throws GerbilException
 	 */
 	@RequestMapping(value = "/submitResults", method = RequestMethod.POST)
-	public String submitResults(@RequestParam(value = "documenturi") String document,
-			@RequestParam(value = "markings") String userInput, @RequestParam(value = "username") String userName)
-			throws IOException {
+	public String submitResults(
+			@RequestParam(value = "documenturi") String document,
+			@RequestParam(value = "markings") String userInput,
+			@RequestParam(value = "username") String userName)
+			throws IOException, GerbilException {
 		int userId = getUser(userName);
 		List<Marking> changes = transformEntityFromJson(userInput);
 		Document result = null;
@@ -214,26 +256,17 @@ public class EagletController {
 		for (Document doc : documents) {
 			if (doc.getDocumentURI().equals(document)) {
 				result = doc;
+				this.userDocuments.add(result);
+				this.userDocuments.remove(doc);
 			}
 
 		}
-		if (result != null) {
-			String name = result.getDocumentURI().replaceAll("http://", "");
-			name = name.replaceAll("/", "_");
-			filename = "result-" + name + userName;
-			filename = name.substring(0, 20);
-			counter++;
-		}
 
-		Document newdoc = new DocumentImpl(result.getText(), result.getDocumentURI(), changes);
+		Document newdoc = new DocumentImpl(result.getText(),
+				result.getDocumentURI(), changes);
 		Model nifModel = generateModifiedModel(newdoc);
+		this.documents = er.erraticMarkingUserInput(this.userDocuments);
 
-		File resultfile = new File("eaglet_data" + File.separator + "result_user" + File.separator + userId
-				+ File.separator + filename + "_" + counter + "-nif.ttl");
-		if (!resultfile.exists()) {
-			resultfile.getParentFile().mkdirs();
-			resultfile.createNewFile();
-		}
 		FileOutputStream fout = new FileOutputStream(resultfile);
 		fout.flush();
 		nifModel.write(fout, "TTL");
@@ -257,10 +290,13 @@ public class EagletController {
 		DocumentListWriter writer = new DocumentListWriter();
 		writer.writeDocumentsToModel(nifModel, Arrays.asList(document));
 		Resource annotationResource;
-		for (NamedEntityCorrections correction : document.getMarkings(NamedEntityCorrections.class)) {
-			annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
-					correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
-			System.out.println(correction.getUris().toString() + " -> " + correction.getUserDecision());
+		for (NamedEntityCorrections correction : document
+				.getMarkings(NamedEntityCorrections.class)) {
+			annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(
+					document.getDocumentURI(), correction.getStartPosition(),
+					correction.getStartPosition() + correction.getLength()));
+			System.out.println(correction.getUris().toString() + " -> "
+					+ correction.getUserDecision());
 			nifModel.add(annotationResource, EAGLET.hasUserDecision,
 					EAGLET.getUserDecision(correction.getUserDecision()));
 		}
@@ -276,7 +312,9 @@ public class EagletController {
 	protected List<Document> loadDocuments() {
 		List<Document> loadedDocuments = new ArrayList<Document>();
 		List<Document> temp;
-		for (int i = 0; i < DATASET_FILES.length; ++i) {
+
+		for (int i = 1; i < DATASET_FILES.length; i += 2) {
+
 			temp = readDocuments(new File(DATASET_FILES[i]));
 			if (temp != null) {
 				loadedDocuments.addAll(temp);
@@ -287,7 +325,8 @@ public class EagletController {
 
 		if (USE_DOCUMENT_WHITELIST) {
 			Set<String> whitelist = generateWhiteList();
-			LOGGER.info("Whitelist contains {} document URIs.", whitelist.size());
+			LOGGER.info("Whitelist contains {} document URIs.",
+					whitelist.size());
 			temp = new ArrayList<Document>();
 			for (Document document : loadedDocuments) {
 				if (whitelist.contains(document.getDocumentURI())) {
@@ -295,7 +334,8 @@ public class EagletController {
 				}
 			}
 			loadedDocuments = temp;
-			LOGGER.info("There are {} documents matching the white list.", loadedDocuments.size());
+			LOGGER.info("There are {} documents matching the white list.",
+					loadedDocuments.size());
 		}
 		return loadedDocuments;
 	}
@@ -419,7 +459,13 @@ public class EagletController {
 						"<" + EAGLET.Wrong.getURI() + ">");
 	}
 
-	public static void main(String[] args) {
-		new EagletController();
+	public void recheckUserInput(String path) throws GerbilException,
+			IOException {
+		DatasetConfiguration DATASET = new NIFFileDatasetConfig(
+				DATASET_FILES[0], resultfile.getAbsolutePath() + File.separator
+						+ resultfile.getName(), false, ExperimentType.A2KB);
+		new InputforPipeline(DATASET, resultfile.getAbsolutePath()
+				+ File.separator + resultfile.getName());
+
 	}
 }
