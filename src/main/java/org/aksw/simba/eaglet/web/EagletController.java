@@ -73,7 +73,6 @@ public class EagletController {
 	private DocumentListParser parser = new DocumentListParser(
 			new DocumentParser(new AdaptedAnnotationParser()));
 	private List<Document> documents;
-	private List<Document> userDocuments;
 	private File resultfile;
 	private ErraticMarkingUserInput er = new ErraticMarkingUserInput();
 
@@ -83,7 +82,6 @@ public class EagletController {
 	public EagletController() {
 		this.documents = loadDocuments();
 
-		this.userDocuments = documents;
 		for (int i = 1; i < DATASET_FILES.length; i += 2) {
 
 			// CREate a common result file
@@ -154,6 +152,15 @@ public class EagletController {
 		// transform the document and its markings into a JSON String
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
+		try {
+			this.recheckUserInput();
+		} catch (GerbilException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return new ResponseEntity<String>(transformDocToJson(document),
 				responseHeaders, HttpStatus.OK);
 	}
@@ -256,8 +263,7 @@ public class EagletController {
 		for (Document doc : documents) {
 			if (doc.getDocumentURI().equals(document)) {
 				result = doc;
-				this.userDocuments.add(result);
-				this.userDocuments.remove(doc);
+
 			}
 
 		}
@@ -265,7 +271,7 @@ public class EagletController {
 		Document newdoc = new DocumentImpl(result.getText(),
 				result.getDocumentURI(), changes);
 		Model nifModel = generateModifiedModel(newdoc);
-		this.documents = er.erraticMarkingUserInput(this.userDocuments);
+		this.documents = er.erraticMarkingUserInput(this.documents);
 
 		FileOutputStream fout = new FileOutputStream(resultfile);
 		fout.flush();
@@ -459,8 +465,7 @@ public class EagletController {
 						"<" + EAGLET.Wrong.getURI() + ">");
 	}
 
-	public void recheckUserInput(String path) throws GerbilException,
-			IOException {
+	public void recheckUserInput() throws GerbilException, IOException {
 		DatasetConfiguration DATASET = new NIFFileDatasetConfig(
 				DATASET_FILES[0], resultfile.getAbsolutePath() + File.separator
 						+ resultfile.getName(), false, ExperimentType.A2KB);
