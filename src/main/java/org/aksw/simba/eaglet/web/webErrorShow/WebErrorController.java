@@ -26,6 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -108,47 +109,9 @@ public class WebErrorController {
         return userAcceptedEntities;
     }
 
-    /**
-     * The method writes the output to the NIF file.
-     *
-     * @param document
-     * @return
-     */
-    public static Model generateModifiedModel(Document document) {
-        Model nifModel = ModelFactory.createDefaultModel();
-        nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-        DocumentListWriter writer = new DocumentListWriter();
-        writer.writeDocumentsToModel(nifModel, Arrays.asList(document));
-        Resource annotationResource;
-        for (NamedEntityCorrections correction : document.getMarkings(NamedEntityCorrections.class)) {
-            annotationResource = nifModel.getResource(NIFUriHelper.getNifUri(document.getDocumentURI(),
-                    correction.getStartPosition(), correction.getStartPosition() + correction.getLength()));
-            System.out.println(correction.getUris().toString() + " -> " + correction.getUserDecision());
-            nifModel.add(annotationResource, EAGLET.hasUserDecision,
-                    EAGLET.getUserDecision(correction.getUserDecision()));
-        }
-        return nifModel;
-    }
 
-    /**
-     * The method is responsible for returning list of documents based on
-     * userId.
-     *
-     * @return List of Documents
-     */
-    public List<Document> loadDocuments() {
-        List<Document> loadedDocuments = new ArrayList<Document>();
-        List<Document> temp;
-        for (int i = 0; i < DATASET_FILES.length; ++i) {
-            temp = readDocuments(new File(DATASET_FILES[i]));
-            if (temp != null) {
-                loadedDocuments.addAll(temp);
-            } else {
-                LOGGER.error("Couldn't load the dataset!");
-            }
-        }
-        return loadedDocuments;
-    }
+
+
 
     private NamedEntityCorrections.ErrorType parseErroResult(String errortype) {
         if (errortype.toUpperCase().equals("OVERLAPPING")) {
@@ -214,22 +177,22 @@ public class WebErrorController {
         boolean inUri = false;
         for (int i = 0; i < chars.length; ++i) {
             switch (chars[i]) {
-            case '<':
-                inUri = true;
-                builder.append('<');
-                break;
-            case '>':
-                inUri = false;
-                builder.append('>');
-                break;
-            case ' ':
-                if (!inUri) {
-                    builder.append(' ');
-                }
-                break;
-            default:
-                builder.append(chars[i]);
-                break;
+                case '<':
+                    inUri = true;
+                    builder.append('<');
+                    break;
+                case '>':
+                    inUri = false;
+                    builder.append('>');
+                    break;
+                case ' ':
+                    if (!inUri) {
+                        builder.append(' ');
+                    }
+                    break;
+                default:
+                    builder.append(chars[i]);
+                    break;
             }
         }
         return builder.toString().replace("<null>", "<http://aksw.org/notInWiki/null>")
@@ -244,6 +207,32 @@ public class WebErrorController {
                         "<" + EAGLET.Wrong.getURI() + ">");
     }
 
+    @RequestMapping(value = "/post-turtle-string",method = RequestMethod.POST)
+    public ResponseEntity<String> postTurtle(@RequestBody String turtle) {
+        String out = null;
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("Content-Type", "application/json;charset=utf-8");
+
+        try {
+            System.out.print(turtle);
+            List<Document> documents = new ArrayList<>();
+            Model nifModel = ModelFactory.createDefaultModel();
+            nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
+            turtle = correctNIF(turtle);
+            nifModel.read(new StringReader(turtle), "", "TTL");
+            documents.addAll(parser.parseDocuments(nifModel));
+            out = errorCheck(documents);
+
+        } catch (GerbilException e) {
+            LOGGER.error(e.getMessage());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return new ResponseEntity<String>(out, HttpStatus.OK);
+
+    }
+
     @RequestMapping(value = "/get-jsonld-doc", method = RequestMethod.GET)
     public ResponseEntity<String> getTurtleText() throws IOException, GerbilException {
 
@@ -252,28 +241,32 @@ public class WebErrorController {
 
         // get the Document
         List<Document> documents;
-        documents = readDocuments(new File("/data1/Workspace/Eaglet/example.ttl"));
+        documents = readDocuments(new File("C:\\Users\\Hendrik\\Workspace\\Eaglet\\example.ttl"));
 
         // Document equils Null
         if (documents == null) {
             // TODO return that this was the last document
             return new ResponseEntity<String>("No Document found", null, HttpStatus.NOT_FOUND);
         }
+        String jasonLDString = errorCheck(documents);
 
+
+        return new ResponseEntity<String>(jasonLDString, responseHeaders, HttpStatus.OK);
+    }
+
+    private String errorCheck(List<Document> documents) throws GerbilException, IOException {
         // Data for input Pipline and initialization
         InputforPipeline preprocessor = new InputforPipeline();
         preprocessor.prePipeProcessor(documents);
         // After the preprocessing, we can use the pipeline to search for errors
         CheckerPipeline pipeline = new CheckerPipeline();
         pipeline.runPipe(documents);
-        System.out.println((documents.get(0)));
         String jasonLDString = null;
 
         for (Document d : documents) {
             jasonLDString += transformDocToJson(d);
         }
-
-        return new ResponseEntity<String>(jasonLDString, responseHeaders, HttpStatus.OK);
+        return jasonLDString;
     }
 
     public static void main(String[] args) throws IOException, GerbilException {
