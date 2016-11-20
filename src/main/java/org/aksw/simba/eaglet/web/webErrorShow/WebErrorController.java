@@ -29,6 +29,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -233,15 +235,17 @@ public class WebErrorController {
 
     }
 
-    @RequestMapping(value = "/get-jsonld-doc", method = RequestMethod.GET)
-    public ResponseEntity<String> getTurtleText() throws IOException, GerbilException {
+    @RequestMapping(value = "/post-turtle-file", method = RequestMethod.POST)
+    public ResponseEntity<String> PostTurtleFile(@RequestParam("file") MultipartFile file) throws IOException, GerbilException {
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "application/json;charset=utf-8");
 
         // get the Document
         List<Document> documents;
-        documents = readDocuments(new File("C:\\Users\\Hendrik\\Workspace\\Eaglet\\example.ttl"));
+        File temp = File.createTempFile("turtle-file", ".ttl");
+        file.transferTo(temp);
+        documents = readDocuments(temp);
 
         // Document equils Null
         if (documents == null) {

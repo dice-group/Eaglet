@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 /**
  * This is the root {@link Configuration} class that is processed by the Spring
@@ -134,5 +135,12 @@ public class RootConfig {
     // }
     // return manager;
     // }
+
+    @Bean
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver resolver=new CommonsMultipartResolver();
+        resolver.setDefaultEncoding("utf-8");
+        return resolver;
+    }
 
 }
