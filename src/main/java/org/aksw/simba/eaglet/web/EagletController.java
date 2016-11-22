@@ -88,9 +88,9 @@ public class EagletController {
 		for (int i = 1; i < DATASET_FILES.length; i += 2) {
 
 			// CREate a common result file
-			this.resultfile = new File("eaglet_data" + File.separator
-					+ "result_user" + File.separator + DATASET_FILES[i - 1]
-					+ File.separator + "-nif.ttl");
+			this.resultfile = new File("." + File.separator + "eaglet_data"
+					+ File.separator + "result_user" + File.separator
+					+ DATASET_FILES[i - 1] + File.separator + "Oke-nif.ttl");
 			if (!this.resultfile.exists()) {
 				this.resultfile.getParentFile().mkdirs();
 				try {
@@ -273,15 +273,14 @@ public class EagletController {
 		Document newdoc = new DocumentImpl(result.getText(),
 				result.getDocumentURI(), changes);
 		Model nifModel = generateModifiedModel(newdoc);
-		this.updateDocuments.clear();
+
 		for (Document doc : documents) {
-			if (doc.getDocumentURI().equals(newdoc))
+			if (doc.getDocumentURI().equals(newdoc)) {
 				this.updateDocuments.add(newdoc);
-			else
-				this.updateDocuments.add(doc);
-
+				this.updateDocuments.remove(doc);
+				break;
+			}
 		}
-
 		this.updateDocuments = er.erraticMarkingUserInput(this.updateDocuments);
 
 		FileOutputStream fout = new FileOutputStream(resultfile);
