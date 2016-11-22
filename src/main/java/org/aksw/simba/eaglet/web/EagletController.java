@@ -73,6 +73,8 @@ public class EagletController {
 	private DocumentListParser parser = new DocumentListParser(
 			new DocumentParser(new AdaptedAnnotationParser()));
 	private List<Document> documents;
+	private List<Document> updateDocuments;
+
 	private File resultfile;
 	private ErraticMarkingUserInput er = new ErraticMarkingUserInput();
 
@@ -81,6 +83,7 @@ public class EagletController {
 	 */
 	public EagletController() {
 		this.documents = loadDocuments();
+		this.updateDocuments = new ArrayList<Document>(documents);
 
 		for (int i = 1; i < DATASET_FILES.length; i += 2) {
 
@@ -101,16 +104,12 @@ public class EagletController {
 		}
 	}
 
-	/**
-	 *
-	 * Constructor
-	 *
-	 * @param documents
-	 *            : List of documents
-	 */
-
-	public EagletController(List<Document> documents) {
-		this.documents = documents;
+	public ArrayList<Document> copyList(List<Document> list1) {
+		ArrayList<Document> newList = new ArrayList<>(list1.size());
+		for (Document doc : list1) {
+			newList.add(doc);
+		}
+		return newList;
 	}
 
 	/**
@@ -168,6 +167,9 @@ public class EagletController {
 	private Document getNextDocument(int userId) {
 		Set<String> alreadySeenDocuments = new HashSet<String>(
 				database.getDocumentUser(userId));
+		// Update Document list
+		documents.clear();
+		this.documents = this.copyList(this.updateDocuments);
 		for (Document document : documents) {
 			if (!alreadySeenDocuments.contains(document.getDocumentURI())) {
 				return document;
@@ -271,7 +273,16 @@ public class EagletController {
 		Document newdoc = new DocumentImpl(result.getText(),
 				result.getDocumentURI(), changes);
 		Model nifModel = generateModifiedModel(newdoc);
-		this.documents = er.erraticMarkingUserInput(this.documents);
+		this.updateDocuments.clear();
+		for (Document doc : documents) {
+			if (doc.getDocumentURI().equals(newdoc))
+				this.updateDocuments.add(newdoc);
+			else
+				this.updateDocuments.add(doc);
+
+		}
+
+		this.updateDocuments = er.erraticMarkingUserInput(this.updateDocuments);
 
 		FileOutputStream fout = new FileOutputStream(resultfile);
 		fout.flush();
