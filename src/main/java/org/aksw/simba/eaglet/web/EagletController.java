@@ -11,10 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.aksw.gerbil.dataset.DatasetConfiguration;
-import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
-import org.aksw.gerbil.datatypes.ExperimentType;
-import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.DocumentParser;
@@ -29,8 +25,6 @@ import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
-import org.aksw.simba.eaglet.error.ErraticMarkingUserInput;
-import org.aksw.simba.eaglet.errorcheckpipeline.InputforPipeline;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -62,8 +56,7 @@ public class EagletController {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "Oke",
-			"./eaglet_data/result_pipe/OKE 2015 Task 1 gold standard sample-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/CoNLL-Test A-result-nif.ttl" };
 
 	private static final boolean USE_DOCUMENT_WHITELIST = true;
 	private static final String WHITELIST_SOURCE_DIR = "eaglet_data/result_user/Result Kunal";
@@ -73,43 +66,26 @@ public class EagletController {
 	private DocumentListParser parser = new DocumentListParser(
 			new DocumentParser(new AdaptedAnnotationParser()));
 	private List<Document> documents;
-	private List<Document> updateDocuments;
-
-	private File resultfile;
-	private ErraticMarkingUserInput er = new ErraticMarkingUserInput();
+	private int counter;
 
 	/**
 	 * Constructor
 	 */
 	public EagletController() {
 		this.documents = loadDocuments();
-		this.updateDocuments = new ArrayList<Document>(documents);
-
-		for (int i = 1; i < DATASET_FILES.length; i += 2) {
-
-			// CREate a common result file
-			this.resultfile = new File("." + File.separator + "eaglet_data"
-					+ File.separator + "result_user" + File.separator
-					+ DATASET_FILES[i - 1] + File.separator + "Oke-nif.ttl");
-			if (!this.resultfile.exists()) {
-				this.resultfile.getParentFile().mkdirs();
-				try {
-					this.resultfile.createNewFile();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					LOGGER.debug("Cannot Generate result file");
-					e.printStackTrace();
-				}
-			}
-		}
+		this.counter = 0;
 	}
 
-	public ArrayList<Document> copyList(List<Document> list1) {
-		ArrayList<Document> newList = new ArrayList<>(list1.size());
-		for (Document doc : list1) {
-			newList.add(doc);
-		}
-		return newList;
+	/**
+	 *
+	 * Constructor
+	 *
+	 * @param documents
+	 *            : List of documents
+	 */
+
+	public EagletController(List<Document> documents) {
+		this.documents = documents;
 	}
 
 	/**
@@ -144,22 +120,12 @@ public class EagletController {
 		Document document = getNextDocument(userId);
 		if (document == null) {
 			// TODO return that this was the last document
-
 			return new ResponseEntity<String>("redirect:thankyou.html", null,
 					HttpStatus.OK);
 		}
 		// transform the document and its markings into a JSON String
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-		try {
-			this.recheckUserInput();
-		} catch (GerbilException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return new ResponseEntity<String>(transformDocToJson(document),
 				responseHeaders, HttpStatus.OK);
 	}
@@ -167,9 +133,6 @@ public class EagletController {
 	private Document getNextDocument(int userId) {
 		Set<String> alreadySeenDocuments = new HashSet<String>(
 				database.getDocumentUser(userId));
-		// Update Document list
-		documents.clear();
-		this.documents = this.copyList(this.updateDocuments);
 		for (Document document : documents) {
 			if (!alreadySeenDocuments.contains(document.getDocumentURI())) {
 				return document;
@@ -250,14 +213,13 @@ public class EagletController {
 	 * @param userName
 	 * @return Json String of entities.
 	 * @throws IOException
-	 * @throws GerbilException
 	 */
 	@RequestMapping(value = "/submitResults", method = RequestMethod.POST)
 	public String submitResults(
 			@RequestParam(value = "documenturi") String document,
 			@RequestParam(value = "markings") String userInput,
 			@RequestParam(value = "username") String userName)
-			throws IOException, GerbilException {
+			throws IOException {
 		int userId = getUser(userName);
 		List<Marking> changes = transformEntityFromJson(userInput);
 		Document result = null;
@@ -265,24 +227,28 @@ public class EagletController {
 		for (Document doc : documents) {
 			if (doc.getDocumentURI().equals(document)) {
 				result = doc;
-
 			}
 
+		}
+		if (result != null) {
+			String name = result.getDocumentURI().replaceAll("http://", "");
+			name = name.replaceAll("/", "_");
+			filename = "result-" + name + userName;
+			filename = name.substring(0, 20);
+			counter++;
 		}
 
 		Document newdoc = new DocumentImpl(result.getText(),
 				result.getDocumentURI(), changes);
 		Model nifModel = generateModifiedModel(newdoc);
 
-		for (Document doc : documents) {
-			if (doc.getDocumentURI().equals(newdoc)) {
-				this.updateDocuments.add(newdoc);
-				this.updateDocuments.remove(doc);
-				break;
-			}
+		File resultfile = new File("eaglet_data" + File.separator
+				+ "result_user" + File.separator + userId + File.separator
+				+ filename + "_" + counter + "-nif.ttl");
+		if (!resultfile.exists()) {
+			resultfile.getParentFile().mkdirs();
+			resultfile.createNewFile();
 		}
-		this.updateDocuments = er.erraticMarkingUserInput(this.updateDocuments);
-
 		FileOutputStream fout = new FileOutputStream(resultfile);
 		fout.flush();
 		nifModel.write(fout, "TTL");
@@ -328,9 +294,7 @@ public class EagletController {
 	protected List<Document> loadDocuments() {
 		List<Document> loadedDocuments = new ArrayList<Document>();
 		List<Document> temp;
-
-		for (int i = 1; i < DATASET_FILES.length; i += 2) {
-
+		for (int i = 0; i < DATASET_FILES.length; ++i) {
 			temp = readDocuments(new File(DATASET_FILES[i]));
 			if (temp != null) {
 				loadedDocuments.addAll(temp);
@@ -464,6 +428,7 @@ public class EagletController {
 		return builder
 				.toString()
 				.replace("<null>", "<http://aksw.org/notInWiki/null>")
+				.replace(",http://", "> , <http://")
 				.replace(
 						"\"CORRECT\"^^<java:org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections$DecisionValue>",
 						"<" + EAGLET.Correct.getURI() + ">")
@@ -475,12 +440,7 @@ public class EagletController {
 						"<" + EAGLET.Wrong.getURI() + ">");
 	}
 
-	public void recheckUserInput() throws GerbilException, IOException {
-		DatasetConfiguration DATASET = new NIFFileDatasetConfig(
-				DATASET_FILES[0], resultfile.getAbsolutePath() + File.separator
-						+ resultfile.getName(), false, ExperimentType.A2KB);
-		new InputforPipeline(DATASET, resultfile.getAbsolutePath()
-				+ File.separator + resultfile.getName());
-
+	public static void main(String[] args) {
+		new EagletController();
 	}
 }
