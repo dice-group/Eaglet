@@ -23,10 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -207,28 +204,34 @@ public class WebErrorController {
     }
 
     @RequestMapping(value = "/post-turtle-string",method = RequestMethod.POST)
-    public ResponseEntity<String> postTurtle(@RequestBody String turtle) {
+    public ResponseEntity<String> postTurtle(@RequestParam("turtle") String text) {
         String out = null;
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "application/json;charset=utf-8");
 
+        if (text.equals("")) {
+
+            return new ResponseEntity<String>("No Content found", responseHeaders, HttpStatus.NO_CONTENT);
+        }
         try {
-            System.out.print(turtle);
+
             List<Document> documents = new ArrayList<>();
             Model nifModel = ModelFactory.createDefaultModel();
             nifModel.setNsPrefixes(NIFTransferPrefixMapping.getInstance());
-            turtle = correctNIF(turtle);
-            nifModel.read(new StringReader(turtle), "", "TTL");
+            text = correctNIF(text);
+            nifModel.read(new StringReader(text), "", "TTL");
             documents.addAll(parser.parseDocuments(nifModel));
             out = errorCheck(documents);
 
         } catch (GerbilException e) {
             LOGGER.error(e.getMessage());
+            return new ResponseEntity<String>("No Content found", responseHeaders, HttpStatus.NO_CONTENT);
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
+            return new ResponseEntity<String>("No Content found", responseHeaders, HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<String>(out, HttpStatus.OK);
+        return new ResponseEntity<String>(out, responseHeaders, HttpStatus.OK);
 
     }
 
@@ -242,16 +245,15 @@ public class WebErrorController {
         List<Document> documents;
         File temp = File.createTempFile("turtle-file", ".ttl");
         file.transferTo(temp);
-        documents = readDocuments(new File("/data1/Workspace/Eaglet/example.ttl"));
+        documents = readDocuments(temp);
 
         // Document equils Null
         if (documents == null) {
 
-            return new ResponseEntity<String>("No Document found", null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("No Document found", responseHeaders, HttpStatus.NOT_FOUND);
         }
         String jasonLDString = errorCheck(documents);
 
-        System.out.println(jasonLDString);
         return new ResponseEntity<String>(jasonLDString, responseHeaders, HttpStatus.OK);
     }
 
