@@ -2,13 +2,10 @@ package org.aksw.simba.eaglet.web.webErrorShow;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
-import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.DocumentParser;
 import org.aksw.gerbil.io.nif.utils.NIFTransferPrefixMapping;
-import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
@@ -245,16 +242,16 @@ public class WebErrorController {
         List<Document> documents;
         File temp = File.createTempFile("turtle-file", ".ttl");
         file.transferTo(temp);
-        documents = readDocuments(temp);
+        documents = readDocuments(new File("/data1/Workspace/Eaglet/example.ttl"));
 
         // Document equils Null
         if (documents == null) {
-            // TODO return that this was the last document
+
             return new ResponseEntity<String>("No Document found", null, HttpStatus.NOT_FOUND);
         }
         String jasonLDString = errorCheck(documents);
 
-
+        System.out.println(jasonLDString);
         return new ResponseEntity<String>(jasonLDString, responseHeaders, HttpStatus.OK);
     }
 

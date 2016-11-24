@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>runthis</title>
+    <script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js
+"></script>
+    <script type="text/javascript">
+        var data = "Test Data"
+       function posted(){
+            console.log("ok")
+            $.post("http:127.0.0.1:8080/service/post-turtle-string", function(data, status){
+                alert("Data: " + data + "\nStatus: " + status);
+            });
+        };
+    </script>
+</head>
+<body>
+<div>
+    <button class="post" id="post" onclick="posted()" type="button">Click Me!</button>
+
+</div>
+</body>
+</html>
