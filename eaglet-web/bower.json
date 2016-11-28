@@ -1,0 +1,24 @@
+{
+  "name": "eaglet-web",
+  "authors": [
+    "Sebastian Weber <sw94xypu@studserv.uni-leipzig.de>"
+  ],
+  "description": "web app for eaglet validator",
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.8",
+    "bootstrap": "^3.3.7",
+    "angular-upload": "^1.0.12",
+    "jsonld": "^0.4.11"
+  }
+}
