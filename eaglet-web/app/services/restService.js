@@ -2,17 +2,17 @@
 angular.module('eagletApp.dataService', ['lr.upload'])
     .service('eagletData', ['$q', '$http', function ($q, $http, upload) {
         return {
-            postDirectInput: function (String) {
+            postDirectInput: function (string) {
                 var def = $q.defer();
-                var serverAdress = 'http://localhost:80';
-                var path = '?'
+                var serverAdress = 'http://127.0.0.1:8080/gscheck';
+                var path = '/service/post-turtle-string'
                 var req = {
                     method: 'POST',
                     url: serverAdress + path,
                     /*headers: {
                      'Content-Type': 'application/json'
                      },*/
-                    data: {input: String}
+                    turtle: string
                 };
                 $http(req).then(function (result) {
                     def.resolve(result)

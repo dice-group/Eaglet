@@ -1,0 +1,135 @@
+{
+  "@graph": [
+    {
+      "@id": "http://example.org/Example1FromThePaper#char=0,95",
+      "@type": [
+        "nif:RFC5147String",
+        "nif:String",
+        "nif:Context"
+      ],
+      "beginIndex": "0",
+      "endIndex": "95",
+      "nif:isString": "In December 2012, Seattle qualified for the MLS Cup Playoffs in each of its first five seasons."
+    },
+    {
+      "@id": "http://example.org/Example1FromThePaper#char=12,16",
+      "@type": [
+        "nif:RFC5147String",
+        "nif:Phrase",
+        "nif:String"
+      ],
+      "hasCheckResult": "http://gerbil.aksw.org/eaglet/vocab#NeedToPair",
+      "hasErrorType": "http://gerbil.aksw.org/eaglet/vocab#CombinedTagging",
+      "hasPairPartner": "http://example.org/Example1FromThePaper#char=3,11",
+      "nif:anchorOf": "2012",
+      "beginIndex": "12",
+      "endIndex": "16",
+      "referenceContext": "http://example.org/Example1FromThePaper#char=0,95",
+      "taIdentRef": "http://dbpedia.org/resource/2012"
+    },
+    {
+      "@id": "http://example.org/Example1FromThePaper#char=18,25",
+      "@type": [
+        "nif:RFC5147String",
+        "nif:String",
+        "nif:Phrase"
+      ],
+      "hasCheckResult": "http://gerbil.aksw.org/eaglet/vocab#Good",
+      "nif:anchorOf": "Seattle",
+      "beginIndex": "18",
+      "endIndex": "25",
+      "referenceContext": "http://example.org/Example1FromThePaper#char=0,95",
+      "taIdentRef": "http://dbpedia.org/resource/Seattle"
+    },
+    {
+      "@id": "http://example.org/Example1FromThePaper#char=3,11",
+      "@type": [
+        "nif:RFC5147String",
+        "nif:String",
+        "nif:Phrase"
+      ],
+      "hasCheckResult": "http://gerbil.aksw.org/eaglet/vocab#NeedToPair",
+      "hasErrorType": "http://gerbil.aksw.org/eaglet/vocab#CombinedTagging",
+      "nif:anchorOf": "December",
+      "beginIndex": "3",
+      "endIndex": "11",
+      "referenceContext": "http://example.org/Example1FromThePaper#char=0,95",
+      "taIdentRef": "http://dbpedia.org/resource/December"
+    },
+    {
+      "@id": "http://example.org/Example1FromThePaper#char=44,51",
+      "@type": [
+        "nif:String",
+        "nif:Phrase",
+        "nif:RFC5147String"
+      ],
+      "hasCheckResult": "http://gerbil.aksw.org/eaglet/vocab#Overlaps",
+      "hasErrorType": "http://gerbil.aksw.org/eaglet/vocab#Overlapping",
+      "hasPairPartner": "http://example.org/Example1FromThePaper#char=48,60",
+      "nif:anchorOf": "MLS Cup",
+      "beginIndex": "44",
+      "endIndex": "51",
+      "referenceContext": "http://example.org/Example1FromThePaper#char=0,95",
+      "taIdentRef": "http://dbpedia.org/resource/MLS_Cup"
+    },
+    {
+      "@id": "http://example.org/Example1FromThePaper#char=48,60",
+      "@type": [
+        "nif:String",
+        "nif:RFC5147String",
+        "nif:Phrase"
+      ],
+      "hasCheckResult": "http://gerbil.aksw.org/eaglet/vocab#Overlaps",
+      "hasErrorType": "http://gerbil.aksw.org/eaglet/vocab#Overlapping",
+      "nif:anchorOf": "Cup Playoffs",
+      "beginIndex": "48",
+      "endIndex": "60",
+      "referenceContext": "http://example.org/Example1FromThePaper#char=0,95",
+      "taIdentRef": "http://dbpedia.org/resource/Playoffs"
+    }
+  ],
+  "@context": {
+    "beginIndex": {
+      "@id": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#beginIndex",
+      "@type": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+    },
+    "hasErrorType": {
+      "@id": "http://gerbil.aksw.org/eaglet/vocab#hasErrorType",
+      "@type": "@id"
+    },
+    "endIndex": {
+      "@id": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#endIndex",
+      "@type": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+    },
+    "taIdentRef": {
+      "@id": "http://www.w3.org/2005/11/its/rdf#taIdentRef",
+      "@type": "@id"
+    },
+    "anchorOf": {
+      "@id": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#anchorOf",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+    "referenceContext": {
+      "@id": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#referenceContext",
+      "@type": "@id"
+    },
+    "hasCheckResult": {
+      "@id": "http://gerbil.aksw.org/eaglet/vocab#hasCheckResult",
+      "@type": "@id"
+    },
+    "hasPairPartner": {
+      "@id": "http://gerbil.aksw.org/eaglet/vocab#hasPairPartner",
+      "@type": "@id"
+    },
+    "isString": {
+      "@id": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#isString",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "itsrdf": "http://www.w3.org/2005/11/its/rdf#",
+    "nif": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#& quot;,
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+  }
+}
+
