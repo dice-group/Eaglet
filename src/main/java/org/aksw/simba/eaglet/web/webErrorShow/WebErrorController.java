@@ -26,11 +26,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
+
+import static java.awt.SystemColor.text;
 
 @Controller
 public class WebErrorController {
@@ -204,8 +209,9 @@ public class WebErrorController {
     }
 
     @RequestMapping(value = "/post-turtle-string",method = RequestMethod.POST)
-    public ResponseEntity<String> postTurtle(@RequestParam("turtle") String text) {
+    public ResponseEntity<String> postTurtle(HttpServletRequest request, HttpServletResponse response) {
         String out = null;
+        String text = request.getParameter("turtle");
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "application/json;charset=utf-8");
 
@@ -266,9 +272,17 @@ public class WebErrorController {
         pipeline.runPipe(documents);
         String jasonLDString = null;
 
-        for (Document d : documents) {
-            jasonLDString += transformDocToJson(d);
+        jasonLDString = "[";
+        for (int i = 0; i < documents.size();i++) {
+            jasonLDString += transformDocToJson(documents.get(i));
+            if (i < documents.size()-1) {
+                jasonLDString += ",";
+            }
         }
+        jasonLDString += "]";
+
+        System.out.println(transformDocToJson(documents.get(0)));
+        System.out.println(transformDocToJson(documents.get(1)));
         return jasonLDString;
     }
 
