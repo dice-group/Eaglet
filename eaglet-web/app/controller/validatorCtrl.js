@@ -101,10 +101,10 @@ app.controller("validatorCtrl", function($scope, eagletData) {
             "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
         }
     };
-    $scope.postDirectInput = function(){
+    $scope.postDirectInput = function(string){
 
         $scope.tab = 'progress';
-        eagletData.postDirectInput($scope.directInput).then(function(result){
+        eagletData.postDirectInput(string).then(function(result){
             $scope.exampleJson = result;
             $scope.tab = 'result';
         });

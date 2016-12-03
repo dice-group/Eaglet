@@ -34,11 +34,10 @@
                               rows="15"
                               ng-model="directInput"
                               required
-                              ng-maxlength="1024"
                               novalidate></textarea>
                     <div class="btn-group btn-group-xs pull-right buttons" role="group">
                         <!-- <button type="submit" class="btn btn-danger">Delete</button> -->
-                        <button ng-click="postDirectInput()" type="submit" class="btn btn-primary right">Submit</button>
+                        <button ng-click="postDirectInput(directInput)" type="submit" class="btn btn-primary right">Submit</button>
                     </div>
                 </div>
 

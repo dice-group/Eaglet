@@ -9,10 +9,13 @@ angular.module('eagletApp.dataService', ['lr.upload'])
                 var req = {
                     method: 'POST',
                     url: serverAdress + path,
-                    /*headers: {
-                     'Content-Type': 'application/json'
-                     },*/
-                    turtle: string
+                    headers: {
+                     'Content-Type': 'application/json',
+                        'Accept':'application/json'
+                     },
+                    data: {
+                        turtle: string
+                    }
                 };
                 console.log(req);
                 $http(req).then(function (result) {
