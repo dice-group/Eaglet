@@ -113,8 +113,14 @@ app.controller("validatorCtrl", function($scope, eagletData) {
         console.log("fileUpload");
         console.log($scope.file);
         $scope.tab = 'progress';
-        //eagletData.uploadFile($scope.file);
+        //multipart file
+        eagletData.uploadFile($scope.file);
 
+    }
+    $scope.parseResult= function(response){
+        console.log(response);
+        $scope.exampleJson = response;
+        $scope.tab = 'result';
     }
     function formatError(json){
 

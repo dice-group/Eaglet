@@ -14,9 +14,12 @@ angular.module('eagletApp.dataService', ['lr.upload'])
                      },*/
                     turtle: string
                 };
+                console.log(req);
                 $http(req).then(function (result) {
+                    console.log(result);
                     def.resolve(result)
                 }, function (error) {
+                    console.log(error);
                     def.reject("error");
                 });
                 return def.promise;
@@ -24,8 +27,10 @@ angular.module('eagletApp.dataService', ['lr.upload'])
             },
             uploadFile: function(file){
                 var def = $q.defer();
+                var serverAdress = 'http://127.0.0.1:8080/gscheck';
+                var path = '/service/post-turtle-file'
                 upload({
-                    url: 'RESTPFAD',
+                    url: serverAdress + path,
                     method: 'POST',
                     data: {
                         file: file, // a jqLite type="file" element, upload() will extract all the files from the input and put them into the FormData object before sending.
