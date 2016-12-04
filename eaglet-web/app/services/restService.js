@@ -4,14 +4,15 @@ angular.module('eagletApp.dataService', ['lr.upload'])
         return {
             postDirectInput: function (string) {
                 var def = $q.defer();
-                var serverAdress = 'http://127.0.0.1:8080/gscheck';
+                var serverAdress = 'http://127.0.0.1:8080';
                 var path = '/service/post-turtle-string'
                 var req = {
                     method: 'POST',
                     url: serverAdress + path,
                     headers: {
                      'Content-Type': 'application/json',
-                        'Accept':'application/json'
+                        'Accept':'application/json',
+                        'Access-Control-Allow-Origin':'*'
                      },
                     data: {
                         turtle: string
@@ -30,7 +31,7 @@ angular.module('eagletApp.dataService', ['lr.upload'])
             },
             uploadFile: function(file){
                 var def = $q.defer();
-                var serverAdress = 'http://127.0.0.1:8080/gscheck';
+                var serverAdress = 'http://127.0.0.1:8080';
                 var path = '/service/post-turtle-file'
                 upload({
                     url: serverAdress + path,
