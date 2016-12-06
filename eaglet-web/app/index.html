@@ -37,7 +37,9 @@
                               novalidate></textarea>
                     <div class="btn-group btn-group-xs pull-right buttons" role="group">
                         <!-- <button type="submit" class="btn btn-danger">Delete</button> -->
-                        <button ng-click="postDirectInput(directInput)" type="submit" class="btn btn-primary right">Submit</button>
+                        <button ng-click="postDirectInput(directInput)" type="submit" class="btn btn-primary right">
+                            Submit
+                        </button>
                     </div>
                 </div>
 
@@ -45,9 +47,10 @@
                     <div
                             class="btn btn-primary btn-upload"
                             upload-button
-                            url="http://127.0.0.1:8080/service/post-turtle-file"
+                            url="http://127.0.0.1:8080/gscheck/service/post-turtle-file"
                             on-success="parseResult(response)"
-                    >Upload</div>
+                    >Upload
+                    </div>
                 </div>
                 <div ng-show="tab === 'progress'" class="progress">
                     <div class="progress-bar progress-bar-striped active"
@@ -60,28 +63,30 @@
                     </div>
                 </div>
                 <div ng-show="tab === 'result'">
-                    original text: "{{exampleJson["@graph"][0]["nif:isString"]}}"
-                    <h4><span class="label label-danger">Errors found: 5</span></h4>
-                    <div class="container">
-                        <div class="table-responsive" style="width:80%">
-                            <table class="table table-striped" >
-                                <thead>
+                    <div ng-repeat="entry in errorArray">
+                        original text: "{{entry['@graph'][0]['nif:isString']}}"
+                        <h4><span class="label label-danger">Errors found: {{entry['@graph'].length-1}}</span></h4>
+                        <div class="container">
+                            <div class="table-responsive" style="width:80%">
+                                <table class="table table-striped">
+                                    <thead>
                                     <tr>
                                         <th>String</th>
                                         <th>Error</th>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="entry in exampleJson['@graph']">
-                                    <td>
-                                        {{entry["nif:anchorOf"]}}
-                                    </td>
-                                    <td>
-                                      {{entry['hasErrorType']}}
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="error in entry['@graph']">
+                                        <td>
+                                            {{error["nif:anchorOf"]}}
+                                        </td>
+                                        <td>
+                                            {{error['hasErrorType']}}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
