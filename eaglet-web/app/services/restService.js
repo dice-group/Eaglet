@@ -12,11 +12,11 @@ angular.module('eagletApp.dataService', ['lr.upload'])
                     headers: {
                      'Content-Type': 'application/json',
                         'Accept':'application/json',
-                        'Access-Control-Allow-Origin':'*'
+
                      },
-                    data: {
-                        turtle: string
-                    }
+                    data:
+                        string
+
                 };
                 console.log(req);
                 $http(req).then(function (result) {
