@@ -206,9 +206,10 @@ public class WebErrorController {
     }
 
     @RequestMapping(value = "/post-turtle-string",method = RequestMethod.POST)
-    public ResponseEntity<String> postTurtleString(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> postTurtleString(@RequestBody String text, HttpServletRequest request, HttpServletResponse response) {
         String out = null;
-        String text = request.getParameter("turtle");
+        //String text = request.getParameter("turtle");
+        System.out.println(text);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "application/json;charset=utf-8");
         responseHeaders.add("Access-Control-Allow-Origin", "*");
