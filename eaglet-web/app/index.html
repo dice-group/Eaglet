@@ -82,7 +82,12 @@
                                         </td>
                                         <td>
                                             {{error['hasErrorType']}}
-                                            {{errorString(error['hasErrorType'])}};
+                                            <!--Hier soll die Methode aufgerufen werden und das Ergebnis angezeigt werden-->
+                                            <button id="errorBtn" class="btn btn-default" onclick='errorString("ggg#Overlapping")'>Show Discription</button>
+<!--
+                                            Gedacht hatte ich so: Aber das geht nicht!
+                                            errorString({{error["hasErrorType"]}})
+-->
                                         </td>
                                     </tr>
                                     </tbody>

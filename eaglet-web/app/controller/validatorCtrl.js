@@ -32,11 +32,9 @@ app.controller("validatorCtrl", function($scope, eagletData) {
 /*
  * Error Typen Text
  * */
-
 function errorString(error) {
-    console.log("test" + error);
-    var errorTag = error.substr(error.indexOf("#")+1, error.len());
-    console.log(errorTags);
+    var errorTag = error.substr(error.indexOf("#")+1, error.length);
+
     var errorType = {
         'Overlapping':      'The third kind of error involves the presence of two or more annotations that share at least one word',
 
@@ -80,7 +78,7 @@ function errorString(error) {
                             'longer exists in the KB but instead has to be updated to dbr:China.'
 
     };
-
+    console.log(errorType[errorTag]);
     return errorType[errorTag];
 
 }
