@@ -5,7 +5,7 @@ angular.module('eagletApp.dataService', ['lr.upload'])
             postDirectInput: function (string) {
                 var def = $q.defer();
                 var serverAdress = 'http://127.0.0.1:8080';
-                var path = '/service/post-turtle-string'
+                var path = '/gscheck/service/post-turtle-string'
                 var req = {
                     method: 'POST',
                     url: serverAdress + path,
