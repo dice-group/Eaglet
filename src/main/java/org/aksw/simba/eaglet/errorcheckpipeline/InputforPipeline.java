@@ -66,14 +66,10 @@ public class InputforPipeline {
 
 	}
 
-	public InputforPipeline(DatasetConfiguration DATASET, String path)
+	public InputforPipeline(List<Document> documents, String path)
 			throws GerbilException, IOException {
 
-		Dataset dataset = DATASET.getDataset(ExperimentType.A2KB);
-		List<Document> documents = dataset.getInstances();
-
 		this.prePipeProcessor(documents);
-		// Starting the Pipe.
 		CheckerPipeline cp = new CheckerPipeline();
 
 		cp.runPipeAfterEval(documents, path);

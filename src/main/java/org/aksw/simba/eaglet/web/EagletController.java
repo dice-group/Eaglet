@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.io.nif.DocumentListParser;
 import org.aksw.gerbil.io.nif.DocumentListWriter;
 import org.aksw.gerbil.io.nif.DocumentParser;
@@ -25,6 +26,7 @@ import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
+import org.aksw.simba.eaglet.errorcheckpipeline.InputforPipeline;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -56,10 +58,9 @@ public class EagletController {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "eaglet_data/result_pipe/CoNLL-Test A-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/result_pipe/untitled folder/OKE 2015 Task 1 example set-result-nif.ttl" };
 
-	private static final boolean USE_DOCUMENT_WHITELIST = true;
-	private static final String WHITELIST_SOURCE_DIR = "eaglet_data/result_user/Result Kunal";
+
 
 	@Autowired
 	private EagletDatabaseStatements database;
@@ -118,8 +119,17 @@ public class EagletController {
 
 		// get the next document
 		Document document = getNextDocument(userId);
-		if (document == null) {
-			// TODO return that this was the last document
+		if ((document == null )||(counter==5)) {
+			try {
+				//CHECKING AFTER EVALUATION
+				this.recheckUserInput();
+
+			} catch (GerbilException e) {
+					e.printStackTrace();
+			} catch (IOException e) {
+				LOGGER.error("Problem with rechecking pipeline");
+				e.printStackTrace();
+			}
 			return new ResponseEntity<String>("redirect:thankyou.html", null,
 					HttpStatus.OK);
 		}
@@ -303,20 +313,6 @@ public class EagletController {
 			}
 		}
 
-		if (USE_DOCUMENT_WHITELIST) {
-			Set<String> whitelist = generateWhiteList();
-			LOGGER.info("Whitelist contains {} document URIs.",
-					whitelist.size());
-			temp = new ArrayList<Document>();
-			for (Document document : loadedDocuments) {
-				if (whitelist.contains(document.getDocumentURI())) {
-					temp.add(document);
-				}
-			}
-			loadedDocuments = temp;
-			LOGGER.info("There are {} documents matching the white list.",
-					loadedDocuments.size());
-		}
 		return loadedDocuments;
 	}
 
@@ -357,23 +353,23 @@ public class EagletController {
 		}
 	}
 
-	private Set<String> generateWhiteList() {
-		Set<String> whitelist = new HashSet<String>();
-		generateWhiteList(whitelist, new File(WHITELIST_SOURCE_DIR));
+	private List<Document> generateDocumentList() {
+		List<Document> whitelist = new ArrayList<Document>();
+		generateList(whitelist, new File("eaglet_data/result_user"));
 		return whitelist;
 	}
 
-	private void generateWhiteList(Set<String> whitelist, File file) {
+	private void generateList(List<Document> whitelist, File file) {
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				for (File f : file.listFiles()) {
-					generateWhiteList(whitelist, f);
+					generateList(whitelist, f);
 				}
 			} else {
 				List<Document> documents = readDocuments(file);
 				if (documents != null) {
 					for (Document document : documents) {
-						whitelist.add(document.getDocumentURI());
+						whitelist.add(document);
 					}
 				}
 			}
@@ -440,7 +436,12 @@ public class EagletController {
 						"<" + EAGLET.Wrong.getURI() + ">");
 	}
 
-	public static void main(String[] args) {
-		new EagletController();
+	public void recheckUserInput() throws GerbilException, IOException {
+
+		new InputforPipeline(this.generateDocumentList(), "eaglet_data"
+				+ File.separator + "result_final" + File.separator
+				+ DATASET_FILES[0] + "-nif.ttl");
+		LOGGER.info("FINAL output is genreated!! After our correction");
+
 	}
 }
