@@ -81,7 +81,9 @@
                                             {{error["nif:anchorOf"]}}
                                         </td>
                                         <td>
-                                            {{errorString(error['hasErrorType'])}}
+                                            <span ng-if="errorString(error['hasErrorType']) !== null">
+                                                {{errorString(error['hasErrorType'])}}
+                                            </span>
                                             <!--Hier soll die Methode aufgerufen werden und das Ergebnis angezeigt werden-->
                                             <!--<button id="errorBtn" class="btn btn-default" onclick='errorString(error['hasErrorType'])'>Show Discription</button>
 <!--

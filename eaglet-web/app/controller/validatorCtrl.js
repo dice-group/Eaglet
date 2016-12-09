@@ -31,7 +31,8 @@ app.controller("validatorCtrl", function($scope, eagletData) {
      * Error Typen Text
      * */
     $scope.errorString = function(error) {
-        console.log(error);
+        if(error === undefined ||error === null)
+            return null
         var errorTag = error.substr(error.indexOf("#")+1, error.length);
 
         var errorType = {
