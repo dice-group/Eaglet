@@ -8,6 +8,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +27,7 @@ import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
+import org.aksw.simba.eaglet.error.ErraticMarkingUserInput;
 import org.aksw.simba.eaglet.errorcheckpipeline.InputforPipeline;
 import org.aksw.simba.eaglet.vocab.EAGLET;
 import org.apache.commons.io.IOUtils;
@@ -60,14 +62,14 @@ public class EagletController {
 
 	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/result_pipe/untitled folder/OKE 2015 Task 1 example set-result-nif.ttl" };
 
-
-
 	@Autowired
 	private EagletDatabaseStatements database;
 	private DocumentListParser parser = new DocumentListParser(
 			new DocumentParser(new AdaptedAnnotationParser()));
 	private List<Document> documents;
+	private List<Document> remainingDocuments;
 	private int counter;
+	private ErraticMarkingUserInput er;
 
 	/**
 	 * Constructor
@@ -86,7 +88,9 @@ public class EagletController {
 	 */
 
 	public EagletController(List<Document> documents) {
-		this.documents = documents;
+		this.documents = loadDocuments();
+		this.counter = 0;
+		er = new ErraticMarkingUserInput();
 	}
 
 	/**
@@ -101,7 +105,6 @@ public class EagletController {
 			database.addUser(userName);
 		}
 		userId = database.getUser(userName);
-
 		return userId;
 	}
 
@@ -116,16 +119,14 @@ public class EagletController {
 			@RequestParam(value = "username") String userName) {
 		LOGGER.info("Got a message to /next!");
 		int userId = getUser(userName);
-
 		// get the next document
 		Document document = getNextDocument(userId);
-		if ((document == null )||(counter==5)) {
+		if ((document == null) || (counter == 5)) {
 			try {
-				//CHECKING AFTER EVALUATION
+				// CHECKING AFTER EVALUATION
 				this.recheckUserInput();
-
 			} catch (GerbilException e) {
-					e.printStackTrace();
+				e.printStackTrace();
 			} catch (IOException e) {
 				LOGGER.error("Problem with rechecking pipeline");
 				e.printStackTrace();
@@ -141,6 +142,8 @@ public class EagletController {
 	}
 
 	private Document getNextDocument(int userId) {
+
+		LOGGER.info("Updated all other documents for the previous markings");
 		Set<String> alreadySeenDocuments = new HashSet<String>(
 				database.getDocumentUser(userId));
 		for (Document document : documents) {
@@ -149,6 +152,13 @@ public class EagletController {
 			}
 		}
 		return null;
+	}
+
+	public List<Document> cloneList(List<Document> list) {
+		List<Document> clone = new ArrayList<Document>(list.size());
+		for (Document item : list)
+			clone.add(item);
+		return clone;
 	}
 
 	/**
@@ -234,11 +244,13 @@ public class EagletController {
 		List<Marking> changes = transformEntityFromJson(userInput);
 		Document result = null;
 		String filename = null;
+		// ADDING THE RESULT
 		for (Document doc : documents) {
 			if (doc.getDocumentURI().equals(document)) {
-				result = doc;
+				{
+					result = doc;
+				}
 			}
-
 		}
 		if (result != null) {
 			String name = result.getDocumentURI().replaceAll("http://", "");
@@ -247,10 +259,27 @@ public class EagletController {
 			filename = name.substring(0, 20);
 			counter++;
 		}
-
 		Document newdoc = new DocumentImpl(result.getText(),
 				result.getDocumentURI(), changes);
 		Model nifModel = generateModifiedModel(newdoc);
+		Iterator<Document> doc = this.documents.iterator();
+		// REMOVING THE PREVIOUS COPY OF THE DOCUMENT
+		while (doc.hasNext()) {
+			Document d = doc.next();
+			if (d.getDocumentURI().equals(document)) {
+				{
+					doc.remove();
+				}
+			}
+		}
+		// ADDING THE MODIFIED DOC AND PASSING THROUGH THE ERRATIC MARKING CHECK
+		documents.add(newdoc);
+
+			try {
+				er.erraticMarkingUserInput(documents);
+			} catch (GerbilException e) {
+				e.printStackTrace();
+			}
 
 		File resultfile = new File("eaglet_data" + File.separator
 				+ "result_user" + File.separator + userId + File.separator
