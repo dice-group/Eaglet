@@ -46,8 +46,12 @@ public class ErraticMarkingUserInput {
 	 */
 	public List<Document> erraticMarkingUserInput(List<Document> documents)
 			throws GerbilException {
-		LOGGER.info(" ERRATIC ENTITY USER INPUT MODULE RUNNING");
 
+		LOGGER.info(" ERRATIC ENTITY USER INPUT MODULE RUNNING");
+		if(documents.size()==0)
+		{
+			LOGGER.error("DOCUMENT LIST IS EMPTY");
+		}
 		// Search setup
 		Map<String, List<NamedEntitySurfaceForm>> map = generate_map(documents);
 		for (Document doc : documents) {
@@ -128,7 +132,6 @@ public class ErraticMarkingUserInput {
 										currentToken.beginPosition(),
 										currentToken.endPosition())
 										.cardinality() == 0)) {
-
 									if (currentToken.beginPosition() > 0) {
 										if ((!Character.isWhitespace(text
 												.charAt(currentToken
@@ -159,7 +162,6 @@ public class ErraticMarkingUserInput {
 															.setError(ErrorType.ERRATIC);
 													doc.addMarking(newentity);
 												}
-
 												matchedSurfaceFormLength = surfaceformvar.surfaceForm.length;
 											}
 										}

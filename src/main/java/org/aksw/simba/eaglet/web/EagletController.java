@@ -67,7 +67,6 @@ public class EagletController {
 	private DocumentListParser parser = new DocumentListParser(
 			new DocumentParser(new AdaptedAnnotationParser()));
 	private List<Document> documents;
-	private List<Document> remainingDocuments;
 	private int counter;
 	private ErraticMarkingUserInput er;
 
@@ -121,7 +120,7 @@ public class EagletController {
 		int userId = getUser(userName);
 		// get the next document
 		Document document = getNextDocument(userId);
-		if ((document == null) || (counter == 5)) {
+		if (document == null) {
 			try {
 				// CHECKING AFTER EVALUATION
 				this.recheckUserInput();
@@ -233,13 +232,14 @@ public class EagletController {
 	 * @param userName
 	 * @return Json String of entities.
 	 * @throws IOException
+	 * @throws GerbilException
 	 */
 	@RequestMapping(value = "/submitResults", method = RequestMethod.POST)
 	public String submitResults(
 			@RequestParam(value = "documenturi") String document,
 			@RequestParam(value = "markings") String userInput,
 			@RequestParam(value = "username") String userName)
-			throws IOException {
+			throws IOException, GerbilException {
 		int userId = getUser(userName);
 		List<Marking> changes = transformEntityFromJson(userInput);
 		Document result = null;
@@ -268,18 +268,15 @@ public class EagletController {
 			Document d = doc.next();
 			if (d.getDocumentURI().equals(document)) {
 				{
-					doc.remove();
+					this.documents.set(documents.indexOf(d), newdoc);
+					break;
 				}
 			}
 		}
-		// ADDING THE MODIFIED DOC AND PASSING THROUGH THE ERRATIC MARKING CHECK
-		documents.add(newdoc);
 
-			try {
-				er.erraticMarkingUserInput(documents);
-			} catch (GerbilException e) {
-				e.printStackTrace();
-			}
+		LOGGER.info("SIZE OD DOCUMENT LIST" + documents.size());
+
+		er.erraticMarkingUserInput(documents);
 
 		File resultfile = new File("eaglet_data" + File.separator
 				+ "result_user" + File.separator + userId + File.separator
