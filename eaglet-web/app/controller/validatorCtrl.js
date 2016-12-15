@@ -8,6 +8,9 @@ app.controller("validatorCtrl", function($scope, eagletData) {
         eagletData.postDirectInput(string).then(function(result){
             $scope.errorArray = result.data;
             $scope.tab = 'result';
+        },function(error){
+            $scope.tab = 'error';
+            $scope.error = error;
         });
     }
     $scope.doUpload = function () {
@@ -80,6 +83,24 @@ app.controller("validatorCtrl", function($scope, eagletData) {
         };
         return errorType[errorTag];
 
+    }
+    /*
+    returns context string of error
+     */
+    $scope.errorContext = function (originalString,startPos,endPos,threshold){
+        console.log(threshold);
+        return originalString.substring(startPos-threshold,endPos+threshold);
+    }
+    /*
+    returns count of errors
+     */
+    $scope.countErrors = function (graph){
+        var errors = 0;
+        graph.forEach(function(e){
+            if(e['hasErrorType']!== undefined)
+                errors++;
+        })
+        return errors;
     }
 });
 

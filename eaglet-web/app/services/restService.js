@@ -22,7 +22,8 @@ angular.module('eagletApp.dataService', ['lr.upload'])
                     def.resolve(result)
                 }, function (error) {
                     console.log(error);
-                    def.reject("error");
+
+                    def.reject(error.status+ " "+error.statusText);
                 });
                 return def.promise;
 

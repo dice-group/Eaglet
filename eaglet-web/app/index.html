@@ -5,6 +5,8 @@
     <title>Title</title>
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/angular-upload/angular-upload.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <script src="app.js"></script>
     <script src="controller/validatorCtrl.js"></script>
@@ -63,9 +65,15 @@
                     </div>
                 </div>
                 <div ng-show="tab === 'result'">
+                    <button data-toggle="collapse" data-target="#jsonld">Show full JSON-LD</button>
+                    <div id="jsonld" class="collapse">
+                        <pre>
+                            {{errorArray}}
+                        </pre>
+                    </div>
                     <div ng-repeat="entry in errorArray">
-                        original text: "{{entry['@graph'][0]['nif:isString']}}"
-                        <h4><span class="label label-danger">Errors found: {{entry['@graph'].length-1}}</span></h4>
+                        <h4><em>"{{entry['@graph'][0]['nif:isString']}}"</em></h4>
+                        <h4><span class="label label-danger">Errors found: {{countErrors(entry['@graph'])}}</span></h4>
                         <div class="container">
                             <div class="table-responsive" style="width:80%">
                                 <table class="table table-striped">
@@ -77,25 +85,27 @@
                                     </thead>
                                     <tbody>
                                     <tr ng-repeat="error in entry['@graph']">
-                                        <td>
-                                            {{error["nif:anchorOf"]}}
-                                        </td>
-                                        <td>
-                                            <span ng-if="errorString(error['hasErrorType']) !== null">
-                                                {{errorString(error['hasErrorType'])}}
-                                            </span>
-                                            <!--Hier soll die Methode aufgerufen werden und das Ergebnis angezeigt werden-->
-                                            <!--<button id="errorBtn" class="btn btn-default" onclick='errorString(error['hasErrorType'])'>Show Discription</button>
-<!--
-                                            Gedacht hatte ich so: Aber das geht nicht!
-                                            errorString({{error["hasErrorType"]}})
--->
-                                        </td>
+                                            <td>
+                                                <span ng-if="errorString(error['hasErrorType']) !== null">
+                                                    <strong>{{error["nif:anchorOf"]}}</strong><br />
+                                                    <em>{{errorContext(entry['@graph'][0]['nif:isString'],error['beginIndex'],error['endIndex'],0)}}</em>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="errorString(error['hasErrorType']) !== null">
+                                                    {{errorString(error['hasErrorType'])}}
+                                                </span>
+                                            </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div ng-show="tab === 'error'">
+                    <div class="alert alert-danger">
+                        <strong>Error</strong> {{error}}
                     </div>
                 </div>
             </div>
