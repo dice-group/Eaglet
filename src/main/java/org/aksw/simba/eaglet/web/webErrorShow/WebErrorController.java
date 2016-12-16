@@ -107,10 +107,11 @@ public class WebErrorController {
         return userAcceptedEntities;
     }
 
-
-
-
-
+    /**
+     * return the correct error code
+     * @param errortype
+     * @return
+     */
     private NamedEntityCorrections.ErrorType parseErroResult(String errortype) {
         if (errortype.toUpperCase().equals("OVERLAPPING")) {
             return NamedEntityCorrections.ErrorType.OVERLAPPING;
@@ -135,6 +136,11 @@ public class WebErrorController {
         }
     }
 
+    /**
+     * parse the DecisionType
+     * @param errortype
+     * @return
+     */
     private NamedEntityCorrections.DecisionValue parseDecisionType(String errortype) {
         if (errortype.toUpperCase().equals("CORRECT")) {
             return NamedEntityCorrections.DecisionValue.CORRECT;
@@ -148,6 +154,11 @@ public class WebErrorController {
         }
     }
 
+    /**
+     * read the document from the two post methode
+     * @param file
+     * @return
+     */
     private static List<Document> readDocuments(File file) {
         List<Document> documents = new ArrayList<Document>();
         FileInputStream fin = null;
@@ -169,6 +180,11 @@ public class WebErrorController {
         return documents;
     }
 
+    /**
+     * build the nif string
+     * @param nif
+     * @return
+     */
     public static final String correctNIF(String nif) {
         char[] chars = nif.toCharArray();
         StringBuilder builder = new StringBuilder(chars.length);
@@ -205,6 +221,13 @@ public class WebErrorController {
                         "<" + EAGLET.Wrong.getURI() + ">");
     }
 
+    /**
+     * This methode handle the text upload.
+     * @param text save the text param  upload.
+     * @param request handle the request param
+     * @param response send a json ld string into a ResponseEntry Objekt.
+     * @return json ld string into a ResponseEntry.
+     */
     @RequestMapping(value = "/post-turtle-string",method = RequestMethod.POST)
     public ResponseEntity<String> postTurtleString(@RequestBody String text, HttpServletRequest request, HttpServletResponse response) {
         String out = null;
@@ -215,7 +238,6 @@ public class WebErrorController {
         responseHeaders.add("Access-Control-Allow-Origin", "*");
 
         if (text.equals("")) {
-
             return new ResponseEntity<String>("No Content found", responseHeaders, HttpStatus.NO_CONTENT);
         }
         try {
@@ -240,6 +262,13 @@ public class WebErrorController {
 
     }
 
+    /**
+     * This method handle the file upload.
+     * @param file parsing the ttl file
+     * @return jsonld string into a ResponseEntry object.
+     * @throws IOException
+     * @throws GerbilException
+     */
     @RequestMapping(value = "/post-turtle-file", method = RequestMethod.POST)
     public ResponseEntity<String> PostTurtleFile(@RequestParam("file") MultipartFile file) throws IOException, GerbilException {
 
@@ -254,7 +283,6 @@ public class WebErrorController {
 
         // Document equils Null
         if (documents == null) {
-
             return new ResponseEntity<String>("No Document found", responseHeaders, HttpStatus.NOT_FOUND);
         }
         String jasonLDString = errorCheck(documents);
@@ -262,6 +290,13 @@ public class WebErrorController {
         return new ResponseEntity<String>(jasonLDString, responseHeaders, HttpStatus.OK);
     }
 
+    /**
+     * Check the errors into the document, transfer the document to jsonld array and add the results to a string.
+     * @param documents
+     * @return String with the jsonld String
+     * @throws GerbilException
+     * @throws IOException
+     */
     private String errorCheck(List<Document> documents) throws GerbilException, IOException {
         // Data for input Pipline and initialization
         InputforPipeline preprocessor = new InputforPipeline();
@@ -286,6 +321,9 @@ public class WebErrorController {
         return jasonLDString;
     }
 
+    /*
+    Test Methode
+     */
     public static void main(String[] args) throws IOException, GerbilException {
         List<Document> documents;
         documents = readDocuments(new File("/data1/Workspace/Eaglet/example.ttl"));
