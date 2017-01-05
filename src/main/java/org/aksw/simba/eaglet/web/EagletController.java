@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -20,10 +19,11 @@ import org.aksw.gerbil.io.nif.utils.NIFTransferPrefixMapping;
 import org.aksw.gerbil.io.nif.utils.NIFUriHelper;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
-import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
 import org.aksw.gerbil.transfer.nif.data.StartPosBasedComparator;
 import org.aksw.simba.eaglet.annotator.AdaptedAnnotationParser;
 import org.aksw.simba.eaglet.database.EagletDatabaseStatements;
+import org.aksw.simba.eaglet.documentprocessor.DocumentProcessor;
+import org.aksw.simba.eaglet.documentprocessor.StanfordParsedMarking;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.simba.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
@@ -67,6 +67,7 @@ public class EagletController {
 	private DocumentListParser parser = new DocumentListParser(
 			new DocumentParser(new AdaptedAnnotationParser()));
 	private List<Document> documents;
+	private List<Document> remainingDocuments;
 	private int counter;
 	private ErraticMarkingUserInput er;
 
@@ -76,19 +77,7 @@ public class EagletController {
 	public EagletController() {
 		this.documents = loadDocuments();
 		this.counter = 0;
-	}
-
-	/**
-	 *
-	 * Constructor
-	 *
-	 * @param documents
-	 *            : List of documents
-	 */
-
-	public EagletController(List<Document> documents) {
-		this.documents = loadDocuments();
-		this.counter = 0;
+		this.remainingDocuments = new ArrayList<Document>();
 		er = new ErraticMarkingUserInput();
 	}
 
@@ -145,19 +134,19 @@ public class EagletController {
 		LOGGER.info("Updated all other documents for the previous markings");
 		Set<String> alreadySeenDocuments = new HashSet<String>(
 				database.getDocumentUser(userId));
+
+		this.remainingDocuments.clear();
+
 		for (Document document : documents) {
 			if (!alreadySeenDocuments.contains(document.getDocumentURI())) {
-				return document;
+				remainingDocuments.add(document);
 			}
 		}
-		return null;
-	}
 
-	public List<Document> cloneList(List<Document> list) {
-		List<Document> clone = new ArrayList<Document>(list.size());
-		for (Document item : list)
-			clone.add(item);
-		return clone;
+		if (remainingDocuments.isEmpty())
+			return null;
+		else
+			return remainingDocuments.get(0);
 	}
 
 	/**
@@ -224,6 +213,17 @@ public class EagletController {
 		return userAcceptedEntities;
 	}
 
+	public void updateDocumentList(List<Document> remList) {
+		for (Document doc : remList) {
+			for (Document doc1 : this.documents) {
+				if (doc1.getDocumentURI().equals(doc.getDocumentURI())) {
+					doc1.setMarkings(doc.getMarkings());
+				}
+			}
+		}
+
+	}
+
 	/**
 	 * The method handles the returning of Json string.
 	 *
@@ -248,35 +248,29 @@ public class EagletController {
 		for (Document doc : documents) {
 			if (doc.getDocumentURI().equals(document)) {
 				{
+					changes.addAll(doc.getMarkings(StanfordParsedMarking.class));
+					doc.setMarkings(changes);
 					result = doc;
+
 				}
+
 			}
 		}
-		if (result != null) {
-			String name = result.getDocumentURI().replaceAll("http://", "");
-			name = name.replaceAll("/", "_");
-			filename = "result-" + name + userName;
-			filename = name.substring(0, 20);
-			counter++;
-		}
-		Document newdoc = new DocumentImpl(result.getText(),
-				result.getDocumentURI(), changes);
-		Model nifModel = generateModifiedModel(newdoc);
-		Iterator<Document> doc = this.documents.iterator();
-		// REMOVING THE PREVIOUS COPY OF THE DOCUMENT
-		while (doc.hasNext()) {
-			Document d = doc.next();
-			if (d.getDocumentURI().equals(document)) {
-				{
-					this.documents.set(documents.indexOf(d), newdoc);
-					break;
-				}
-			}
+		if (result == null) {
+			LOGGER.info("NO RESULT FRoM ThE USER");
 		}
 
-		LOGGER.info("SIZE OD DOCUMENT LIST" + documents.size());
+		String name = result.getDocumentURI().replaceAll("http://", "");
+		name = name.replaceAll("/", "_");
+		filename = "result-" + name + userName;
+		filename = name.substring(0, 20);
+		counter++;
+		Model nifModel = generateModifiedModel(result);
 
-		er.erraticMarkingUserInput(documents);
+		LOGGER.info("SIZE Of DOCUMENT LIST" + documents.size());
+
+		er.erraticMarkingUserInput(remainingDocuments, result);
+		this.updateDocumentList(remainingDocuments);
 
 		File resultfile = new File("eaglet_data" + File.separator
 				+ "result_user" + File.separator + userId + File.separator
@@ -339,6 +333,8 @@ public class EagletController {
 			}
 		}
 
+		DocumentProcessor dp = new DocumentProcessor();
+		dp.process(loadedDocuments);
 		return loadedDocuments;
 	}
 

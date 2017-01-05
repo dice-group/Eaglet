@@ -44,142 +44,150 @@ public class ErraticMarkingUserInput {
 	 *            : A List of Documents passing through the pipeline.
 	 * @throws GerbilException
 	 */
-	public List<Document> erraticMarkingUserInput(List<Document> documents)
-			throws GerbilException {
+	public List<Document> erraticMarkingUserInput(List<Document> documents,
+			Document current) throws GerbilException {
 
 		LOGGER.info(" ERRATIC ENTITY USER INPUT MODULE RUNNING");
-		if(documents.size()==0)
-		{
+		if (documents.size() == 0) {
 			LOGGER.error("DOCUMENT LIST IS EMPTY");
 		}
 		// Search setup
 		Map<String, List<NamedEntitySurfaceForm>> map = generate_map(documents);
 		for (Document doc : documents) {
-			List<StanfordParsedMarking> stanfordAnns = doc
-					.getMarkings(StanfordParsedMarking.class);
-			List<NamedEntityCorrections> entities = doc
-					.getMarkings(NamedEntityCorrections.class);
-			StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
-			List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(
-					TokensAnnotation.class);
-			if (stanfordAnns.size() != 1) {
-				LOGGER.error(" Parser not working ");
-			}
-			// Search implementation
-			boolean found = false;
-			int i = 0;
-			int k, matchedSurfaceFormLength;
-			NamedEntityCorrections ne;
-			CoreLabel currentToken;
-			// iterate over all tokens
-			while (i < tokens.size()) {
-				currentToken = tokens.get(i);
-				// if this token matches a first token of an entity
-				if (map.containsKey(currentToken.lemma())) {
-					matchedSurfaceFormLength = 0;
-					// get the list of possible entities
-					List<NamedEntitySurfaceForm> current_list = map
-							.get(currentToken.lemma());
-					// iterate over the list of possible entities
-					for (int j = 0; (j < current_list.size())
-							&& (matchedSurfaceFormLength == 0); j++) {
-						NamedEntitySurfaceForm surfaceformvar = current_list
-								.get(j);
-						k = 0;
-						// check whether the complete surface form is matching
-						while ((k < surfaceformvar.surfaceForm.length)
-								&& ((i + k) < tokens.size())
-								&& surfaceformvar.surfaceForm[k].equals(tokens
-										.get(i + k).lemma())) {
-							++k;
-						}
-						// if the surface form is matching
-						if (k == surfaceformvar.surfaceForm.length) {
-							// check whether one of the already known named
-							// entities having this surface form is matching the
-							// position
-							found = false;
-							for (int n = 0; (!found)
-									&& (n < surfaceformvar.nes.size()); ++n) {
-								ne = surfaceformvar.nes.get(n);
-								if (doc.getDocumentURI().equals(ne.getDoc())) {
-									if (currentToken.beginPosition() == ne
-											.getStartPosition()) {
-										found = true;
+			if (!(doc.getDocumentURI().equals(current))) {
+
+				List<StanfordParsedMarking> stanfordAnns = doc
+						.getMarkings(StanfordParsedMarking.class);
+				List<NamedEntityCorrections> entities = doc
+						.getMarkings(NamedEntityCorrections.class);
+				StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
+				List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(
+						TokensAnnotation.class);
+				if (stanfordAnns.size() != 1) {
+					LOGGER.error(" Parser not working ");
+				}
+				// Search implementation
+				boolean found = false;
+				int i = 0;
+				int k, matchedSurfaceFormLength;
+				NamedEntityCorrections ne;
+				CoreLabel currentToken;
+				// iterate over all tokens
+				while (i < tokens.size()) {
+					currentToken = tokens.get(i);
+					// if this token matches a first token of an entity
+					if (map.containsKey(currentToken.lemma())) {
+						matchedSurfaceFormLength = 0;
+						// get the list of possible entities
+						List<NamedEntitySurfaceForm> current_list = map
+								.get(currentToken.lemma());
+						// iterate over the list of possible entities
+						for (int j = 0; (j < current_list.size())
+								&& (matchedSurfaceFormLength == 0); j++) {
+							NamedEntitySurfaceForm surfaceformvar = current_list
+									.get(j);
+							k = 0;
+							// check whether the complete surface form is
+							// matching
+							while ((k < surfaceformvar.surfaceForm.length)
+									&& ((i + k) < tokens.size())
+									&& surfaceformvar.surfaceForm[k]
+											.equals(tokens.get(i + k).lemma())) {
+								++k;
+							}
+							// if the surface form is matching
+							if (k == surfaceformvar.surfaceForm.length) {
+								// check whether one of the already known named
+								// entities having this surface form is matching
+								// the
+								// position
+								found = false;
+								for (int n = 0; (!found)
+										&& (n < surfaceformvar.nes.size()); ++n) {
+									ne = surfaceformvar.nes.get(n);
+									if (doc.getDocumentURI()
+											.equals(ne.getDoc())) {
+										if (currentToken.beginPosition() == ne
+												.getStartPosition()) {
+											found = true;
+										}
 									}
 								}
-							}
-							// if there is no matching named entity, we have
-							// found a new one
-							if (found == false) {
-								String text = doc.getText();
-								// A check for non-overlapping marking.
-								BitSet nePositions = new BitSet(doc.getText()
-										.length());
-								int start[] = new int[entities.size()];
-								int end[] = new int[entities.size()];
-								Collections.sort(entities,
-										new StartPosBasedComparator());
-								for (int iter = 0; iter < entities.size(); ++iter) {
-									start[iter] = entities.get(iter)
-											.getStartPosition();
-									end[iter] = entities.get(iter)
-											.getStartPosition()
-											+ entities.get(iter).getLength();
-									nePositions.set(start[iter], end[iter]);
-								}
-								if ((nePositions.get(
-										currentToken.beginPosition(),
-										currentToken.endPosition())
-										.cardinality() == 0)) {
-									if (currentToken.beginPosition() > 0) {
-										if ((!Character.isWhitespace(text
-												.charAt(currentToken
-														.beginPosition() - 1)))) {
-											if (currentToken.endPosition() + 1 < text
-													.length()) {
-												if (Character
-														.isWhitespace(text
-																.charAt(currentToken
-																		.endPosition() + 1))) {
+								// if there is no matching named entity, we have
+								// found a new one
+								if (found == false) {
+									String text = doc.getText();
+									// A check for non-overlapping marking.
+									BitSet nePositions = new BitSet(doc
+											.getText().length());
+									int start[] = new int[entities.size()];
+									int end[] = new int[entities.size()];
+									Collections.sort(entities,
+											new StartPosBasedComparator());
+									for (int iter = 0; iter < entities.size(); ++iter) {
+										start[iter] = entities.get(iter)
+												.getStartPosition();
+										end[iter] = entities.get(iter)
+												.getStartPosition()
+												+ entities.get(iter)
+														.getLength();
+										nePositions.set(start[iter], end[iter]);
+									}
+									if ((nePositions.get(
+											currentToken.beginPosition(),
+											currentToken.endPosition())
+											.cardinality() == 0)) {
+										if (currentToken.beginPosition() > 0) {
+											if ((!Character
+													.isWhitespace(text
+															.charAt(currentToken
+																	.beginPosition() - 1)))) {
+												if (currentToken.endPosition() + 1 < text
+														.length()) {
+													if (Character
+															.isWhitespace(text
+																	.charAt(currentToken
+																			.endPosition() + 1))) {
 
-													NamedEntityCorrections newentity = new NamedEntityCorrections(
-															currentToken
-																	.beginPosition(),
-															tokens.get(
-																	i
-																			+ surfaceformvar.surfaceForm.length
-																			- 1)
-																	.endPosition()
-																	- currentToken
-																			.beginPosition(),
-															new HashSet<String>(
-																	surfaceformvar.nes
-																			.get(0)
-																			.getUris()),
-															Check.INSERTED);
-													newentity
-															.setError(ErrorType.ERRATIC);
-													doc.addMarking(newentity);
+														NamedEntityCorrections newentity = new NamedEntityCorrections(
+																currentToken
+																		.beginPosition(),
+																tokens.get(
+																		i
+																				+ surfaceformvar.surfaceForm.length
+																				- 1)
+																		.endPosition()
+																		- currentToken
+																				.beginPosition(),
+																new HashSet<String>(
+																		surfaceformvar.nes
+																				.get(0)
+																				.getUris()),
+																Check.INSERTED);
+														newentity
+																.setError(ErrorType.ERRATIC);
+														doc.addMarking(newentity);
+													}
+													matchedSurfaceFormLength = surfaceformvar.surfaceForm.length;
 												}
-												matchedSurfaceFormLength = surfaceformvar.surfaceForm.length;
 											}
 										}
 									}
 								}
 							}
 						}
-					}
-					// if we have found something that matched increase our
-					// current position with the length of the matching surface
-					// form
-					if (matchedSurfaceFormLength > 0) {
-						i += matchedSurfaceFormLength;
+						// if we have found something that matched increase our
+						// current position with the length of the matching
+						// surface
+						// form
+						if (matchedSurfaceFormLength > 0) {
+							i += matchedSurfaceFormLength;
+						} else {
+							++i;
+						}
 					} else {
 						++i;
 					}
-				} else {
-					++i;
 				}
 			}
 		}
@@ -193,30 +201,29 @@ public class ErraticMarkingUserInput {
 			List<NamedEntityCorrections> entities = doc
 					.getMarkings(NamedEntityCorrections.class);
 
+
 			entities = nameEntity(doc, entities);
 
 			for (NamedEntityCorrections entity : entities) {
 				entity.setDoc(doc.getDocumentURI());
-				if (entity.getResult() == Check.GOOD) {
-					if (map.containsKey(entity.getEntity_name())) {
-						for (NamedEntitySurfaceForm ns : map.get(entity
-								.getEntity_name())) {
-							if (Arrays.equals(ns.surfaceForm,
-									entity.entity_text)) {
-								ns.nes.add(entity);
-							}
-						}
 
-					} else {
-						List<NamedEntitySurfaceForm> sub = new ArrayList<NamedEntitySurfaceForm>();
-						List<NamedEntityCorrections> sub_entity = new ArrayList<NamedEntityCorrections>();
-						NamedEntitySurfaceForm nesf = new NamedEntitySurfaceForm();
-						nesf.surfaceForm = entity.entity_text;
-						sub_entity.add(entity);
-						nesf.nes = sub_entity;
-						sub.add(nesf);
-						map.put(entity.getEntity_name(), sub);
+				if (map.containsKey(entity.getEntity_name())) {
+					for (NamedEntitySurfaceForm ns : map.get(entity
+							.getEntity_name())) {
+						if (Arrays.equals(ns.surfaceForm, entity.entity_text)) {
+							ns.nes.add(entity);
+						}
 					}
+
+				} else {
+					List<NamedEntitySurfaceForm> sub = new ArrayList<NamedEntitySurfaceForm>();
+					List<NamedEntityCorrections> sub_entity = new ArrayList<NamedEntityCorrections>();
+					NamedEntitySurfaceForm nesf = new NamedEntitySurfaceForm();
+					nesf.surfaceForm = entity.entity_text;
+					sub_entity.add(entity);
+					nesf.nes = sub_entity;
+					sub.add(nesf);
+					map.put(entity.getEntity_name(), sub);
 				}
 			}
 		}

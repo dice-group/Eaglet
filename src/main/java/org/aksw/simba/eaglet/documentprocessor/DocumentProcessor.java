@@ -1,6 +1,5 @@
 package org.aksw.simba.eaglet.documentprocessor;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -18,8 +17,7 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
  */
 public class DocumentProcessor {
 	protected StanfordCoreNLP pipeline;
-	List<String> lemmas = new LinkedList<String>();
-	List<Integer> position = new LinkedList<Integer>();
+
 
 	/**
 	 * Constructor
