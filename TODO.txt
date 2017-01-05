@@ -1,0 +1,7 @@
+TODOs for the version 1.0 EAGLET
+
+1. Update the pipeline to integrate the simultaneous user suggestion update. 
+2. Fix the under progress UI (Basic UI). NO SPECIAL USER CONVINIENT FEATURE!!!!
+3. Check Validator branch and Integrate in the new UI.
+4. Integrate EAGLET to the new fixed UI from 2.
+ 
