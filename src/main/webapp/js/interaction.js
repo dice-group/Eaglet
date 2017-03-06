@@ -7,7 +7,10 @@ $(document).ready(function() {
 
 	$("#login").click(function() {
 		$("#anotherSection").show();
-		$("#userinfo").hide()
+		$("#userinfo").hide();
+		$("#about").hide();
+		$("#header").hide();
+		$("#loginsection").hide()
 	});
 });
 // Basic Variables.
@@ -62,7 +65,7 @@ function printText() {
 }
 /**
  * Method to display the list of Entity.
- * 
+ *
  * @param name
  *            Name of the entity
  * @param start
@@ -77,57 +80,57 @@ function printText() {
  *            The string to store errorType
  */
 function printEntity(name, start, length, checkResult, uri, errortype) {
-	var content = '<div " id="' + counter + '" class="marking"><ul>';
+	var content = '<div " id="' + counter + '" class="marking"><ul class="list-group">';
 	if (uri != null) {
 		content += '<a id="a' + counter + ' href="' + uri + '">';
 	} else {
 		content += '<a id="a' + counter + ' href="#">';
 	}
 	content += '<span class="name">' + name + '</span></a><br />';
-	content += '<li> Start: <span class="start">' + start
+	content += '<li class="list-group-item list-group-item-success"> Start: <span class="start">' + start
 			+ '</span></li><br />';
-	content += '<li> Length: <span class="length">' + length
+	content += '<li class="list-group-item list-group-item-success"> Length: <span class="length">' + length
 			+ '</span></li><br />';
 	if (checkResult != null) {
-		content += '<li> Result : <span class="result">' + checkResult
+		content += '<li class="list-group-item list-group-item-info"> Result : <span class="result">' + checkResult
 				+ '</span></li><br />';
 	}
 	if (errortype != null) {
-		content += '<li > Error Type : <span id="error' + counter
+		content += '<li class="list-group-item list-group-item-danger" > Error Type : <span id="error' + counter
 				+ '" class="error">' + errortype + '</span></li><br />';
 	}
-	content += '<li > Uris : <span id="uri'
+	content += '<li class="list-group-item list-group-item-success"> Uris : <span id="uri'
 			+ '" class="uri">  ' + uri
 			+ '</a></span></li><br />';
 	if (uri != null) {
 		content += '<form name="ValidationData">'
-				+ '<p>Decide The correctness of Marking</p>'
-				+ '<input type="radio" class = "entityCheck" name="decision" value="correct" checked="checked">Correct</input><br />'
-				+ '<input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input><br />'
-				+ '<input type="radio" class = "entityCheck" name="decision" value="added" >Added</input><br />'
-				+ '</form>'
+				+ ' <div class="col-lg-12 text-center"> <p>Marking Decision</p> </div>'
+				+ '<div class="btn-group" data-toggle="buttons"> <label class="btn btn-success active"> <input type="radio" class = "entityCheck" name="decision" value="correct" checked="checked">Correct</input> </label>'
+				+ ' <label class="btn btn-danger">  <input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input> </label>'
+				+ ' <label class="btn btn-info active"> <input type="radio" class = "entityCheck" name="decision" value="added" >Added</input> </label> '
+				+ '</div></form>'
 	} else {
 		content += '<form name="ValidationData">'
-				+ '<p>Decide The correctness of Marking</p>'
-				+ '<input type="radio" class = "entityCheck" name="decision" value="correct" >Correct</input><br />'
-				+ '<input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input><br />'
-				+ '<input type="radio" class = "entityCheck" name="decision" value="added" checked="checked" >Added</input><br />'
-				+ '</form>'
+				+ '<div class="col-lg-12 text-center"> <p>Marking Decision</p> </div>'
+				+ ' <div class="btn-group" data-toggle="buttons"> <label class="btn btn-success"> <input type="radio" class = "entityCheck" name="decision" value="correct" > Correct </input> </label>'
+				+ ' <label class="btn btn-danger"> <input type="radio" class = "entityCheck" name="decision" value="wrong" > Wrong </input> </label> '
+				+ ' <label class="btn btn-info active"> <input type="radio" class = "entityCheck" name="decision" value="added" checked="checked"> Added </input> </label>'
+				+ '</div></form>'
 	}
 
-	content += '</ul> <button onclick="removeelement(' + counter
-			+ ')">Delete</button> <br /></div><hr>';
+	content += '</ul> <button type="button" class="btn btn-warning" onclick="removeelement(' + counter
+			+ ')">Remove Entity</button> <br /></div><hr>';
 
 	$('#main-content .innerContainer').append($(content));
 	counter += 1;
-	
+
 	$("span.uri").each(function() {
 		makeUrisEditable(this);
 	});
 }
 /**
  * The method to print the text of the document for user reference.
- * 
+ *
  * @param data:
  *            String containing text.
  */
@@ -174,7 +177,7 @@ function uservalidation() {
 };
 /**
  * The method that makes the URI editable.
- * 
+ *
  * @param span:
  *            The span of covering the URI
  */
@@ -216,7 +219,7 @@ function senddata() {
 }
 /**
  * The method to delete the id.
- * 
+ *
  * @param divid
  */
 function removeelement(divid) {
@@ -227,7 +230,7 @@ function removeelement(divid) {
 };
 /**
  * The method is utility for URI editing.
- * 
+ *
  * @param divid
  */
 function edittext(divid) {
@@ -283,6 +286,6 @@ Selector.mouseup = function() {
 		printEntity(st, selection.start, (selection.end - selection.start),
 				null, null);
 		updateText();
-		
+
 	}
 };

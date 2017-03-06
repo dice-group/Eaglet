@@ -60,7 +60,7 @@ public class EagletController {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/result_pipe/untitled folder/OKE 2015 Task 1 example set-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/kore50-nif-result-nif.ttl" };
 
 	@Autowired
 	private EagletDatabaseStatements database;
