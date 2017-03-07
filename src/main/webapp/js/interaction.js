@@ -81,44 +81,39 @@ function printText() {
  */
 function printEntity(name, start, length, checkResult, uri, errortype) {
 	var content = '<div " id="' + counter + '" class="marking"><ul class="list-group">';
-	if (uri != null) {
-		content += '<a id="a' + counter + ' href="' + uri + '">';
-	} else {
-		content += '<a id="a' + counter + ' href="#">';
-	}
-	content += '<span class="name">' + name + '</span></a><br />';
-	content += '<li class="list-group-item list-group-item-success"> Start: <span class="start">' + start
+	content += '<div class="col-lg-12 text-center"> <span class="name"> <h2>' + name + '</h2> </span> </div><br /> <hr/>';
+	content += '<li class="list-group-item list-group-item-info"> Start: <span class="start">' + start
 			+ '</span></li><br />';
-	content += '<li class="list-group-item list-group-item-success"> Length: <span class="length">' + length
+	content += '<li class="list-group-item list-group-item-info"> Length: <span class="length">' + length
 			+ '</span></li><br />';
 	if (checkResult != null) {
 		content += '<li class="list-group-item list-group-item-info"> Result : <span class="result">' + checkResult
 				+ '</span></li><br />';
 	}
-	if (errortype != null) {
+	if (errortype !='[]') {
 		content += '<li class="list-group-item list-group-item-danger" > Error Type : <span id="error' + counter
 				+ '" class="error">' + errortype + '</span></li><br />';
 	}
-	content += '<li class="list-group-item list-group-item-success"> Uris : <span id="uri'
+	content += '<li class="list-group-item list-group-item-info"> Uris : <span id="uri'
 			+ '" class="uri">  ' + uri
 			+ '</a></span></li><br />';
 	if (uri != null) {
 		content += '<form name="ValidationData">'
-				+ ' <div class="col-lg-12 text-center"> <p>Marking Decision</p> </div>'
-				+ '<div class="btn-group" data-toggle="buttons"> <label class="btn btn-success active"> <input type="radio" class = "entityCheck" name="decision" value="correct" checked="checked">Correct</input> </label>'
-				+ ' <label class="btn btn-danger">  <input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input> </label>'
-				+ ' <label class="btn btn-info active"> <input type="radio" class = "entityCheck" name="decision" value="added" >Added</input> </label> '
+				+ ' <p>Marking Decision</p>'
+				+ '<div class="btn-group" role="group"> <label class="btn btn-info default "> <input type="radio" class = "entityCheck" name="decision" value="correct" checked="checked">Correct</input> </label>'
+				+ ' <label class="btn btn-default">  <input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input> </label>'
+				+ ' <label class="btn btn-default"> <input type="radio" class = "entityCheck" name="decision" value="added" >Added</input> </label> '
 				+ '</div></form>'
 	} else {
 		content += '<form name="ValidationData">'
 				+ '<div class="col-lg-12 text-center"> <p>Marking Decision</p> </div>'
-				+ ' <div class="btn-group" data-toggle="buttons"> <label class="btn btn-success"> <input type="radio" class = "entityCheck" name="decision" value="correct" > Correct </input> </label>'
-				+ ' <label class="btn btn-danger"> <input type="radio" class = "entityCheck" name="decision" value="wrong" > Wrong </input> </label> '
-				+ ' <label class="btn btn-info active"> <input type="radio" class = "entityCheck" name="decision" value="added" checked="checked"> Added </input> </label>'
+				+ ' <div class="btn-group" role="group"> <label class="btn btn-default "> <input type="radio" class = "entityCheck" name="decision" value="correct" > Correct </input> </label>'
+				+ ' <label class="btn btn-default"> <input type="radio" class = "entityCheck" name="decision" value="wrong" > Wrong </input> </label> '
+				+ ' <label class="btn btn-default "> <input type="radio" class = "entityCheck" name="decision" value="added" checked="checked"> Added </input> </label>'
 				+ '</div></form>'
 	}
 
-	content += '</ul> <button type="button" class="btn btn-warning" onclick="removeelement(' + counter
+	content += '</ul> <button type="button" class="btn btn-danger" onclick="removeelement(' + counter
 			+ ')">Remove Entity</button> <br /></div><hr>';
 
 	$('#main-content .innerContainer').append($(content));
