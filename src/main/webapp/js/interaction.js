@@ -109,12 +109,12 @@ function printEntity(name, start, length, checkResult, uri, errortype) {
 				+ '<div class="col-lg-12 text-center"> <p>Marking Decision</p> </div>'
 				+ ' <div class="btn-group" role="group"> <label class="btn btn-default "> <input type="radio" class = "entityCheck" name="decision" value="correct" > Correct </input> </label>'
 				+ ' <label class="btn btn-default"> <input type="radio" class = "entityCheck" name="decision" value="wrong" > Wrong </input> </label> '
-				+ ' <label class="btn btn-default "> <input type="radio" class = "entityCheck" name="decision" value="added" checked="checked"> Added </input> </label>'
+				+ ' <label class="btn btn-info default"> <input type="radio" class = "entityCheck" name="decision" value="added" checked="checked"> Added </input> </label>'
 				+ '</div></form>'
 	}
 
-	content += '</ul> <button type="button" class="btn btn-danger" onclick="removeelement(' + counter
-			+ ')">Remove Entity</button> <br /></div><hr>';
+	content += '</ul> <br />    <div class="col-lg-12 text-center"> <button type="button" class="btn btn-danger" onclick="removeelement(' + counter
+			+ ')">Remove Entity</button> </div></div> <br /> <br /> <hr>';
 
 	$('#main-content .innerContainer').append($(content));
 	counter += 1;
