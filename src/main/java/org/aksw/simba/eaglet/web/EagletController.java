@@ -60,7 +60,7 @@ public class EagletController {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/kore50-nif-result-nif.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/aa.ttl" };
 
 	@Autowired
 	private EagletDatabaseStatements database;
@@ -96,6 +96,11 @@ public class EagletController {
 		return userId;
 	}
 
+	@RequestMapping(value = "/redirect", method = RequestMethod.GET)
+	public String redirect() {
+		return "redirect:finalPage";
+	}
+
 	/**
 	 * The method handles the next set of documents based on User information.
 	 *
@@ -119,7 +124,8 @@ public class EagletController {
 				LOGGER.error("Problem with rechecking pipeline");
 				e.printStackTrace();
 			}
-			return new ResponseEntity<String>("redirect:thankyou.html", null,
+			LOGGER.info("Redirecting to Thankyou");
+			return new ResponseEntity<String>("thankyou.html", null,
 					HttpStatus.OK);
 		}
 		// transform the document and its markings into a JSON String
@@ -127,6 +133,31 @@ public class EagletController {
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
 		return new ResponseEntity<String>(transformDocToJson(document),
 				responseHeaders, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/pipe", produces = "application/json;charset=utf-8")
+	public ResponseEntity<String> runPipe(
+			@RequestParam(value = "datasetname") String datasetName,
+			@RequestParam(value = "path") String datasetPath) {
+		LOGGER.info("Got a message to pipe!");
+		try {
+			new InputforPipeline(datasetName, datasetPath);
+		} catch (GerbilException e) {
+
+			e.printStackTrace();
+			return new ResponseEntity<String>(null, null,
+					HttpStatus.BAD_REQUEST);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(null, null,
+					HttpStatus.BAD_REQUEST);
+
+		}
+		// transform the document and its markings into a JSON String
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
+		return new ResponseEntity<String>("Done", responseHeaders,
+				HttpStatus.OK);
 	}
 
 	private Document getNextDocument(int userId) {

@@ -10,6 +10,7 @@ $(document).ready(function() {
 		$("#userinfo").hide();
 		$("#about").hide();
 		$("#header").hide();
+		$("#pipesection").hide();
 		$("#loginsection").hide()
 	});
 });
@@ -65,7 +66,7 @@ function printText() {
 }
 /**
  * Method to display the list of Entity.
- *
+ * 
  * @param name
  *            Name of the entity
  * @param start
@@ -125,7 +126,7 @@ function printEntity(name, start, length, checkResult, uri, errortype) {
 }
 /**
  * The method to print the text of the document for user reference.
- *
+ * 
  * @param data:
  *            String containing text.
  */
@@ -168,11 +169,33 @@ function uservalidation() {
 		dataType : "json"// type of data returned
 	}).done(printDocument).fail(function(e) {
 		// handle error
-	});
+		 
+	}).fail(location.href = "thankyou.html").fail(function(e){});
+};
+
+function configpipe() {
+	// get the form data using another method
+	dName = $("input#datasetname").val();
+	dpath =$("input#path").val();
+
+	$.ajax({
+		url : "service/pipe",// servlet URL that gets
+		type : "POST",// request type, can be GET
+		data : {
+			datasetname : dName,
+			path : dpath ,// data to be sent
+		// to the
+		// server
+		},
+		dataType : "json"// type of data returned
+	}).done(location.href = "thankyou.html").fail(function(e) {
+		// handle error
+		 
+	})
 };
 /**
  * The method that makes the URI editable.
- *
+ * 
  * @param span:
  *            The span of covering the URI
  */
@@ -214,7 +237,7 @@ function senddata() {
 }
 /**
  * The method to delete the id.
- *
+ * 
  * @param divid
  */
 function removeelement(divid) {
@@ -225,7 +248,7 @@ function removeelement(divid) {
 };
 /**
  * The method is utility for URI editing.
- *
+ * 
  * @param divid
  */
 function edittext(divid) {
