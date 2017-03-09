@@ -15,6 +15,7 @@ p {
 p.small {
     font-size: 16px;
 }
+.top-buffer { margin-top:20px; }
 
 a,
 a:hover,
@@ -24,6 +25,7 @@ a.active {
     outline: 0;
     color: #18bc9c;
 }
+
 
 h1,
 h2,

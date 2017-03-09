@@ -81,41 +81,49 @@ function printText() {
  *            The string to store errorType
  */
 function printEntity(name, start, length, checkResult, uri, errortype) {
-	var content = '<div " id="' + counter + '" class="marking"><ul class="list-group">';
-	content += '<div class="col-lg-12 text-center"> <span class="name"> <h2>' + name + '</h2> </span> </div><br /> <hr/>';
-	content += '<li class="list-group-item list-group-item-info"> Start: <span class="start">' + start
-			+ '</span></li><br />';
-	content += '<li class="list-group-item list-group-item-info"> Length: <span class="length">' + length
-			+ '</span></li><br />';
-	if (checkResult != null) {
-		content += '<li class="list-group-item list-group-item-info"> Result : <span class="result">' + checkResult
-				+ '</span></li><br />';
+	var content = '<div " id="' + counter
+			+ '" class="marking">';
+	content += '<div class="col-lg-12 text-center"> <span class="name"> <h2>'
+			+ name + '</h2> </span> </div><br /> <hr/>';
+	content += ' <div class="container"><div class="row"><div class="col-md-4"> Start: <span class="start">'
+			+ start + '</span></div>';
+	content += '<div class="col-md-4 "> Length: <span class="length">' + length
+			+ '</span></div></div>';
+	if(checkResult == "GOOD")
+	{
+		content += '<div class="row  bg-success text-white"> <div class="col-lg-4"> Result : <span class="result">'
+			+ checkResult + '</span></div></div>';
 	}
-	if (errortype !='[]') {
-		content += '<li class="list-group-item list-group-item-danger" > Error Type : <span id="error' + counter
-				+ '" class="error">' + errortype + '</span></li><br />';
+	else if (checkResult != null) {
+		content += '<div class="row  bg-danger text-white"> <div class="col-lg-4"> Result : <span class="result">'
+			+ checkResult + '</span></div></div>';
 	}
-	content += '<li class="list-group-item list-group-item-info"> Uris : <span id="uri'
-			+ '" class="uri">  ' + uri
-			+ '</a></span></li><br />';
+	
+	if (errortype != '[]') {
+		content += '<div class="row bg-danger text-white"> <div class="col-md-4"> Error Type : <span id="error' + counter
+				+ '" class="error">' + errortype + '</span></div></div>';
+	}
+	content += '<div class="row "> <div class="col-md-6">Uris : <span id="uri' + '" class="uri">  '
+			+ uri + '</a></span></div> </div>';
 	if (uri != null) {
-		content += '<form name="ValidationData">'
-				+ ' <p>Marking Decision</p>'
+		content += '<div class="row  "> <div class="col-md-4"><form name="ValidationData">'
+				+ ' <div class="col-lg-20 "> <h4> Marking Decision </h4></div>'
 				+ '<div class="btn-group" role="group"> <label class="btn btn-info default "> <input type="radio" class = "entityCheck" name="decision" value="correct" checked="checked">Correct</input> </label>'
 				+ ' <label class="btn btn-default">  <input type="radio" class = "entityCheck" name="decision" value="wrong" >Wrong</input> </label>'
 				+ ' <label class="btn btn-default"> <input type="radio" class = "entityCheck" name="decision" value="added" >Added</input> </label> '
-				+ '</div></form>'
+				+ '</div></form></div></div>'
 	} else {
-		content += '<form name="ValidationData">'
-				+ '<div class="col-lg-12 text-center"> <p>Marking Decision</p> </div>'
+		content += '<div class="row  "> <div class="col-lg-4"> <form name="ValidationData">'
+				+ '<div class="col-lg-20 "> <h4> Marking Decision </h4> </div>'
 				+ ' <div class="btn-group" role="group"> <label class="btn btn-default "> <input type="radio" class = "entityCheck" name="decision" value="correct" > Correct </input> </label>'
 				+ ' <label class="btn btn-default"> <input type="radio" class = "entityCheck" name="decision" value="wrong" > Wrong </input> </label> '
 				+ ' <label class="btn btn-info default"> <input type="radio" class = "entityCheck" name="decision" value="added" checked="checked"> Added </input> </label>'
-				+ '</div></form>'
+				+ '</div></form></div></div>  </div>'
 	}
 
-	content += '</ul> <br />    <div class="col-lg-12 text-center"> <button type="button" class="btn btn-danger" onclick="removeelement(' + counter
-			+ ')">Remove Entity</button> </div></div> <br /> <br /> <hr>';
+	content += ' <br /> <div class="col-lg-2text-center"> <button type="button" class="btn btn-danger" onclick="removeelement('
+			+ counter
+			+ ')">Remove Entity</button> </div> </div> <br /> <br /> <hr>  ';
 
 	$('#main-content .innerContainer').append($(content));
 	counter += 1;
@@ -169,28 +177,29 @@ function uservalidation() {
 		dataType : "json"// type of data returned
 	}).done(printDocument).fail(function(e) {
 		// handle error
-		 
-	}).fail(location.href = "thankyou.html").fail(function(e){});
+		location.href = "thankyou.html";
+
+	});
 };
 
 function configpipe() {
 	// get the form data using another method
 	dName = $("input#datasetname").val();
-	dpath =$("input#path").val();
+	dpath = $("input#path").val();
 
 	$.ajax({
 		url : "service/pipe",// servlet URL that gets
 		type : "POST",// request type, can be GET
 		data : {
 			datasetname : dName,
-			path : dpath ,// data to be sent
+			path : dpath,// data to be sent
 		// to the
 		// server
 		},
 		dataType : "json"// type of data returned
 	}).done(location.href = "thankyou.html").fail(function(e) {
 		// handle error
-		 
+
 	})
 };
 /**

@@ -60,7 +60,7 @@ public class EagletController {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EagletController.class);
 
-	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/aa.ttl" };
+	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/OKE 2015 Task 1 gold standard sample-result-nif.ttl" };
 
 	@Autowired
 	private EagletDatabaseStatements database;
@@ -96,10 +96,6 @@ public class EagletController {
 		return userId;
 	}
 
-	@RequestMapping(value = "/redirect", method = RequestMethod.GET)
-	public String redirect() {
-		return "redirect:finalPage";
-	}
 
 	/**
 	 * The method handles the next set of documents based on User information.
