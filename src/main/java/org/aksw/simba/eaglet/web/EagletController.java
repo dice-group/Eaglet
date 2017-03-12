@@ -61,7 +61,6 @@ public class EagletController {
 			.getLogger(EagletController.class);
 
 	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/OKE 2015 Task 1 gold standard sample-result-nif.ttl" };
-	String USER_DATASET_FILES[] = new String[1];
 
 	@Autowired
 	private EagletDatabaseStatements database;
@@ -96,6 +95,7 @@ public class EagletController {
 		userId = database.getUser(userName);
 		return userId;
 	}
+
 
 	/**
 	 * The method handles the next set of documents based on User information.
@@ -149,10 +149,6 @@ public class EagletController {
 					HttpStatus.BAD_REQUEST);
 
 		}
-
-		this.USER_DATASET_FILES[0] = new String("eaglet_data" + File.separator
-				+ "result_pipe" + File.separator + datasetName
-				+ "-result-nif.ttl");
 		// transform the document and its markings into a JSON String
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
@@ -355,22 +351,8 @@ public class EagletController {
 	protected List<Document> loadDocuments() {
 		List<Document> loadedDocuments = new ArrayList<Document>();
 		List<Document> temp;
-		if (USER_DATASET_FILES.length == 0) {
-			for (int i = 0; i < DATASET_FILES.length; ++i) {
-				temp = readDocuments(new File(DATASET_FILES[i]));
-				if (temp != null) {
-					loadedDocuments.addAll(temp);
-				} else {
-					LOGGER.error("Couldn't load the dataset!");
-				}
-			}
-
-			DocumentProcessor dp = new DocumentProcessor();
-			dp.process(loadedDocuments);
-			return loadedDocuments;
-		} else {
-
-			temp = readDocuments(new File(USER_DATASET_FILES[0]));
+		for (int i = 0; i < DATASET_FILES.length; ++i) {
+			temp = readDocuments(new File(DATASET_FILES[i]));
 			if (temp != null) {
 				loadedDocuments.addAll(temp);
 			} else {
@@ -504,17 +486,11 @@ public class EagletController {
 	}
 
 	public void recheckUserInput() throws GerbilException, IOException {
-		if (USER_DATASET_FILES.length == 0) {
-			new InputforPipeline(this.generateDocumentList(), "eaglet_data"
-					+ File.separator + "result_final" + File.separator
-					+ DATASET_FILES[0] + "-nif.ttl");
-			LOGGER.info("FINAL output is genreated!! After our correction");
 
-		} else {
-			new InputforPipeline(this.generateDocumentList(), "eaglet_data"
-					+ File.separator + "result_final" + File.separator
-					+ USER_DATASET_FILES[0] + "-nif.ttl");
-			LOGGER.info("FINAL output is genreated!! After our correction");
-		}
+		new InputforPipeline(this.generateDocumentList(), "eaglet_data"
+				+ File.separator + "result_final" + File.separator
+				+ DATASET_FILES[0] + "-nif.ttl");
+		LOGGER.info("FINAL output is genreated!! After our correction");
+
 	}
 }
