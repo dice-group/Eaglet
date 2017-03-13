@@ -59,8 +59,10 @@ public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EagletController.class);
+	private static final String DEFAULT_URI = "./eaglet_data/OKE 2015 Task 1 gold standard sample-result-nif.ttl";
 
-	private static final String DATASET_FILES[] = new String[] { "./eaglet_data/OKE 2015 Task 1 gold standard sample-result-nif.ttl" };
+	String DATASET_FILES[] = new String[] { "OKE 2015", DEFAULT_URI };
+	boolean DATASET_GIVEN;
 
 	@Autowired
 	private EagletDatabaseStatements database;
@@ -75,10 +77,12 @@ public class EagletController {
 	 * Constructor
 	 */
 	public EagletController() {
+		DATASET_GIVEN = false;
 		this.documents = loadDocuments();
 		this.counter = 0;
 		this.remainingDocuments = new ArrayList<Document>();
 		er = new ErraticMarkingUserInput();
+
 	}
 
 	/**
@@ -96,7 +100,6 @@ public class EagletController {
 		return userId;
 	}
 
-
 	/**
 	 * The method handles the next set of documents based on User information.
 	 *
@@ -107,6 +110,7 @@ public class EagletController {
 	public ResponseEntity<String> nextDocument(
 			@RequestParam(value = "username") String userName) {
 		LOGGER.info("Got a message to /next!");
+
 		int userId = getUser(userName);
 		// get the next document
 		Document document = getNextDocument(userId);
@@ -138,6 +142,7 @@ public class EagletController {
 		LOGGER.info("Got a message to pipe!");
 		try {
 			new InputforPipeline(datasetName, datasetPath);
+
 		} catch (GerbilException e) {
 
 			e.printStackTrace();
@@ -149,6 +154,14 @@ public class EagletController {
 					HttpStatus.BAD_REQUEST);
 
 		}
+
+		DATASET_FILES[0] = datasetName;
+
+		DATASET_FILES[1] = "eaglet_data" + File.separator + "result_pipe"
+				+ File.separator + datasetName + "-result-nif.ttl";
+		this.DATASET_GIVEN = true;
+		this.documents.clear();
+		this.documents = loadDocuments();
 		// transform the document and its markings into a JSON String
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
@@ -351,6 +364,14 @@ public class EagletController {
 	protected List<Document> loadDocuments() {
 		List<Document> loadedDocuments = new ArrayList<Document>();
 		List<Document> temp;
+		if(DATASET_GIVEN==false)
+		{
+			LOGGER.info("LOADING DEFAULT DATASET!!");
+		}
+		else
+		{
+			LOGGER.info("LOADING USER GIVEN DATASET!!");
+		}
 		for (int i = 0; i < DATASET_FILES.length; ++i) {
 			temp = readDocuments(new File(DATASET_FILES[i]));
 			if (temp != null) {
