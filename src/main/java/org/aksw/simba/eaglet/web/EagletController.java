@@ -59,7 +59,7 @@ public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EagletController.class);
-	private static final String DEFAULT_URI = "./eaglet_data/OKE 2015 Task 1 gold standard sample-result-nif.ttl";
+	private static final String DEFAULT_URI = "./eaglet_data/result_pipe/OKE 2015 Task 1 gold standard sample-result-nif.ttl";
 
 	String DATASET_FILES[] = new String[] { "OKE 2015", DEFAULT_URI };
 	boolean DATASET_GIVEN;
