@@ -54,3 +54,5 @@ Once all the datasets have been reviewed the results can be found in eaglet_data
 This work has been supported by the H2020 project [HOBBIT (GA no. 688227)](http://project-hobbit.eu) as well
 as the the EuroStars projects [DIESEL (project no. 01QE1512C)](https://diesel-project.eu/) and [QAMEL (project
 no. 01QE1549C)](https://qamel.eu/).
+## License
+EAGLET is licensed under the [GNU General Public License Version 2, June 1991](http://www.gnu.org/licenses/gpl-2.0.txt) (license document is in the application subfolder).
