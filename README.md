@@ -28,7 +28,6 @@ http://localhost:8080/gscheck/login.html
 ```
 
 
-
 ## Login
 Enter a username Login to start playing with the current dataset. A detailed description of UI can be seen in the [demo](). One can also upload their own dataset as described in the next section. 
 
@@ -51,11 +50,7 @@ Once all the datasets have been reviewed the results can be found in eaglet_data
 * [Michael Röder](https://github.com/MichaelRoeder)
 
 
-## License
-
-TODO
-
 ## Acknowledgments
-This work has been supported by the H2020 project HOBBIT (GA no. 688227) as well
-as the the EuroStars projects DIESEL (project no. 01QE1512C) and QAMEL (project
-no. 01QE1549C).
+This work has been supported by the H2020 project [HOBBIT (GA no. 688227)](http://project-hobbit.eu) as well
+as the the EuroStars projects [DIESEL (project no. 01QE1512C)](https://diesel-project.eu/) and [QAMEL (project
+no. 01QE1549C)](https://qamel.eu/).
