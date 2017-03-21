@@ -55,4 +55,4 @@ This work has been supported by the H2020 project [HOBBIT (GA no. 688227)](http:
 as the the EuroStars projects [DIESEL (project no. 01QE1512C)](https://diesel-project.eu/) and [QAMEL (project
 no. 01QE1549C)](https://qamel.eu/).
 ## License
-EAGLET is licensed under the [GNU General Public License Version 3](https://www.gnu.org/licenses/lgpl.txt) (license document is in the application subfolder).
+EAGLET is licensed under the [GNU General Public License Version 3](https://www.gnu.org/licenses/lgpl.txt).
