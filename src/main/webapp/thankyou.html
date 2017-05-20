@@ -1,5 +1,8 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
+
 
 <head>
 
@@ -24,7 +27,44 @@
 		location.href = "";
 	};
 </script>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+	google.charts.load('current', {
+		'packages' : [ 'corechart' ]
+	});
+google.charts.setOnLoadCallback(drawChart);
 
+	function drawChart () {
+	    $.ajax({
+	        url: "service/getUserResultSummary",
+	        dataType: "json",
+	        type:"GET",
+	        success: function (jsonData) {
+	            var data = new google.visualization.DataTable();
+	          
+	            data.addColumn('string', 'error');
+	            data.addColumn('number', 'value');
+
+	            for (var i = 0; i < jsonData.length; i++) {
+	                data.addRow([jsonData[i].error, jsonData[i].value]);
+	            }
+
+	            var options = {
+	                title: 'User Result details',
+	                is3D: true
+	            };
+	            var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+	            chart.draw(data, options);
+	        }
+	    });
+	}
+
+		
+
+
+
+</script>
 <!-- Custom Fonts -->
 <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet"
 	type="text/css">
@@ -36,30 +76,93 @@
 
 
 </head>
+
 <header>
+
 	<div class="container">
+
 		<div class="row">
+
 			<div class="col-lg-12">
+
 				<div class="intro-text">
-					<span class="name">Thank You !!!</span>
-					<span class="description">The Dataset has been Reviewed and Saved !!</span>
+
+					<span class="name">Thank You !!!</span> <span class="description">The
+
+						Dataset has been Reviewed and Saved !!</span>
+
 					<form action="login.html">
+
 						<button type="submit" class="btn btn-warning btn-lg">
+
 							<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+
 							HomePage
+
 						</button>
+
 					</form>
+
 				</div>
+
 			</div>
+
 		</div>
+
 	</div>
+
 </header>
+
+
+
+<section id="resultsection">
+
+	<div class="row">
+
+		<div class="col-lg-12 text-center">
+
+			<h2>Result</h2>
+
+			<hr class="star-primary">
+
+		</div>
+
+		<div class="container">
+
+			<div class="row">
+
+				<div class="col-lg-8 col-lg-offset-2">
+					<div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+
+
+				</div>
+
+
+
+			</div>
+
+
+
+		</div>
+
+	</div>
+
+</section>
+
+
+
 <!-- Plugin JavaScript -->
+
 <script
 	src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 <script src="js/classie.js"></script>
 <script src="js/interaction.js" type="text/javascript"></script>
 <!-- Custom Theme JavaScript -->
 <script src="js/freelancer.js"></script>
+
+
+
 </body>
+
 </html>
+
