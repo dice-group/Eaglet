@@ -291,13 +291,20 @@ public class EagletController {
 	public ResponseEntity<String> showEagletSummary()
 
 	{
-		Gson gson = new Gson();
-		String json = gson.toJson(this.resultEagletSummary);
+		JSONArray arr = new JSONArray();
+		Iterator it = this.resultEagletSummary.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			JSONObject job = new JSONObject();
+			job.append("error", pair.getKey());
+			job.append("value", pair.getValue());
+			arr.put(job);
+		}
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-		return new ResponseEntity<String>(json, responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<String>(arr.toString(), responseHeaders, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/getUserResultSummary", method = RequestMethod.GET)
 	public ResponseEntity<String> showUserSummary() {
 		JSONArray arr = new JSONArray();
