@@ -28,26 +28,51 @@
 	google.charts.load('current', {
 		'packages' : [ 'corechart' ]
 	});
+	google.charts.setOnLoadCallback(drawBasic);
 	google.charts.setOnLoadCallback(drawChart);
-	function drawChart() {
-		 var jsonData = $.ajax({
+
+	function drawBasic() {
+		var jsonData = $.ajax({
 			url : "http://localhost:8080/gscheck/service/getUserResultSummary",
 			dataType : "json",
 			async : false
 		}).responseText;
- 
- // Create our data table out of JSON data loaded from server.
+
+		// Create our data table out of JSON data loaded from server.
 		var data = new google.visualization.DataTable(jsonData);
 
 		var options = {
-			title : 'User Result details',
-			is3D : true
+			title : 'User Decision Summary',
+		
+			legend : 'none'
 		};
-		var chart = new google.visualization.PieChart(document
-				.getElementById('piechart_3d'));
+
+		var chart = new google.visualization.BarChart(document
+				.getElementById('chart_div'));
 		chart.draw(data, options);
 	}
+	function drawChart() {
+		var jsonData = $.ajax({
+			url : "http://localhost:8080/gscheck/service/getResultSummary",
+			dataType : "json",
+			async : false
+		}).responseText;
+
+		// Create our data table out of JSON data loaded from server.
+		var data = new google.visualization.DataTable(jsonData);
+
+		var pioptions = {
+			title : 'EAGLET Error Stats',
+		
+		};
+
+		var chart = new google.visualization.PieChart(document
+				.getElementById('piechart_div'));
+
+		chart.draw(data, pioptions);
+	}
 </script>
+
 <!-- Custom Fonts -->
 <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet"
 	type="text/css">
@@ -83,67 +108,51 @@
 							HomePage
 
 						</button>
-
 					</form>
-
 				</div>
-
 			</div>
-
 		</div>
-
 	</div>
-
 </header>
-
-
-
 <section id="resultsection">
 
 	<div class="row">
 
 		<div class="col-lg-12 text-center">
-
 			<h2>Result</h2>
-
 			<hr class="star-primary">
-
 		</div>
-
 		<div class="container">
-
 			<div class="row">
+				<div class="col-lg-12 text-center">
 
-				<div class="col-lg-8 col-lg-offset-2">
-					<div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+					<div id="chart_div" style="width: 1000px; height: 500px;"></div>
+
 
 				</div>
-
-
-
 			</div>
-
-
-
 		</div>
-
 	</div>
 
+	<div class="row">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+
+					<div id="piechart_div" style="width: 1000px; height: 500px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
-
-
 
 <!-- Plugin JavaScript -->
 
 <script
 	src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 <script src="js/classie.js"></script>
-<script src="js/interaction.js" type="text/javascript"></script>
 <!-- Custom Theme JavaScript -->
 <script src="js/freelancer.js"></script>
-
-
-
 </body>
 
 </html>

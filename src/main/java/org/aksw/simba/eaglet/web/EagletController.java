@@ -47,6 +47,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.visualization.datasource.base.TypeMismatchException;
 import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.DataTable;
@@ -67,7 +71,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
-	private static final String DEFAULT_URI = "./eaglet_data/result_pipe/sample.ttl";
+	private static final String DEFAULT_URI = "./eaglet_data/result_pipe/Kore-result-nif.ttl";
 	// Kore-result-nif.ttl
 
 	String DATASET_FILES[] = new String[] { "sample", DEFAULT_URI };
@@ -297,22 +301,6 @@ public class EagletController {
 	public ResponseEntity<String> showEagletSummary()
 
 	{
-		JSONArray arr = new JSONArray();
-		Iterator it = this.resultEagletSummary.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pair = (Map.Entry) it.next();
-			JSONObject job = new JSONObject();
-			job.append("error", pair.getKey());
-			job.append("value", pair.getValue());
-			arr.put(job);
-		}
-		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-		return new ResponseEntity<String>(arr.toString(), responseHeaders, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/getUserResultSummary", method = RequestMethod.GET)
-	public ResponseEntity<String> showUserSummary() {
 		DataTable data = new DataTable();
 		ArrayList<ColumnDescription> cd = new ArrayList<ColumnDescription>();
 		cd.add(new ColumnDescription("error", ValueType.TEXT, " Error"));
@@ -322,17 +310,61 @@ public class EagletController {
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
 			try {
-				data.addRowFromValues(pair.getKey().toString(), Integer.parseInt(pair.getValue().toString()));
+				data.addRowFromValues(pair.getKey().toString(), pair.getValue());
 			} catch (TypeMismatchException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		JsonNode root = null;
+		String json = JsonRenderer.renderDataTable(data, true, true).toString();
 
+		try {
+			JsonParser parser = new JsonFactory().createJsonParser(json)
+					.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES)
+					.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+			root = new ObjectMapper().readTree(parser);
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-		String error = JsonRenderer.renderDataTable(data, true, true).toString();
-		return new ResponseEntity<String>(error, responseHeaders, HttpStatus.OK);
+
+		return new ResponseEntity<String>(root.toString(), responseHeaders, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/getUserResultSummary", method = RequestMethod.GET)
+	public ResponseEntity<String> showUserSummary() throws NumberFormatException, TypeMismatchException {
+		DataTable data = new DataTable();
+		ArrayList<ColumnDescription> cd = new ArrayList<ColumnDescription>();
+		cd.add(new ColumnDescription("error", ValueType.TEXT, " Error"));
+		cd.add(new ColumnDescription("value", ValueType.NUMBER, "Value"));
+		data.addColumns(cd);
+		Iterator it = this.resultUserSummary.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			try {
+				data.addRowFromValues(pair.getKey().toString(), pair.getValue());
+			} catch (TypeMismatchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		JsonNode root = null;
+		String json = JsonRenderer.renderDataTable(data, true, true).toString();
+
+		try {
+			JsonParser parser = new JsonFactory().createJsonParser(json)
+					.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES)
+					.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+			root = new ObjectMapper().readTree(parser);
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
+
+		return new ResponseEntity<String>(root.toString(), responseHeaders, HttpStatus.OK);
 	}
 
 	/**
