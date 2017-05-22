@@ -47,8 +47,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.visualization.datasource.base.TypeMismatchException;
+import com.google.visualization.datasource.datatable.ColumnDescription;
+import com.google.visualization.datasource.datatable.DataTable;
+import com.google.visualization.datasource.datatable.value.ValueType;
+import com.google.visualization.datasource.render.JsonRenderer;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -64,7 +67,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
-	private static final String DEFAULT_URI = "./eaglet_data/result_pipe/Kore-result-nif.ttl";
+	private static final String DEFAULT_URI = "./eaglet_data/result_pipe/sample.ttl";
+	// Kore-result-nif.ttl
 
 	String DATASET_FILES[] = new String[] { "sample", DEFAULT_URI };
 	boolean DATASET_GIVEN;
@@ -132,7 +136,7 @@ public class EagletController {
 	 * @return ResponseEntity
 	 */
 	@RequestMapping(value = "/next", produces = "application/json;charset=utf-8")
-	public ResponseEntity<String> nextDocument(@RequestParam(value = "username") String userName) {
+	public Object nextDocument(@RequestParam(value = "username") String userName) {
 		LOGGER.info("Got a message to /next!");
 
 		int userId = getUser(userName);
@@ -148,8 +152,10 @@ public class EagletController {
 				LOGGER.error("Problem with rechecking pipeline");
 				e.printStackTrace();
 			}
-			LOGGER.info("Redirecting to Thankyou");
-			return new ResponseEntity<String>("thankyou.html", null, HttpStatus.OK);
+			LOGGER.info("Redirecting to Thank you");
+
+			return "redirect:/thankyou.html";
+
 		}
 		// transform the document and its markings into a JSON String
 		HttpHeaders responseHeaders = new HttpHeaders();
@@ -307,18 +313,26 @@ public class EagletController {
 
 	@RequestMapping(value = "/getUserResultSummary", method = RequestMethod.GET)
 	public ResponseEntity<String> showUserSummary() {
-		JSONArray arr = new JSONArray();
-		Iterator it = this.resultUserSummary.entrySet().iterator();
+		DataTable data = new DataTable();
+		ArrayList<ColumnDescription> cd = new ArrayList<ColumnDescription>();
+		cd.add(new ColumnDescription("error", ValueType.TEXT, " Error"));
+		cd.add(new ColumnDescription("value", ValueType.NUMBER, "Value"));
+		data.addColumns(cd);
+		Iterator it = this.resultEagletSummary.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
-			JSONObject job = new JSONObject();
-			job.append("error", pair.getKey());
-			job.append("value", pair.getValue());
-			arr.put(job);
+			try {
+				data.addRowFromValues(pair.getKey().toString(), Integer.parseInt(pair.getValue().toString()));
+			} catch (TypeMismatchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "application/json;charset=utf-8");
-		return new ResponseEntity<String>(arr.toString(), responseHeaders, HttpStatus.OK);
+		String error = JsonRenderer.renderDataTable(data, true, true).toString();
+		return new ResponseEntity<String>(error, responseHeaders, HttpStatus.OK);
 	}
 
 	/**
