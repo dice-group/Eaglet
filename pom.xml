@@ -105,6 +105,13 @@
 			<version>3.6.0</version>
 			<classifier>models</classifier>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.visualization/visualization-datasource -->
+		<dependency>
+			<groupId>com.google.visualization</groupId>
+			<artifactId>visualization-datasource</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
 		<!-- Servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

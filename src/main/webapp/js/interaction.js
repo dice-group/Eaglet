@@ -171,15 +171,20 @@ function uservalidation() {
 		type : "POST",// request type, can be GET
 		data : {
 			username : loginName,// data to be sent
-		// to the
-		// server
 		},
-		dataType : "json"// type of data returned
-	}).done(printDocument).fail(function(e) {
-		// handle error
-		location.href = "thankyou.html";
-
-	});
+		dataType : "json",// type of data returned
+		success:  function(data, status, xhr){ 
+		    var ct = xhr.getResponseHeader("content-type") || "";
+		    if (ct.indexOf('html') > -1) {
+		    console.log("Redirect")
+		    window.location.href="thankyou.html";
+		    }
+	        else {
+	            // data.form contains the HTML for the replacement form
+	        	printDocument(data);
+	        }
+	    }
+	})
 };
 
 function configpipe() {
@@ -240,9 +245,20 @@ function senddata() {
 			'markings' : JSON.stringify(marking_list),
 			'username' : loginName
 		},
-		type : 'POST',
+		type : 'POST',// type of data returned
+		success:  function(data, status, xhr){ 
+		    var ct = xhr.getResponseHeader("content-type") || "";
+		    if (ct.indexOf('html') > -1) {
+		    console.log("Redirect")
+		    window.location.href="thankyou.html";
+		    }
+	        else {
+	            // data.form contains the HTML for the replacement form
+	        	printDocument(data);
+	        }
+	    }
+})
 
-	}).done(printDocument);
 }
 /**
  * The method to delete the id.
