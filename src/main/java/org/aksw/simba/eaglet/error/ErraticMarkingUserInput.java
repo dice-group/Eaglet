@@ -55,7 +55,7 @@ public class ErraticMarkingUserInput {
 		// Search setup
 		Map<String, List<NamedEntitySurfaceForm>> map = generate_map(documents);
 		for (Document doc : documents) {
-			if (!(doc.getDocumentURI().equals(current))) {
+			if (!(doc.getDocumentURI().equals(current.getDocumentURI()))) {
 
 				List<StanfordParsedMarking> stanfordAnns = doc
 						.getMarkings(StanfordParsedMarking.class);
