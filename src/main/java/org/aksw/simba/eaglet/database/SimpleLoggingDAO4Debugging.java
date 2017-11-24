@@ -117,4 +117,15 @@ public class SimpleLoggingDAO4Debugging extends AbstractExperimentDAO {
     public void close() throws IOException {
     }
 
+    @Override
+    public ExperimentTaskResult getResultOfExperimentTask(int experimentTaskId) {
+        return null;
+    }
+
+    @Override
+    public List<ExperimentTaskResult> getLatestResultsOfExperiments(String experimentType, String matching,
+            String[] annotatorNames, String[] datasetNames) {
+        return null;
+    }
+
 }

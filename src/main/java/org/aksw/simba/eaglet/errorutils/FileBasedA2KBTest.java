@@ -47,7 +47,7 @@ import org.aksw.simba.eaglet.database.SimpleLoggingResultStoringDAO4Debugging;
 public class FileBasedA2KBTest extends AbstractExperimentTaskTest {
 
     private static final DatasetConfiguration GOLD_STD = new NIFFileDatasetConfig("DBpedia",
-            "C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB);
+            "C:/Users/Kunal/workspace/gerbil/gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false, ExperimentType.A2KB, null, null);
     
 	private static final UriKBClassifier URI_KB_CLASSIFIER = new SimpleWhiteListBasedUriKBClassifier(
             "http://dbpedia.org/resource/");
@@ -91,7 +91,7 @@ public class FileBasedA2KBTest extends AbstractExperimentTaskTest {
 
     public TestA2KBAnnotator loadAnnotatorFile(String annotatorFileName, boolean eraseConfidenceValues)
             throws GerbilException {
-        Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
+        Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE, null, null))
                 .getDataset(EXPERIMENT_TYPE);
         List<Document> instances;
         if (eraseConfidenceValues) {

@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.aksw.simba</groupId>
-	<artifactId>gscheck</artifactId>
-	<version>1.0.0</version>
+	<artifactId>eaglet</artifactId>
+	<version>1.0.1</version>
 
 
 
@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>org.aksw</groupId>
 			<artifactId>gerbil</artifactId>
-			<version>1.2.3-SNAPSHOT</version>
+			<version>1.2.5</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>stanpost341</artifactId>
