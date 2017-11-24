@@ -62,7 +62,10 @@ public class CheckerPipeline {
      * @param path
      * @return List of A2KB Annotators Object.
      * @throws GerbilException
+     * 
+     * @deprecated Relies on annotation result files that are not very likely to be available. {@link #loadAnnotators()} is used instead.
      */
+    @Deprecated
     public List<A2KBAnnotator> callAnnotator(String path) throws GerbilException {
         AnnotatorResult ar = new AnnotatorResult(path);
         List<A2KBAnnotator> annotators = ar.getAnnotators();
