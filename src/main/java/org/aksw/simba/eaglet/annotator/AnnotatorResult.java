@@ -69,7 +69,7 @@ public class AnnotatorResult {
     @Deprecated
     public static List<NamedEntityCorrections> loadAnnotatorResult(String annotatorFileName, String AnnotatorName)
             throws GerbilException {
-        Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
+        Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE, null, null))
                 .getDataset(EXPERIMENT_TYPE);
         ArrayList<NamedEntityCorrections> entity_set = new ArrayList<NamedEntityCorrections>();
         List<Document> documents = dataset.getInstances();
@@ -85,7 +85,7 @@ public class AnnotatorResult {
         if (annotatorFileName.endsWith(".gz")) {
             documents = readFromGzippedFile(annotatorFileName);
         } else {
-            Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE))
+            Dataset dataset = (new NIFFileDatasetConfig("ANNOTATOR", annotatorFileName, false, EXPERIMENT_TYPE, null, null))
                     .getDataset(EXPERIMENT_TYPE);
             documents = dataset.getInstances();
         }
