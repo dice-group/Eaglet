@@ -50,11 +50,12 @@ public class ErraticMarkingUserInput {
 		LOGGER.info(" ERRATIC ENTITY USER INPUT MODULE RUNNING");
 		if (documents.size() == 0) {
 			LOGGER.error("DOCUMENT LIST IS EMPTY");
+			return null;
 		}
 		// Search setup
 		Map<String, List<NamedEntitySurfaceForm>> map = generate_map(documents);
 		for (Document doc : documents) {
-			if (!(doc.getDocumentURI().equals(current))) {
+			if (!(doc.getDocumentURI().equals(current.getDocumentURI()))) {
 
 				List<StanfordParsedMarking> stanfordAnns = doc
 						.getMarkings(StanfordParsedMarking.class);

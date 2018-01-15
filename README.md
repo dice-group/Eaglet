@@ -24,7 +24,7 @@ mvn clean tomcat:run
 ```
 EAGLET should be running at a default port 8080. Web interface can be seen at 
 ```
-http://localhost:8080/gscheck/login.html
+http://localhost:8080/eaglet/login.html
 ```
 
 

@@ -71,7 +71,7 @@ public class InputforPipeline {
 			IOException {
 
 		DatasetConfiguration DATASET = new NIFFileDatasetConfig(name, path,
-				false, ExperimentType.A2KB);
+				false, ExperimentType.A2KB, null, null);
 
 		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB)
 				.getInstances();
@@ -132,7 +132,7 @@ public class InputforPipeline {
 	 */
 	public static void main(String[] args) throws GerbilException, IOException {
 
-		new InputforPipeline();
+		new InputforPipeline("testdata", "/home/micha/workspace/example.ttl");
 
 	}
 }

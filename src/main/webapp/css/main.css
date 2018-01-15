@@ -96,12 +96,12 @@ textarea {
 	float: left;
 }*/
 #sidebar-content {
-	-webkit-user-select: auto; /* Chrome/Safari */
+	-webkit-user-select: text; /* Chrome/Safari */
 	-moz-user-select: text; /* Firefox */
-	-ms-user-select: auto; /* IE10+ */
+	-ms-user-select: text; /* IE10+ */
 	/* Rules below not implemented in browsers yet */
-	-o-user-select: auto;
-	user-select: auto;
+	-o-user-select: text;
+	user-select: text;
 	padding-bottom: 20px;
 	width: 100%;
 }
