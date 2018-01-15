@@ -1,7 +1,0 @@
-<%@ page import="deleteconfig"%>
-
-<%
-// executes initiate() static method
-deleteconfig.initiate();
-
-%>
