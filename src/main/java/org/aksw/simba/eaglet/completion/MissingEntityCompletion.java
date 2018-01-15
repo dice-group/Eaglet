@@ -107,15 +107,12 @@ public class MissingEntityCompletion implements ErrorChecker {
 	public void check(List<Document> documents) throws GerbilException {
 		LOGGER.info("COMPLETION MODULE RUNNING!!");
 		List<List<MeaningSpan>> annotatorResults = new ArrayList<List<MeaningSpan>>();
-		String originalUri;
 		for (Document document : documents) {
-		    originalUri = document.getDocumentURI();
 			annotatorResults.clear();
 			for (A2KBAnnotator annotator : annotators) {
 				annotatorResults.add(annotator.performA2KBTask(document));
 			}
 			addMissingEntity(annotatorResults, document);
-			document.setDocumentURI(originalUri);
 		}
 	}
 }
