@@ -1,7 +1,0 @@
-TODOs for the EAGLET
-
-1. Fix paths for the configuration of pipe
-2. UI fixing divs
-3. Check Validator branch and Integrate in the new UI.
-
- 
