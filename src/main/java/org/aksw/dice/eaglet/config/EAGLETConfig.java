@@ -1,6 +1,5 @@
 package org.aksw.dice.eaglet.config;
 
-import org.aksw.gerbil.config.GerbilConfiguration;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -9,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EAGLETConfig {
-	 private static final Logger LOGGER = LoggerFactory.getLogger(GerbilConfiguration.class);
+	 private static final Logger LOGGER = LoggerFactory.getLogger(EAGLETConfig.class);
 
 	    private static final String DEFAULT_EAGLET_PROPERTIES_FILE_NAME = "eaglet.properties";
 	    public static final String EAGLET_DATAPATH_PROPERTY_NAME = "org.aksw.eaglet.DataPath";
