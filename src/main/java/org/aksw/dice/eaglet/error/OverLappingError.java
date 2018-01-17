@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -21,8 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OverLappingError implements ErrorChecker {
 	/** Value - {@value} , LOGGER used for log information. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(OverLappingError.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OverLappingError.class);
 
 	/**
 	 * The method checks for multiple markings coincide with other marking(s).
@@ -34,19 +33,17 @@ public class OverLappingError implements ErrorChecker {
 	public void overLapCheck(List<Document> documents) throws GerbilException {
 		LOGGER.info(" OVERLAPPING ENTITY MODULE RUNNING");
 		for (Document doc : documents) {
-			List<NamedEntityCorrections> entities = doc
-					.getMarkings(NamedEntityCorrections.class);
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			Collections.sort(entities, new StartPosBasedComparator());
 			for (int i = 0; i < entities.size() - 1; i++) {
-				if (entities.get(i).getResult().equals(Check.GOOD)) {
-					if ((entities.get(i).getStartPosition() + entities.get(i)
-							.getLength()) >= entities.get(i + 1)
+				if (entities.get(i).getError().equals(ErrorType.NOERROR)) {
+					if ((entities.get(i).getStartPosition() + entities.get(i).getLength()) >= entities.get(i + 1)
 							.getStartPosition()) {
-						entities.get(i).setResult(Check.OVERLAPS);
-						entities.get(i).setError(ErrorType.OVERLAPPING);
+						entities.get(i).setCorrectionSuggested(Correction.CHECK);
+						entities.get(i).setError(ErrorType.OVERLAPPINGERR);
 						entities.get(i).setPartner(entities.get(i + 1));
-						entities.get(i + 1).setResult(Check.OVERLAPS);
-						entities.get(i + 1).setError(ErrorType.OVERLAPPING);
+						entities.get(i + 1).setCorrectionSuggested(Correction.CHECK);
+						entities.get(i + 1).setError(ErrorType.OVERLAPPINGERR);
 					}
 				}
 

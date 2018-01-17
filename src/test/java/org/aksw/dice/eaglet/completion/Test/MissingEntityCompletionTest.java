@@ -11,7 +11,7 @@ import org.aksw.dice.eaglet.annotator.TestA2KBAnnotator;
 import org.aksw.dice.eaglet.completion.MissingEntityCompletion;
 import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.error.ErrorChecker;
 import org.aksw.gerbil.annotator.A2KBAnnotator;
 import org.aksw.gerbil.exceptions.GerbilException;
@@ -70,22 +70,22 @@ public class MissingEntityCompletionTest {
 				Arrays.asList(new DocumentImpl(TEXTS[0], "http://example.org/sentence-1",
 						new ArrayList<Marking>(Arrays.asList(
 								(Marking) new NamedEntityCorrections(0, 20, "http://example.org/Florence_May_Harding",
-										Check.GOOD),
+										Correction.GOOD),
 								(Marking) new NamedEntityCorrections(34, 6, "http://example.org/National_Art_School",
-										Check.GOOD),
-								(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney", Check.GOOD),
+										Correction.GOOD),
+								(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney", Correction.GOOD),
 								(Marking) new NamedEntityCorrections(82, 21, "http://example.org/Douglas_Robert_Dundas",
-										Check.GOOD)))),
+										Correction.GOOD)))),
 						new DocumentImpl(TEXTS[0], "http://example.org/sentence-2",
 								new ArrayList<Marking>(Arrays.asList(
 										(Marking) new NamedEntityCorrections(0, 20,
-												"http://example.org/Florence_May_Harding", Check.GOOD),
+												"http://example.org/Florence_May_Harding", Correction.GOOD),
 										(Marking) new NamedEntityCorrections(34, 6,
-												"http://example.org/National_Art_School", Check.COMPLETED),
+												"http://example.org/National_Art_School", Correction.COMPLETED),
 										(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney",
-												Check.GOOD),
+												Correction.GOOD),
 										(Marking) new NamedEntityCorrections(82, 21,
-												"http://example.org/Douglas_Robert_Dundas", Check.COMPLETED))))),
+												"http://example.org/Douglas_Robert_Dundas", Correction.COMPLETED))))),
 				Arrays.asList(new NamedEntityCorrections[] { null, null, null, null },
 						new NamedEntityCorrections[] { null, null }) });
 

@@ -21,7 +21,7 @@ import org.aksw.dice.eaglet.documentprocessor.StanfordParsedMarking;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
-import org.aksw.dice.eaglet.error.ErraticMarkingUserInput;
+import org.aksw.dice.eaglet.error.InconsitentMarkingUserInput;
 import org.aksw.dice.eaglet.errorcheckpipeline.InputforPipeline;
 import org.aksw.dice.eaglet.vocab.EAGLET;
 import org.aksw.gerbil.exceptions.GerbilException;
@@ -83,7 +83,7 @@ public class EagletController {
 	private List<Document> documents;
 	private List<Document> remainingDocuments;
 	private int counter;
-	private ErraticMarkingUserInput er;
+	private InconsitentMarkingUserInput er;
 	private Map<String, Integer> resultEagletSummary = new HashMap<String, Integer>();;
 	private HashMap<String, Integer> resultUserSummary = new HashMap<String, Integer>();;
 
@@ -95,7 +95,7 @@ public class EagletController {
 		this.documents = loadDocuments();
 		this.counter = 0;
 		this.remainingDocuments = new ArrayList<Document>();
-		er = new ErraticMarkingUserInput();
+		er = new InconsitentMarkingUserInput();
 		this.intializeEAGLETResult();
 		this.initializeUserResult();
 	}
@@ -217,8 +217,7 @@ public class EagletController {
 	}
 
 	/**
-	 * The method transforms the document into Json for parsing in the
-	 * webservice.
+	 * The method transforms the document into Json for parsing in the webservice.
 	 *
 	 * @param document
 	 * @return Json string
@@ -237,12 +236,12 @@ public class EagletController {
 			ne.append("start", nec.getStartPosition());
 			ne.append("length", nec.getLength());
 			ne.append("partner", nec.getPartner());
-			ne.append("result", nec.getResult());
+			ne.append("result", nec.getCorrectionSuggested());
 			ne.append("doc", nec.getDoc());
 			ne.append("uris", nec.getUris());
 			ne.append("name", document.getText()
 					.substring(nec.getStartPosition(), nec.getStartPosition() + nec.getLength()).toUpperCase());
-			ne.append("error", nec.getError().toString());
+			ne.append("error", nec.getError());
 			if (this.resultEagletSummary.containsKey(nec.getError().toString())) {
 				this.resultEagletSummary.put(nec.getError().toString(),
 						this.resultEagletSummary.get(nec.getError().toString()) + 1);
@@ -269,14 +268,11 @@ public class EagletController {
 		for (int i = 0; i < markings.length(); i++) {
 			Set<String> uris = new HashSet<String>();
 			uris.add(markings.getJSONObject(i).getString("uri").trim());
-			List<ErrorType> error = new ArrayList<ErrorType>();
 			String errortype = markings.getJSONObject(i).getString("error");
-			error.add(parseErrorResult(errortype));
 			Marking entity = new NamedEntityCorrections(markings.getJSONObject(i).getInt("start"),
-					markings.getJSONObject(i).getInt("length"), uris, error,
+					markings.getJSONObject(i).getInt("length"), uris, parseErrorResult(errortype),
 					parseDecisionType(markings.getJSONObject(i).getString("decision")));
 			userAcceptedEntities.add(entity);
-
 			if (this.resultUserSummary.containsKey(markings.getJSONObject(i).getString("decision").toUpperCase())) {
 				this.resultUserSummary.put(markings.getJSONObject(i).getString("decision").toUpperCase(),
 						this.resultUserSummary.get(markings.getJSONObject(i).getString("decision").toUpperCase()) + 1);
@@ -453,8 +449,7 @@ public class EagletController {
 	}
 
 	/**
-	 * The method is responsible for returning list of documents based on
-	 * userId.
+	 * The method is responsible for returning list of documents based on userId.
 	 *
 	 * @return List of Documents
 	 */
@@ -482,15 +477,15 @@ public class EagletController {
 
 	private ErrorType parseErrorResult(String errortype) {
 		if (errortype.toUpperCase().equals("OVERLAPPING")) {
-			return ErrorType.OVERLAPPING;
+			return ErrorType.OVERLAPPINGERR;
 		} else if (errortype.toUpperCase().equals("COMBINED")) {
-			return ErrorType.COMBINED;
+			return ErrorType.COMBINEDTAGGINGERR;
 		} else if (errortype.toUpperCase().equals("ERRATIC")) {
-			return ErrorType.ERRATIC;
+			return ErrorType.INCONSITENTMARKINGERR;
 		} else if (errortype.toUpperCase().equals("WRONGPOSITION")) {
-			return ErrorType.WRONGPOSITION;
+			return ErrorType.WRONGPOSITIONERR;
 		} else if (errortype.toUpperCase().equals("LONGDESC")) {
-			return ErrorType.LONGDESC;
+			return ErrorType.LONGDESCERR;
 		} else if (errortype.toUpperCase().equals("INVALIDURIERR")) {
 			return ErrorType.INVALIDURIERR;
 		} else if (errortype.toUpperCase().equals("DISAMBIGURIERR")) {

@@ -9,8 +9,8 @@ import java.util.Set;
 
 import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
-import org.aksw.dice.eaglet.error.ErraticMarkingError;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
+import org.aksw.dice.eaglet.error.InconsistentMarkingError;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
 import org.aksw.gerbil.transfer.nif.Marking;
@@ -48,22 +48,22 @@ public class ErraticMarkingErrorTest {
 				Arrays.asList(new DocumentImpl(TEXTS[0], "http://example.org/sentence-1",
 						new ArrayList<Marking>(Arrays.asList(
 								(Marking) new NamedEntityCorrections(0, 20, "http://example.org/Florence_May_Harding",
-										Check.GOOD),
+										Correction.GOOD),
 								(Marking) new NamedEntityCorrections(34, 6, "http://example.org/National_Art_School",
-										Check.GOOD),
-								(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney", Check.GOOD),
+										Correction.GOOD),
+								(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney", Correction.GOOD),
 								(Marking) new NamedEntityCorrections(82, 21, "http://example.org/Douglas_Robert_Dundas",
-										Check.GOOD)))),
+										Correction.GOOD)))),
 						new DocumentImpl(TEXTS[0], "http://example.org/sentence-2",
 								new ArrayList<Marking>(Arrays.asList(
 										(Marking) new NamedEntityCorrections(0, 20,
-												"http://example.org/Florence_May_Harding", Check.GOOD),
+												"http://example.org/Florence_May_Harding", Correction.GOOD),
 										(Marking) new NamedEntityCorrections(34, 6,
-												"http://example.org/National_Art_School", Check.INSERTED),
+												"http://example.org/National_Art_School", Correction.INSERTED),
 										(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney",
-												Check.GOOD),
+												Correction.GOOD),
 										(Marking) new NamedEntityCorrections(82, 21,
-												"http://example.org/Douglas_Robert_Dundas", Check.INSERTED))))),
+												"http://example.org/Douglas_Robert_Dundas", Correction.INSERTED))))),
 				Arrays.asList(new NamedEntityCorrections[] { null, null, null, null },
 						new NamedEntityCorrections[] { null, null }) });
 
@@ -85,7 +85,7 @@ public class ErraticMarkingErrorTest {
 	@Test
 	public void test() throws GerbilException {
 		PREPROCESSOR.process(documents);
-		ErraticMarkingError test_var = new ErraticMarkingError();
+		InconsistentMarkingError test_var = new InconsistentMarkingError();
 		test_var.check(documents);
 
 		List<NamedEntityCorrections> markings, expectedMarkings;

@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.dice.eaglet.uri.UriCheckerManager;
 import org.aksw.dice.eaglet.uri.impl.FileBasedCachingUriCheckerManager;
@@ -80,44 +80,33 @@ public class UriError implements ErrorChecker, Closeable {
 	}
 
 	public void checkEntities(List<NamedEntityCorrections> entities) {
-		Check result;
+		ErrorType result;
 		for (NamedEntityCorrections entity : entities) {
-			if (entity.getResult() == Check.GOOD) {
+			if (entity.getCorrectionSuggested() == Correction.GOOD) {
 				result = checkUris(entity.getUris());
-				if (result != Check.GOOD) {
-					entity.setResult(result);
-					if(result.equals(Check.DISAMBIG_URI))
-					{
-						entity.setError(ErrorType.DISAMBIGURIERR);
-					}
-					else if(result.equals(Check.INVALID_URI))
-					{
-						entity.setError(ErrorType.INVALIDURIERR);
-					}
-					else if(result.equals(Check.OUTDATED_URI))
-					{
-						entity.setError(ErrorType.OUTDATEDURIERR);
-					}
+				if (result != ErrorType.NOERROR) {
+					entity.setError(result);
+					entity.setCorrectionSuggested(Correction.CHECK);
 				}
 			}
 		}
 	}
 
-	public Check checkUris(Collection<String> uris) {
-		Check result;
+	public ErrorType checkUris(Collection<String> uris) {
+		ErrorType result;
 		for (String uri : uris) {
 			result = checkUri(uri);
-			if (result != Check.GOOD) {
+			if (result != ErrorType.NOERROR) {
 				return result;
 			}
 		}
-		return Check.GOOD;
+		return ErrorType.NOERROR;
 	}
 
-	private Check checkUri(String uri) {
+	private ErrorType checkUri(String uri) {
 		if ((!uri.startsWith("http://")) && (!uri.startsWith("https://"))) {
 			LOGGER.info("INVALID_URI \"{}\"", uri);
-			return Check.INVALID_URI;
+			return ErrorType.INVALIDURIERR;
 		}
 		return uriChecker.checkUri(uri);
 	}

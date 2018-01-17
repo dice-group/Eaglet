@@ -19,7 +19,8 @@ package org.aksw.dice.eaglet.uri.impl;
 import java.util.Arrays;
 import java.util.List;
 
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.dice.eaglet.uri.UriChecker;
 import org.aksw.dice.eaglet.uri.UriCheckerManager;
 import org.aksw.gerbil.dataset.check.EntityChecker;
@@ -40,47 +41,47 @@ import com.carrotsearch.hppc.ObjectObjectOpenHashMap;
  */
 public class UriCheckerManagerImpl implements UriCheckerManager {
 
-    private ObjectObjectOpenHashMap<String, UriChecker[]> registeredCheckers = new ObjectObjectOpenHashMap<String, UriChecker[]>();
+	private ObjectObjectOpenHashMap<String, UriChecker[]> registeredCheckers = new ObjectObjectOpenHashMap<String, UriChecker[]>();
 
-    @Override
-    public void registerUriChecker(String namespace, UriChecker checker) {
-        UriChecker checkers[];
-        if (registeredCheckers.containsKey(namespace)) {
-            checkers = registeredCheckers.lget();
-            checkers = Arrays.copyOf(checkers, checkers.length + 1);
-            checkers[checkers.length - 1] = checker;
-        } else {
-            checkers = new UriChecker[] { checker };
-        }
-        registeredCheckers.put(namespace, checkers);
-    }
+	@Override
+	public void registerUriChecker(String namespace, UriChecker checker) {
+		UriChecker checkers[];
+		if (registeredCheckers.containsKey(namespace)) {
+			checkers = registeredCheckers.lget();
+			checkers = Arrays.copyOf(checkers, checkers.length + 1);
+			checkers[checkers.length - 1] = checker;
+		} else {
+			checkers = new UriChecker[] { checker };
+		}
+		registeredCheckers.put(namespace, checkers);
+	}
 
-    @Override
-    public Check checkUri(String uri) {
-        String namespace;
-        int matchingId = -1;
-        for (int i = 0; (i < registeredCheckers.allocated.length) && (matchingId < 0); ++i) {
-            if (registeredCheckers.allocated[i]) {
-                namespace = (String) ((Object[]) registeredCheckers.keys)[i];
-                if (uri.startsWith(namespace)) {
-                    matchingId = i;
-                }
-            }
-        }
-        // If there is a checker available for this URI
-        if (matchingId >= 0) {
-            Check result;
-            UriChecker checkers[] = (UriChecker[]) ((Object[]) registeredCheckers.values)[matchingId];
-            for (UriChecker checker : checkers) {
-                result = checker.checkUri(uri);
-                if (result != Check.GOOD) {
-                    return result;
-                }
-            }
-            return Check.GOOD;
-        } else {
-            return Check.GOOD;
-        }
-    }
+	@Override
+	public ErrorType checkUri(String uri) {
+		String namespace;
+		int matchingId = -1;
+		for (int i = 0; (i < registeredCheckers.allocated.length) && (matchingId < 0); ++i) {
+			if (registeredCheckers.allocated[i]) {
+				namespace = (String) ((Object[]) registeredCheckers.keys)[i];
+				if (uri.startsWith(namespace)) {
+					matchingId = i;
+				}
+			}
+		}
+		// If there is a checker available for this URI
+		if (matchingId >= 0) {
+			ErrorType result;
+			UriChecker checkers[] = (UriChecker[]) ((Object[]) registeredCheckers.values)[matchingId];
+			for (UriChecker checker : checkers) {
+				result = checker.checkUri(uri);
+				if (result != ErrorType.NOERROR) {
+					return result;
+				}
+			}
+			return ErrorType.NOERROR;
+		} else {
+			return ErrorType.NOERROR;
+		}
+	}
 
 }

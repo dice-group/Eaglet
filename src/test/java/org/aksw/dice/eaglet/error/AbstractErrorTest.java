@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.error.CombinedTaggingError;
 import org.aksw.dice.eaglet.error.ErrorChecker;
 import org.aksw.gerbil.exceptions.GerbilException;
@@ -21,7 +21,7 @@ public abstract class AbstractErrorTest {
             "The senator received a Bachelor of Laws from the Columbia University." };
 
     protected List<Document> doc = new ArrayList<Document>();
-    protected List<Check[]> expectedResults = new ArrayList<Check[]>();
+    protected List<Correction[]> expectedResults = new ArrayList<Correction[]>();
     protected List<NamedEntityCorrections[]> partner_list = new ArrayList<NamedEntityCorrections[]>();
     protected boolean preprocessingNeeded = false;
     protected ErrorChecker errorChecker;
@@ -36,7 +36,7 @@ public abstract class AbstractErrorTest {
         errorChecker.check(doc);
 
         List<NamedEntityCorrections> markings;
-        Check[] expectedResult;
+        Correction[] expectedResult;
 
         for (int i = 0; i < doc.size(); i++) {
             markings = doc.get(i).getMarkings(NamedEntityCorrections.class);

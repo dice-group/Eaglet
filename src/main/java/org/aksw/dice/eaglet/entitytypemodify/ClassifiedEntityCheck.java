@@ -10,18 +10,15 @@ import org.aksw.gerbil.transfer.nif.Marking;
 
 import com.carrotsearch.hppc.BitSet;
 
-public class ClassifiedEntityCheck extends NamedEntityCorrections implements
-		ClassifiedSpanMeaning {
+public class ClassifiedEntityCheck extends NamedEntityCorrections implements ClassifiedSpanMeaning {
 
-	public ClassifiedEntityCheck(int startPosition, int length,
-			Set<String> uris, DecisionValue des) {
-		super(startPosition, length, uris);
+	public ClassifiedEntityCheck(int startPosition, int length, Set<String> uris, DecisionValue des) {
+		super(startPosition, length, uris, des);
 	}
 
 	public ClassifiedEntityCheck(NamedEntityCorrections marking) {
 
-		this(marking.getStartPosition(), marking.getLength(),
-				marking.getUris(), marking.getUserDecision());
+		this(marking.getStartPosition(), marking.getLength(), marking.getUris(), marking.getUserDecision());
 	}
 
 	protected BitSet classBits = new BitSet(MarkingClasses.NUMBER_OF_CLASSES);

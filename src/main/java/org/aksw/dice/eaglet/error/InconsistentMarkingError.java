@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.aksw.dice.eaglet.documentprocessor.StanfordParsedMarking;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.dice.eaglet.errorutils.NamedEntitySurfaceForm;
 import org.aksw.dice.eaglet.errorutils.Token_StartposbasedComparator;
@@ -32,10 +32,9 @@ import edu.stanford.nlp.ling.CoreLabel;
  * @author Michael R&ouml;der
  *
  */
-public class ErraticMarkingError implements ErrorChecker {
+public class InconsistentMarkingError implements ErrorChecker {
 	/** Value - {@value} , LOGGER used for log information. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(ErraticMarkingError.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(InconsistentMarkingError.class);
 
 	/**
 	 * The method checks for multiple markings coincide with other marking(s).
@@ -44,20 +43,16 @@ public class ErraticMarkingError implements ErrorChecker {
 	 *            : A List of Documents passing through the pipeline.
 	 * @throws GerbilException
 	 */
-	public void ErraticEntityProb(List<Document> documents)
-			throws GerbilException {
-		LOGGER.info(" ERRATIC ENTITY MODULE RUNNING");
+	public void ErraticEntityProb(List<Document> documents) throws GerbilException {
+		LOGGER.info(" INCONSISTENT MARKING MODULE RUNNING");
 
 		// Search setup
 		Map<String, List<NamedEntitySurfaceForm>> map = generate_map(documents);
 		for (Document doc : documents) {
-			List<StanfordParsedMarking> stanfordAnns = doc
-					.getMarkings(StanfordParsedMarking.class);
-			List<NamedEntityCorrections> entities = doc
-					.getMarkings(NamedEntityCorrections.class);
+			List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
-			List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(
-					TokensAnnotation.class);
+			List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
 			if (stanfordAnns.size() != 1) {
 				LOGGER.error(" Parser not working ");
 			}
@@ -74,19 +69,14 @@ public class ErraticMarkingError implements ErrorChecker {
 				if (map.containsKey(currentToken.lemma())) {
 					matchedSurfaceFormLength = 0;
 					// get the list of possible entities
-					List<NamedEntitySurfaceForm> current_list = map
-							.get(currentToken.lemma());
+					List<NamedEntitySurfaceForm> current_list = map.get(currentToken.lemma());
 					// iterate over the list of possible entities
-					for (int j = 0; (j < current_list.size())
-							&& (matchedSurfaceFormLength == 0); j++) {
-						NamedEntitySurfaceForm surfaceformvar = current_list
-								.get(j);
+					for (int j = 0; (j < current_list.size()) && (matchedSurfaceFormLength == 0); j++) {
+						NamedEntitySurfaceForm surfaceformvar = current_list.get(j);
 						k = 0;
 						// check whether the complete surface form is matching
-						while ((k < surfaceformvar.surfaceForm.length)
-								&& ((i + k) < tokens.size())
-								&& surfaceformvar.surfaceForm[k].equals(tokens
-										.get(i + k).lemma())) {
+						while ((k < surfaceformvar.surfaceForm.length) && ((i + k) < tokens.size())
+								&& surfaceformvar.surfaceForm[k].equals(tokens.get(i + k).lemma())) {
 							++k;
 						}
 						// if the surface form is matching
@@ -95,12 +85,10 @@ public class ErraticMarkingError implements ErrorChecker {
 							// entities having this surface form is matching the
 							// position
 							found = false;
-							for (int n = 0; (!found)
-									&& (n < surfaceformvar.nes.size()); ++n) {
+							for (int n = 0; (!found) && (n < surfaceformvar.nes.size()); ++n) {
 								ne = surfaceformvar.nes.get(n);
 								if (doc.getDocumentURI().equals(ne.getDoc())) {
-									if (currentToken.beginPosition() == ne
-											.getStartPosition()) {
+									if (currentToken.beginPosition() == ne.getStartPosition()) {
 										found = true;
 									}
 								}
@@ -110,53 +98,30 @@ public class ErraticMarkingError implements ErrorChecker {
 							if (found == false) {
 								String text = doc.getText();
 								// A check for non-overlapping marking.
-								BitSet nePositions = new BitSet(doc.getText()
-										.length());
+								BitSet nePositions = new BitSet(doc.getText().length());
 								int start[] = new int[entities.size()];
 								int end[] = new int[entities.size()];
-								Collections.sort(entities,
-										new StartPosBasedComparator());
+								Collections.sort(entities, new StartPosBasedComparator());
 								for (int iter = 0; iter < entities.size(); ++iter) {
-									start[iter] = entities.get(iter)
-											.getStartPosition();
-									end[iter] = entities.get(iter)
-											.getStartPosition()
-											+ entities.get(iter).getLength();
+									start[iter] = entities.get(iter).getStartPosition();
+									end[iter] = entities.get(iter).getStartPosition() + entities.get(iter).getLength();
 									nePositions.set(start[iter], end[iter]);
 								}
-								if ((nePositions.get(
-										currentToken.beginPosition(),
-										currentToken.endPosition())
+								if ((nePositions.get(currentToken.beginPosition(), currentToken.endPosition())
 										.cardinality() == 0)) {
 
 									if (currentToken.beginPosition() > 0) {
-										if ((!Character.isWhitespace(text
-												.charAt(currentToken
-														.beginPosition() - 1)))) {
-											if (currentToken.endPosition() + 1 < text
-													.length()) {
+										if ((!Character.isWhitespace(text.charAt(currentToken.beginPosition() - 1)))) {
+											if (currentToken.endPosition() + 1 < text.length()) {
 												if (Character
-														.isWhitespace(text
-																.charAt(currentToken
-																		.endPosition() + 1))) {
+														.isWhitespace(text.charAt(currentToken.endPosition() + 1))) {
 
 													NamedEntityCorrections newentity = new NamedEntityCorrections(
-															currentToken
-																	.beginPosition(),
-															tokens.get(
-																	i
-																			+ surfaceformvar.surfaceForm.length
-																			- 1)
-																	.endPosition()
-																	- currentToken
-																			.beginPosition(),
-															new HashSet<String>(
-																	surfaceformvar.nes
-																			.get(0)
-																			.getUris()),
-															Check.INSERTED);
-													newentity
-															.setError(ErrorType.ERRATIC);
+															currentToken.beginPosition(),
+															tokens.get(i + surfaceformvar.surfaceForm.length - 1)
+																	.endPosition() - currentToken.beginPosition(),
+															new HashSet<String>(surfaceformvar.nes.get(0).getUris()),
+															ErrorType.INCONSITENTMARKINGERR, Correction.INSERT);
 													doc.addMarking(newentity);
 												}
 
@@ -183,23 +148,19 @@ public class ErraticMarkingError implements ErrorChecker {
 		}
 	}
 
-	public Map<String, List<NamedEntitySurfaceForm>> generate_map(
-			List<Document> documents) {
+	public Map<String, List<NamedEntitySurfaceForm>> generate_map(List<Document> documents) {
 		Map<String, List<NamedEntitySurfaceForm>> map = new HashMap<String, List<NamedEntitySurfaceForm>>();
 		for (Document doc : documents) {
-			List<NamedEntityCorrections> entities = doc
-					.getMarkings(NamedEntityCorrections.class);
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 
 			entities = nameEntity(doc, entities);
 
 			for (NamedEntityCorrections entity : entities) {
 				entity.setDoc(doc.getDocumentURI());
-				if (entity.getResult() == Check.GOOD) {
+				if (entity.getError() == ErrorType.NOERROR) {
 					if (map.containsKey(entity.getEntity_name())) {
-						for (NamedEntitySurfaceForm ns : map.get(entity
-								.getEntity_name())) {
-							if (Arrays.equals(ns.surfaceForm,
-									entity.entity_text)) {
+						for (NamedEntitySurfaceForm ns : map.get(entity.getEntity_name())) {
+							if (Arrays.equals(ns.surfaceForm, entity.entity_text)) {
 								ns.nes.add(entity);
 							}
 						}
@@ -221,13 +182,10 @@ public class ErraticMarkingError implements ErrorChecker {
 		return map;
 	}
 
-	public List<NamedEntityCorrections> nameEntity(Document doc,
-			List<NamedEntityCorrections> entities) {
-		List<StanfordParsedMarking> stanfordAnns = doc
-				.getMarkings(StanfordParsedMarking.class);
+	public List<NamedEntityCorrections> nameEntity(Document doc, List<NamedEntityCorrections> entities) {
+		List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
 		StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
-		List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(
-				TokensAnnotation.class);
+		List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
 		if (stanfordAnns.size() != 1) {
 			LOGGER.error(" Parser not working ");
 		}
@@ -240,8 +198,7 @@ public class ErraticMarkingError implements ErrorChecker {
 		Collections.sort(entities, new StartPosBasedComparator());
 		for (int i = 0; i < entities.size(); ++i) {
 			start[i] = entities.get(i).getStartPosition();
-			end[i] = entities.get(i).getStartPosition()
-					+ entities.get(i).getLength();
+			end[i] = entities.get(i).getStartPosition() + entities.get(i).getLength();
 			nePositions.set(start[i], end[i]);
 		}
 		// 2. Iterate over the tokens and search for tokens that are inside of
@@ -250,15 +207,12 @@ public class ErraticMarkingError implements ErrorChecker {
 		List<CoreLabel> entityTokens[] = new List[entities.size()];
 		for (CoreLabel token : tokens) {
 
-			if (nePositions.get(token.beginPosition(), token.endPosition())
-					.cardinality() > 0) {
+			if (nePositions.get(token.beginPosition(), token.endPosition()).cardinality() > 0) {
 				// search for matching named entities
 				int pos = 0;
-				while ((pos < start.length)
-						&& (start[pos] <= token.endPosition())) {
+				while ((pos < start.length) && (start[pos] <= token.endPosition())) {
 					// if the token and the ne are overlapping
-					if ((start[pos] < token.endPosition())
-							&& (end[pos] > token.beginPosition())) {
+					if ((start[pos] < token.endPosition()) && (end[pos] > token.beginPosition())) {
 						// nes.get(pos) is the matching ne
 						// add the token to the list of tokens of ne
 						if (entityTokens[pos] == null) {
@@ -281,13 +235,10 @@ public class ErraticMarkingError implements ErrorChecker {
 				// sorting the token list
 				Collections.sort(entityTokens[i], comparator);
 				currentNamedEntity = entities.get(i);
-				currentNamedEntity.setEntity_name(entityTokens[i].get(0).get(
-						LemmaAnnotation.class));
-				currentNamedEntity.entity_text = new String[entityTokens[i]
-						.size()];
+				currentNamedEntity.setEntity_name(entityTokens[i].get(0).get(LemmaAnnotation.class));
+				currentNamedEntity.entity_text = new String[entityTokens[i].size()];
 				for (int j = 0; j < entityTokens[i].size(); ++j) {
-					currentNamedEntity.entity_text[j] = entityTokens[i].get(j)
-							.get(LemmaAnnotation.class);
+					currentNamedEntity.entity_text[j] = entityTokens[i].get(j).get(LemmaAnnotation.class);
 				}
 				currentNamedEntity.setNumber_of_lemma(entityTokens[i].size());
 			}

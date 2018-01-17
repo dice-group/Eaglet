@@ -19,7 +19,8 @@ package org.aksw.dice.eaglet.uri.impl;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.dice.eaglet.uri.UriChecker;
 import org.aksw.gerbil.http.AbstractHttpRequestEmitter;
 import org.aksw.gerbil.semantic.sameas.impl.SimpleDomainExtractor;
@@ -38,79 +39,79 @@ import com.google.common.net.UrlEscapers;
 
 public class WikipidiaUriChecker extends AbstractHttpRequestEmitter implements UriChecker {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WikipidiaUriChecker.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WikipidiaUriChecker.class);
 
-    private static final String URL_PROTOCOL_PART = "http://";
-    private static final String URL_QUERY_PART = "/w/api.php?format=xml&action=query&redirects=true&titles=";
-    private static final String CHARSET_NAME = "UTF-8";
-    private static final Escaper TITLE_ESCAPER = UrlEscapers.urlFormParameterEscaper();
+	private static final String URL_PROTOCOL_PART = "http://";
+	private static final String URL_QUERY_PART = "/w/api.php?format=xml&action=query&redirects=true&titles=";
+	private static final String CHARSET_NAME = "UTF-8";
+	private static final Escaper TITLE_ESCAPER = UrlEscapers.urlFormParameterEscaper();
 
-    private Charset charset;
-    private WikipediaXMLParser parser = new WikipediaXMLParser();
+	private Charset charset;
+	private WikipediaXMLParser parser = new WikipediaXMLParser();
 
-    public WikipidiaUriChecker() {
-        try {
-            charset = Charset.forName(CHARSET_NAME);
-        } catch (Exception e) {
-            charset = Charset.defaultCharset();
-        }
-    }
+	public WikipidiaUriChecker() {
+		try {
+			charset = Charset.forName(CHARSET_NAME);
+		} catch (Exception e) {
+			charset = Charset.defaultCharset();
+		}
+	}
 
-    @Override
-    public Check checkUri(String uri) {
-        if (uri == null) {
+	@Override
+	public ErrorType checkUri(String uri) {
+		if (uri == null) {
 			LOGGER.info("INVALID_URI \"{}\"", uri);
-            return Check.INVALID_URI;
-        }
-        String title = WikipediaHelper.getWikipediaTitle(uri);
-        if (title == null) {
+			return ErrorType.INVALIDURIERR;
+		}
+		String title = WikipediaHelper.getWikipediaTitle(uri);
+		if (title == null) {
 			LOGGER.info("INVALID_URI \"{}\"", uri);
-            return Check.INVALID_URI;
-        }
-        String xml = queryRedirect(SimpleDomainExtractor.extractDomain(uri), title);
-        String redirect = parser.extractRedirect(xml);
-        if ((redirect != null) && (!title.equals(redirect))) {
+			return ErrorType.INVALIDURIERR;
+		}
+		String xml = queryRedirect(SimpleDomainExtractor.extractDomain(uri), title);
+		String redirect = parser.extractRedirect(xml);
+		if ((redirect != null) && (!title.equals(redirect))) {
 			LOGGER.info("OUTDATED_URI \"{}\"", uri);
-            return Check.OUTDATED_URI;
-        } else {
-            return Check.GOOD;
-        }
-    }
+			return ErrorType.OUTDATEDURIERR;
+		} else {
+			return ErrorType.NOERROR;
+		}
+	}
 
-    public String queryRedirect(String domain, String title) {
-        StringBuilder urlBuilder = new StringBuilder(150);
-        urlBuilder.append(URL_PROTOCOL_PART);
-        urlBuilder.append(domain);
-        urlBuilder.append(URL_QUERY_PART);
-        urlBuilder.append(TITLE_ESCAPER.escape(title));
+	public String queryRedirect(String domain, String title) {
+		StringBuilder urlBuilder = new StringBuilder(150);
+		urlBuilder.append(URL_PROTOCOL_PART);
+		urlBuilder.append(domain);
+		urlBuilder.append(URL_QUERY_PART);
+		urlBuilder.append(TITLE_ESCAPER.escape(title));
 
-        HttpGet request = null;
-        try {
-            request = createGetRequest(urlBuilder.toString());
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Got an exception while creating a request querying the wiki api of \"" + domain
-                    + "\". Returning null.", e);
-            return null;
-        }
-        CloseableHttpResponse response = null;
-        HttpEntity entity = null;
-        try {
-            response = sendRequest(request);
-            entity = response.getEntity();
-            return IOUtils.toString(entity.getContent(), charset);
-        } catch (Exception e) {
-            LOGGER.error("Got an exception while querying the wiki api of \"" + domain + "\". Returning null.", e);
-            return null;
-        } finally {
-            if (entity != null) {
-                try {
-                    EntityUtils.consume(entity);
-                } catch (IOException e1) {
-                }
-            }
-            IOUtils.closeQuietly(response);
-            closeRequest(request);
-        }
-    }
+		HttpGet request = null;
+		try {
+			request = createGetRequest(urlBuilder.toString());
+		} catch (IllegalArgumentException e) {
+			LOGGER.error("Got an exception while creating a request querying the wiki api of \"" + domain
+					+ "\". Returning null.", e);
+			return null;
+		}
+		CloseableHttpResponse response = null;
+		HttpEntity entity = null;
+		try {
+			response = sendRequest(request);
+			entity = response.getEntity();
+			return IOUtils.toString(entity.getContent(), charset);
+		} catch (Exception e) {
+			LOGGER.error("Got an exception while querying the wiki api of \"" + domain + "\". Returning null.", e);
+			return null;
+		} finally {
+			if (entity != null) {
+				try {
+					EntityUtils.consume(entity);
+				} catch (IOException e1) {
+				}
+			}
+			IOUtils.closeQuietly(response);
+			closeRequest(request);
+		}
+	}
 
 }

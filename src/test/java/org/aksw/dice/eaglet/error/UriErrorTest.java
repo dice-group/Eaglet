@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.error.UriError;
 import org.aksw.gerbil.transfer.nif.Marking;
 import org.aksw.gerbil.transfer.nif.data.DocumentImpl;
@@ -30,7 +30,7 @@ public class UriErrorTest extends AbstractErrorTest {
                         (Marking) new NamedEntityCorrections(61, 21,
                                 "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas"))));
 
-        expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD });
+        expectedResults.add(new Correction[] { Correction.GOOD, Correction.GOOD, Correction.GOOD, Correction.GOOD });
         partner_list.add(new NamedEntityCorrections[] { null, null, null, null });
 
         // some wrong entities
@@ -44,22 +44,22 @@ public class UriErrorTest extends AbstractErrorTest {
                                 "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
                         (Marking) new NamedEntityCorrections(184, 7,
                                 "http://dbpedia.org/resource/Al_the_one_and_only_Gore"))));
-        expectedResults.add(new Check[] { Check.INVALID_URI, Check.INVALID_URI, Check.INVALID_URI, Check.GOOD,
-                Check.GOOD, Check.INVALID_URI });
+        expectedResults.add(new Correction[] { Correction.INVALID_URI, Correction.INVALID_URI, Correction.INVALID_URI, Correction.GOOD,
+                Correction.GOOD, Correction.INVALID_URI });
         partner_list.add(new NamedEntityCorrections[] { null, null, null, null, null, null });
 
         // a URI that points to a disambiguation page
         doc.add(new DocumentImpl("The delay was short.",
                 "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-3",
                 Arrays.asList((Marking) new NamedEntityCorrections(4, 5, "http://dbpedia.org/resource/Delay"))));
-        expectedResults.add(new Check[] { Check.DISAMBIG_URI });
+        expectedResults.add(new Correction[] { Correction.DISAMBIG_URI });
         partner_list.add(new NamedEntityCorrections[] { null });
 
         // an outdated URI
         doc.add(new DocumentImpl("China is a large country.",
                 "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-4",
                 Arrays.asList((Marking) new NamedEntityCorrections(0, 5, "http://dbpedia.org/resource/People's_Republic_of_China"))));
-        expectedResults.add(new Check[] { Check.OUTDATED_URI });
+        expectedResults.add(new Correction[] { Correction.OUTDATED_URI });
         partner_list.add(new NamedEntityCorrections[] { null });
     }
 

@@ -123,16 +123,5 @@ public class InputforPipeline {
 
 	}
 
-	/**
-	 * The main class to execute the pipeline.
-	 *
-	 * @param args
-	 * @throws GerbilException
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws GerbilException, IOException {
-
-		new InputforPipeline("testdata", "/home/micha/workspace/example.ttl");
-
-	}
+	
 }

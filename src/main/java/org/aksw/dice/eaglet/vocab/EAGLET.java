@@ -16,7 +16,7 @@
  */
 package org.aksw.dice.eaglet.vocab;
 
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.slf4j.Logger;
@@ -55,21 +55,16 @@ public class EAGLET {
 		return ResourceFactory.createProperty(uri, local);
 	}
 
-	// Check Result
+	// Correction Result
 	public static final Resource Inserted = resource("Inserted");
 	public static final Resource Deleted = resource("Deleted");
 	public static final Resource Good = resource("Good");
-	public static final Resource NeedToPair = resource("NeedToPair");
-	public static final Resource Overlaps = resource("Overlaps");
-	public static final Resource Completed = resource("Completed");
-	public static final Resource InvalidUri = resource("InvalidUri");
-	public static final Resource OutdatedUri = resource("OutdatedUri");
-	public static final Resource DisambiguationUri = resource("DisambiguationUri");
+	public static final Resource Check = resource("Check");
 
 	// ErrorType
-	public static final Resource Combined = resource("CombinedTagging");
+	public static final Resource ConbinedTagging = resource("CombinedTagging");
 	public static final Resource Overlapping = resource("Overlapping");
-	public static final Resource Erratic = resource("Combined");
+	public static final Resource InconsitentMarking = resource("InconsitentMarking");
 	public static final Resource WrongPos = resource("WrongPos");
 	public static final Resource LongDesc = resource("LongDesc");
 	public static final Resource InvalidUriErr = resource("InvalidUriErr");
@@ -102,13 +97,13 @@ public class EAGLET {
 
 	public static Resource getErrorType(ErrorType list) {
 		switch (list) {
-		case OVERLAPPING:
+		case OVERLAPPINGERR:
 			return Overlapping;
-		case COMBINED:
-			return Combined;
-		case ERRATIC:
-			return Erratic;
-		case LONGDESC:
+		case COMBINEDTAGGINGERR:
+			return ConbinedTagging;
+		case INCONSITENTMARKINGERR:
+			return InconsitentMarking;
+		case LONGDESCERR:
 			return LongDesc;
 		case INVALIDURIERR:
 			return InvalidUriErr;
@@ -116,7 +111,7 @@ public class EAGLET {
 			return OutdatedUriErr;
 		case DISAMBIGURIERR:
 			return DisambiguationUriErr;
-		case WRONGPOSITION:
+		case WRONGPOSITIONERR:
 			return WrongPos;
 
 		}
@@ -124,26 +119,16 @@ public class EAGLET {
 		return null;
 	}
 
-	public static Resource getCheckResult(Check checkResult) {
+	public static Resource getCorrectionSuggested(Correction checkResult) {
 		switch (checkResult) {
-		case INSERTED:
+		case INSERT:
 			return Inserted;
-		case DELETED:
+		case DELETE:
 			return Deleted;
 		case GOOD:
 			return Good;
-		case NEED_TO_PAIR:
-			return NeedToPair;
-		case OVERLAPS:
-			return Overlaps;
-		case COMPLETED:
-			return Completed;
-		case INVALID_URI:
-			return InvalidUri;
-		case OUTDATED_URI:
-			return OutdatedUri;
-		case DISAMBIG_URI:
-			return DisambiguationUri;
+		case CHECK:
+			return Check;
 
 		}
 		LOGGER.error("Got an unknown matching type: " + checkResult.name());

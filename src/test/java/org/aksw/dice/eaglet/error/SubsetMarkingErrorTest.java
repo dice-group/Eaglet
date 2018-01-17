@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.error.OverLappingError;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -30,7 +30,7 @@ public class SubsetMarkingErrorTest {
 	// SimpleWhiteListBasedUriKBClassifier(
 	// "http://dbpedia.org/resource/");
 	List<Document> doc = new ArrayList<Document>();
-	List<Check[]> expectedResults = new ArrayList<Check[]>();
+	List<Correction[]> expectedResults = new ArrayList<Correction[]>();
 	// List<NamedEntityCorrections[]> partner_list = new
 	// ArrayList<NamedEntityCorrections[]>();
 
@@ -48,7 +48,7 @@ public class SubsetMarkingErrorTest {
 						(Marking) new NamedEntityCorrections(61, 21,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas"))));
 
-		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.GOOD });
+		expectedResults.add(new Correction[] { Correction.GOOD, Correction.GOOD, Correction.GOOD, Correction.GOOD });
 
 		// Complete subset overlap
 
@@ -66,7 +66,8 @@ public class SubsetMarkingErrorTest {
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore"))));
-		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.GOOD, Check.DELETED, Check.GOOD, Check.GOOD });
+		expectedResults
+				.add(new Correction[] { Correction.GOOD, Correction.GOOD, Correction.OVERLAPS, Correction.OVERLAPS, Correction.GOOD, Correction.GOOD });
 
 		// Partial Overlap
 		doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
@@ -74,7 +75,7 @@ public class SubsetMarkingErrorTest {
 						(Marking) new NamedEntityCorrections(0, 20, "http://dbpedia.org/resource/Florence_May_Harding"),
 						(Marking) new NamedEntityCorrections(0, 10, "http://dbpedia.org/resource/Sydney"))));
 
-		expectedResults.add(new Check[] { Check.GOOD, Check.DELETED });
+		expectedResults.add(new Correction[] { Correction.OVERLAPS, Correction.OVERLAPS });
 
 	}
 
@@ -85,7 +86,7 @@ public class SubsetMarkingErrorTest {
 		test_var.check(doc);
 
 		List<NamedEntityCorrections> markings;
-		Check[] expectedResult;
+		Correction[] expectedResult;
 
 		for (int i = 0; i < doc.size(); i++) {
 			markings = doc.get(i).getMarkings(NamedEntityCorrections.class);

@@ -7,7 +7,7 @@ import java.util.List;
 import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.documentprocessor.StanfordParsedMarking;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -30,8 +30,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 
 public class LongDescriptionError implements ErrorChecker {
 	/** Value - {@value} , LOGGER used for log information. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(LongDescriptionError.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LongDescriptionError.class);
 
 	public DocumentProcessor dp = new DocumentProcessor();
 
@@ -43,26 +42,23 @@ public class LongDescriptionError implements ErrorChecker {
 	 *            : A List of Documents passing through the pipeline.
 	 * @throws GerbilException
 	 */
-	public void LongDescription(List<Document> documents)
-			throws GerbilException {
+	public void LongDescription(List<Document> documents) throws GerbilException {
 		LOGGER.info("LONG DESCRIPTION MODULE RUNNING");
 		for (Document doc : documents) {
 			String text = doc.getText();
-			List<NamedEntityCorrections> entities = doc
-					.getMarkings(NamedEntityCorrections.class);
+			List<NamedEntityCorrections> entities = doc.getMarkings(NamedEntityCorrections.class);
 			List<CoreLabel> POSBlackList = LongEntity_Extracter_util(doc);
 			Collections.sort(entities, new StartPosBasedComparator());
 			for (NamedEntityCorrections entity : entities) {
-				if (entity.getResult().equals(Check.GOOD)) {
-					String entity_text = text.substring(
-							entity.getStartPosition(), entity.getLength()
-									+ entity.getStartPosition());
+				if (entity.getError().equals(ErrorType.NOERROR)) {
+					String entity_text = text.substring(entity.getStartPosition(),
+							entity.getLength() + entity.getStartPosition());
 					String[] arr = entity_text.split(" ");
 					for (String dummy : arr) {
 						for (CoreLabel bentity : POSBlackList) {
 							if (bentity.get(TextAnnotation.class).equals(dummy)) {
-								entity.setResult(Check.DELETED);
-								entity.setError(ErrorType.LONGDESC);
+								entity.setCorrectionSuggested(Correction.DELETE);
+								entity.setError(ErrorType.LONGDESCERR);
 
 							}
 						}
@@ -76,8 +72,8 @@ public class LongDescriptionError implements ErrorChecker {
 	}
 
 	/**
-	 * This method is a utility method for the LongDescription Error and helps
-	 * in identifying the not required marked terms in the annotation.
+	 * This method is a utility method for the LongDescription Error and helps in
+	 * identifying the not required marked terms in the annotation.
 	 *
 	 * @param doc
 	 *            : A single document to be analzsed.
@@ -85,17 +81,15 @@ public class LongDescriptionError implements ErrorChecker {
 	 */
 	public List<CoreLabel> LongEntity_Extracter_util(Document doc) {
 		List<CoreLabel> POS_Blacklist = new ArrayList<CoreLabel>();
-		List<StanfordParsedMarking> stanfordAnns = doc
-				.getMarkings(StanfordParsedMarking.class);
+		List<StanfordParsedMarking> stanfordAnns = doc.getMarkings(StanfordParsedMarking.class);
 		StanfordParsedMarking stanfordAnn = stanfordAnns.get(0);
-		List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(
-				TokensAnnotation.class);
+		List<CoreLabel> tokens = stanfordAnn.getAnnotation().get(TokensAnnotation.class);
 		if (stanfordAnns.size() != 1) {
 			LOGGER.error(" Parser not working ");
 		}
 		for (CoreLabel token : tokens) {
-			if (((token.get(PartOfSpeechAnnotation.class).equals("WDT")) || (token
-					.get(PartOfSpeechAnnotation.class).equals("MD")))) {
+			if (((token.get(PartOfSpeechAnnotation.class).equals("WDT"))
+					|| (token.get(PartOfSpeechAnnotation.class).equals("MD")))) {
 				POS_Blacklist.add(token);
 			}
 		}

@@ -7,7 +7,8 @@ import java.util.Set;
 
 import org.aksw.dice.eaglet.entitytypemodify.EntityTypeChange;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.dice.eaglet.error.ErrorChecker;
 import org.aksw.gerbil.annotator.A2KBAnnotator;
 import org.aksw.gerbil.exceptions.GerbilException;
@@ -78,7 +79,7 @@ public class MissingEntityCompletion implements ErrorChecker {
 		for (MeaningSpan newEntity : newEntities) {
 			doc.addMarking(new NamedEntityCorrections(newEntity
 					.getStartPosition(), newEntity.getLength(), newEntity
-					.getUris(), Check.COMPLETED));
+					.getUris(),Correction.INSERT));
 		}
 	}
 

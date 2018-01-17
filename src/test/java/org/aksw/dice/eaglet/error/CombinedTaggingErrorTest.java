@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
 import org.aksw.dice.eaglet.error.CombinedTaggingError;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -25,7 +25,7 @@ public class CombinedTaggingErrorTest {
 			"The senator received a Bachelor of Laws from the Columbia University." };
 
 	List<Document> doc = new ArrayList<Document>();
-	List<Check[]> expectedResults = new ArrayList<Check[]>();
+	List<Correction[]> expectedResults = new ArrayList<Correction[]>();
 	List<NamedEntityCorrections[]> partner_list = new ArrayList<NamedEntityCorrections[]>();
 
 	@Before
@@ -44,7 +44,7 @@ public class CombinedTaggingErrorTest {
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Sydney"),
 						(Marking) new NamedEntityCorrections(61, 21,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas")))));
-		expectedResults.add(new Check[] { Check.GOOD, Check.NEED_TO_PAIR, Check.GOOD, Check.GOOD, Check.GOOD });
+		expectedResults.add(new Correction[] { Correction.GOOD, Correction.NEED_TO_PAIR, Correction.GOOD, Correction.GOOD, Correction.GOOD });
 		partner_list.add(new NamedEntityCorrections[] { null,
 				new NamedEntityCorrections(0, 12,
 						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Florence_May_Harding"),
@@ -68,13 +68,13 @@ public class CombinedTaggingErrorTest {
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore")))));
-		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD, Check.NEED_TO_PAIR, Check.NEED_TO_PAIR, Check.GOOD,
-				Check.GOOD, Check.GOOD });
+		expectedResults.add(new Correction[] { Correction.GOOD, Correction.GOOD, Correction.NEED_TO_PAIR, Correction.NEED_TO_PAIR, Correction.GOOD,
+				Correction.GOOD, Correction.GOOD });
 		partner_list.add(new NamedEntityCorrections[] { null, null,
 				new NamedEntityCorrections(50, 6,
 						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/senior"),
 				new NamedEntityCorrections(57, 9,
-						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Political", Check.NEED_TO_PAIR,
+						"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Political", Correction.NEED_TO_PAIR,
 						new NamedEntityCorrections(50, 6,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/senior")),
 
@@ -88,7 +88,7 @@ public class CombinedTaggingErrorTest {
 						(Marking) new NamedEntityCorrections(45, 6, "http://dbpedia.org/resource/Sydney")))));
 		partner_list.add(new NamedEntityCorrections[] { null, null });
 
-		expectedResults.add(new Check[] { Check.GOOD, Check.GOOD });
+		expectedResults.add(new Correction[] { Correction.GOOD, Correction.GOOD });
 
 		// Multiple overlap
 		/*
@@ -133,7 +133,7 @@ public class CombinedTaggingErrorTest {
 		test_var.check(doc);
 
 		List<NamedEntityCorrections> markings;
-		Check[] expectedResult;
+		Correction[] expectedResult;
 
 		for (int i = 0; i < doc.size(); i++) {
 			markings = doc.get(i).getMarkings(NamedEntityCorrections.class);

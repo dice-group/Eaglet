@@ -16,7 +16,8 @@
  */
 package org.aksw.dice.eaglet.uri;
 
-import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 
 /**
  * Interface for an {@link UriChecker} that checks whether an URI is valid for a
@@ -27,14 +28,14 @@ import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Check;
  */
 public interface UriChecker {
 
-    /**
-     * Returns {@link Check#GOOD} if the given URI is valid. Else, a different
-     * check result is returned, i.e., {@link Check#INVALID_URI},
-     * {@link Check#DISAMBIG_URI} or {@link Check#OUTDATED_URI}.
-     * 
-     * @param uri
-     *            the URI that should be checked
-     * @return {@link Check#GOOD} if the given URI is valid.
-     */
-    public Check checkUri(String uri);
+	/**
+	 * Returns {@link Correction#GOOD} if the given URI is valid. Else, a different
+	 * check result is returned, i.e., {@link Correction#INVALID_URI},
+	 * {@link Correction#DISAMBIG_URI} or {@link Correction#OUTDATED_URI}.
+	 * 
+	 * @param uri
+	 *            the URI that should be checked
+	 * @return {@link Correction#GOOD} if the given URI is valid.
+	 */
+	public ErrorType checkUri(String uri);
 }
