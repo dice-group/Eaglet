@@ -148,10 +148,17 @@ public class NamedEntityCorrections extends NamedEntity {
 		this.userDecision = userDecision;
 	}
 
+
+	
 	public NamedEntityCorrections(int startPosition, int length, Set<String> uris, Correction insert) {
 		super(startPosition, length, uris);
 		this.correctionSuggested = insert;
 		this.error = ErrorType.NOERROR;
+	}
+
+	public NamedEntityCorrections(int startPosition, int length, String uris, ErrorType overlappingerr) {
+		super(startPosition, length, uris);
+		this.error = overlappingerr;
 	}
 
 	/**

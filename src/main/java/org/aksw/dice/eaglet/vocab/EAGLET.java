@@ -60,6 +60,7 @@ public class EAGLET {
 	public static final Resource Deleted = resource("Deleted");
 	public static final Resource Good = resource("Good");
 	public static final Resource Check = resource("Check");
+	public static final Resource notDefined = resource("notDefined");
 
 	// ErrorType
 	public static final Resource ConbinedTagging = resource("CombinedTagging");
@@ -70,6 +71,7 @@ public class EAGLET {
 	public static final Resource InvalidUriErr = resource("InvalidUriErr");
 	public static final Resource OutdatedUriErr = resource("OutdatedUriErr");
 	public static final Resource DisambiguationUriErr = resource("DisambiguationUriErr");
+	public static final Resource Noerror = resource("Noerror");
 
 	// User Decision Value
 	public static final Resource Correct = resource("Correct");
@@ -113,6 +115,8 @@ public class EAGLET {
 			return DisambiguationUriErr;
 		case WRONGPOSITIONERR:
 			return WrongPos;
+		case NOERROR:
+			return Noerror;
 
 		}
 		LOGGER.error("Got an unknown matching type: " + list.name());
@@ -129,6 +133,8 @@ public class EAGLET {
 			return Good;
 		case CHECK:
 			return Check;
+		case NOTDEFINED:
+			return notDefined;
 
 		}
 		LOGGER.error("Got an unknown matching type: " + checkResult.name());
