@@ -10,7 +10,7 @@
 	<!-- Database Properties -->
 	<context:property-placeholder location="classpath:eaglet.properties" />
 
-	<bean id="experimentDAO" class="org.aksw.simba.eaglet.database.EagletDatabaseStatements"
+	<bean id="experimentDAO" class="org.aksw.dice.eaglet.database.EagletDatabaseStatements"
 		destroy-method="close">
 		<constructor-arg name="dataSource" ref="databaseDataSource" />
 	</bean>

@@ -221,6 +221,8 @@ public class AdaptedAnnotationParser extends AnnotationParser {
 			return ErrorType.DISAMBIGURIERR;
 		} else if (EAGLET.OutdatedUriErr.equals(resource)) {
 			return ErrorType.OUTDATEDURIERR;
+		} else if (EAGLET.Noerror.equals(resource)) {
+			return ErrorType.NOERROR;
 		} else {
 			LOGGER.error("Got an unknown matching type: " + resource);
 			return null;

@@ -13,7 +13,7 @@
 		</init-param>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>org.aksw.simba.eaglet.web.RootConfig</param-value>
+			<param-value>org.aksw.dice.eaglet.web.RootConfig</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>

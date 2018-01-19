@@ -44,7 +44,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  */
 @org.springframework.context.annotation.Configuration
-@ComponentScan(basePackages = "org.aksw.simba.eaglet.web")
+@ComponentScan(basePackages = "org.aksw.dice.eaglet.web")
 @PropertySource("gerbil.properties")
 public class RootConfig {
 

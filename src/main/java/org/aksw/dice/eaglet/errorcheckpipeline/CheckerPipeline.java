@@ -265,7 +265,7 @@ public class CheckerPipeline {
 	public void writeDataInFile(List<Document> documents, String name) throws GerbilException, IOException {
 		Model nifModel = generateModel(documents);
 		File resultfile = new File(
-				"eaglet_data" + File.separator + "result_pipe" + File.separator + name + "-result-nif.ttl");
+				"eaglet_data" + File.separator + "result_pipe" + File.separator + name + "-result.ttl");
 		if (!resultfile.exists()) {
 			resultfile.getParentFile().mkdirs();
 			resultfile.createNewFile();
