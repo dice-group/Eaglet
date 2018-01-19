@@ -13,6 +13,8 @@ $(document).ready(function() {
 		$("#pipesection").hide();
 		$("#loginsection").hide()
 	});
+	
+	
 });
 // Basic Variables.
 var counter = 1;
@@ -20,6 +22,11 @@ var documentUri;
 var documentText;
 var loginName;
 
+$(document).keydown(function (e) {
+    if (e.keyCode == 13) { 
+    	 e.preventDefault(); //this will stop the default event triggering 
+    }
+});
 /**
  * Method to update the document text.
  */
@@ -158,6 +165,7 @@ function printDocument(data) {
 		makeUrisEditable(this);
 	});
 
+	
 }
 /**
  * The method to record the user details
@@ -216,6 +224,7 @@ function configpipe() {
 function makeUrisEditable(span) {
 	var replaceWith = $('<input name="temp" type="text" value="" />');
 	$(span).inlineEdit(replaceWith);
+	
 }
 /**
  * The method to send the data back to the server.
