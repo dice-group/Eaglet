@@ -71,7 +71,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
-	private static final String DEFAULT_URI = "/Users/Kunal/workspace/Eaglet/eaglet_data/result_pipe/testdata-result.ttl";
+	private static final String DEFAULT_URI = "/Users/Kunal/workspace/Eaglet/eaglet_data/result_pipe/sample.ttl";
 	// Kore-result-nif.ttl
 
 	String DATASET_FILES[] = new String[] { "OKECheck", DEFAULT_URI };
@@ -109,15 +109,15 @@ public class EagletController {
 	}
 
 	public void intializeEAGLETResult() {
-		this.resultEagletSummary.put("[COMBINED]", 0);
-		this.resultEagletSummary.put("[ERRATIC]", 0);
-		this.resultEagletSummary.put("[WRONGPOSITION]", 0);
-		this.resultEagletSummary.put("[LONGDESC]", 0);
-		this.resultEagletSummary.put("[OVERLAPPING]", 0);
+		this.resultEagletSummary.put("[COMBINEDTAGGINGERR]", 0);
+		this.resultEagletSummary.put("[INCONSITENTMARKINGERR]", 0);
+		this.resultEagletSummary.put("[WRONGPOSITIONERR]", 0);
+		this.resultEagletSummary.put("[LONGDESCERR]", 0);
+		this.resultEagletSummary.put("[OVERLAPPINGERR]", 0);
 		this.resultEagletSummary.put("[OUTDATEDURIERR]", 0);
 		this.resultEagletSummary.put("[INVALIDURIERR]", 0);
 		this.resultEagletSummary.put("[DISAMBIGURIERR]", 0);
-		this.resultEagletSummary.put("[GOOD]", 0);
+		this.resultEagletSummary.put("[NOERROR]", 0);
 	}
 
 	/**
