@@ -212,7 +212,7 @@ public class CheckerPipeline {
 	 * @throws GerbilException
 	 * @throws IOException
 	 */
-	public void runPipeAfterEval(List<Document> documents, String path) throws GerbilException, IOException {
+	public void runPipeAfterEval(List<Document> documents, String outPath) throws GerbilException, IOException {
 		List<ErrorChecker> pipe = null;
 		pipe = this.setupPostUserEvaluationPipe();
 		try {
@@ -225,7 +225,7 @@ public class CheckerPipeline {
 		}
 		// start pipeline
 
-		this.writeFinalOuput(documents, path);
+		this.writeFinalOuput(documents, outPath);
 	}
 
 	/**
@@ -238,9 +238,9 @@ public class CheckerPipeline {
 	 * @throws IOException
 	 */
 
-	public void writeFinalOuput(List<Document> documents, String path) throws GerbilException, IOException {
+	public void writeFinalOuput(List<Document> documents, String outPath) throws GerbilException, IOException {
 		Model nifModel = generateModel(documents);
-		File resultfile = new File(path);
+		File resultfile = new File(outPath);
 		if (!resultfile.exists()) {
 			resultfile.getParentFile().mkdirs();
 			resultfile.createNewFile();

@@ -82,13 +82,13 @@ public class InputforPipeline {
 
 	}
 
-	public InputforPipeline(List<Document> documents, String path)
+	public InputforPipeline(List<Document> documents, String outPath)
 			throws GerbilException, IOException {
 
 		this.prePipeProcessor(documents);
 		CheckerPipeline cp = new CheckerPipeline();
 
-		cp.runPipeAfterEval(documents, path);
+		cp.runPipeAfterEval(documents, outPath);
 
 	}
 

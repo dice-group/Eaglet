@@ -33,7 +33,7 @@
 
 	function drawBasic() {
 		var jsonData = $.ajax({
-			url : "http://localhost:8080/gscheck/service/getUserResultSummary",
+			url : "http://localhost:8080/eaglet/service/getUserResultSummary",
 			dataType : "json",
 			async : false
 		}).responseText;
@@ -43,7 +43,6 @@
 
 		var options = {
 			title : 'User Decision Summary',
-		
 			legend : 'none'
 		};
 
@@ -53,7 +52,7 @@
 	}
 	function drawChart() {
 		var jsonData = $.ajax({
-			url : "http://localhost:8080/gscheck/service/getResultSummary",
+			url : "http://localhost:8080/eaglet/service/getResultSummary",
 			dataType : "json",
 			async : false
 		}).responseText;

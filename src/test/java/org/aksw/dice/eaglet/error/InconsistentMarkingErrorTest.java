@@ -10,6 +10,7 @@ import java.util.Set;
 import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.dice.eaglet.error.InconsistentMarkingError;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -22,7 +23,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class ErraticMarkingErrorTest {
+public class InconsistentMarkingErrorTest {
 	private static final String TEXTS[] = new String[] {
 			"Florence May Harding studied at a school in Sydney that is in Australia, and with Douglas Robert Dundas, but in effect had no formal training in either botany or art.",
 			"Such notables include James Carville, who was the senior political adviser to Bill Clinton, and Donna Brazile, the campaign manager of the 2000 presidential campaign of Vice-President Al Gore.",
@@ -35,39 +36,45 @@ public class ErraticMarkingErrorTest {
 		List<Object[]> testCases = new ArrayList<Object[]>();
 		// two documents. In the second document, two entities are missing that
 		// have been marked in the first document.
-		testCases.add(new Object[] { Arrays.asList(
-				new DocumentImpl(TEXTS[0], "http://example.org/sentence-1", new ArrayList<Marking>(Arrays.asList(
-						(Marking) new NamedEntityCorrections(0, 20, "http://example.org/Florence_May_Harding"),
-						(Marking) new NamedEntityCorrections(34, 6, "http://example.org/National_Art_School"),
-						(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney"),
-						(Marking) new NamedEntityCorrections(82, 21, "http://example.org/Douglas_Robert_Dundas")))),
-				new DocumentImpl(TEXTS[0], "http://example.org/sentence-2",
-						new ArrayList<Marking>(Arrays.asList(
-								(Marking) new NamedEntityCorrections(0, 20, "http://example.org/Florence_May_Harding"),
-								(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney"))))),
+		testCases.add(new Object[] {
 				Arrays.asList(new DocumentImpl(TEXTS[0], "http://example.org/sentence-1",
 						new ArrayList<Marking>(Arrays.asList(
-								(Marking) new NamedEntityCorrections(0, 20, "http://example.org/Florence_May_Harding",
-										Correction.GOOD),
-								(Marking) new NamedEntityCorrections(34, 6, "http://example.org/National_Art_School",
-										Correction.GOOD),
-								(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney", Correction.GOOD),
-								(Marking) new NamedEntityCorrections(82, 21, "http://example.org/Douglas_Robert_Dundas",
-										Correction.GOOD)))),
+								(Marking) new NamedEntityCorrections(0, 20, "http://example.org/Florence_May_Harding"),
+								(Marking) new NamedEntityCorrections(34, 6, "http://example.org/National_Art_School"),
+								(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney"),
+								(Marking) new NamedEntityCorrections(82, 21,
+										"http://example.org/Douglas_Robert_Dundas")))),
 						new DocumentImpl(TEXTS[0], "http://example.org/sentence-2",
 								new ArrayList<Marking>(Arrays.asList(
 										(Marking) new NamedEntityCorrections(0, 20,
-												"http://example.org/Florence_May_Harding", Correction.GOOD),
+												"http://example.org/Florence_May_Harding"),
+										(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney"))))),
+				Arrays.asList(
+						new DocumentImpl(
+								TEXTS[0], "http://example.org/sentence-1",
+								new ArrayList<Marking>(Arrays.asList(
+										(Marking) new NamedEntityCorrections(0, 20,
+												"http://example.org/Florence_May_Harding", ErrorType.NOERROR),
 										(Marking) new NamedEntityCorrections(34, 6,
-												"http://example.org/National_Art_School", Correction.INSERTED),
+												"http://example.org/National_Art_School", ErrorType.NOERROR),
 										(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney",
-												Correction.GOOD),
+												ErrorType.NOERROR),
 										(Marking) new NamedEntityCorrections(82, 21,
-												"http://example.org/Douglas_Robert_Dundas", Correction.INSERTED))))),
+												"http://example.org/Douglas_Robert_Dundas", ErrorType.NOERROR)))),
+						new DocumentImpl(TEXTS[0], "http://example.org/sentence-2",
+								new ArrayList<Marking>(Arrays.asList(
+										(Marking) new NamedEntityCorrections(0, 20,
+												"http://example.org/Florence_May_Harding", ErrorType.NOERROR),
+										(Marking) new NamedEntityCorrections(34, 6,
+												"http://example.org/National_Art_School",
+												ErrorType.INCONSITENTMARKINGERR),
+										(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney",
+												ErrorType.NOERROR),
+										(Marking) new NamedEntityCorrections(82, 21,
+												"http://example.org/Douglas_Robert_Dundas", ErrorType.NOERROR))))),
 				Arrays.asList(new NamedEntityCorrections[] { null, null, null, null },
 						new NamedEntityCorrections[] { null, null }) });
 
-		
 		return testCases;
 	}
 
@@ -75,7 +82,7 @@ public class ErraticMarkingErrorTest {
 	private List<Document> expectedDocuments;
 	private List<NamedEntityCorrections[]> expectedPartners = new ArrayList<NamedEntityCorrections[]>();
 
-	public ErraticMarkingErrorTest(List<Document> documents, List<Document> expectedDocuments,
+	public InconsistentMarkingErrorTest(List<Document> documents, List<Document> expectedDocuments,
 			List<NamedEntityCorrections[]> expectedPartners) {
 		this.documents = documents;
 		this.expectedDocuments = expectedDocuments;

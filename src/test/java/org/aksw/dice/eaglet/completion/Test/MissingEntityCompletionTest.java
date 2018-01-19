@@ -12,6 +12,7 @@ import org.aksw.dice.eaglet.completion.MissingEntityCompletion;
 import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.dice.eaglet.error.ErrorChecker;
 import org.aksw.gerbil.annotator.A2KBAnnotator;
 import org.aksw.gerbil.exceptions.GerbilException;
@@ -40,16 +41,13 @@ public class MissingEntityCompletionTest {
 		// two documents. In the second document, two entities are missing that
 		// have been marked in the first document.
 		testCases.add(new Object[] {
-				Arrays.asList(
-						new DocumentImpl(TEXTS[0], "http://example.org/sentence-1",
-								new ArrayList<Marking>(Arrays.asList(
-										(Marking) new NamedEntityCorrections(0, 20,
-												"http://example.org/Florence_May_Harding"),
-										(Marking) new NamedEntityCorrections(34, 6,
-												"http://example.org/National_Art_School"),
-										(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney"),
-										(Marking) new NamedEntityCorrections(82, 21,
-												"http://example.org/Douglas_Robert_Dundas")))),
+				Arrays.asList(new DocumentImpl(TEXTS[0], "http://example.org/sentence-1",
+						new ArrayList<Marking>(Arrays.asList(
+								(Marking) new NamedEntityCorrections(0, 20, "http://example.org/Florence_May_Harding"),
+								(Marking) new NamedEntityCorrections(34, 6, "http://example.org/National_Art_School"),
+								(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney"),
+								(Marking) new NamedEntityCorrections(82, 21,
+										"http://example.org/Douglas_Robert_Dundas")))),
 						new DocumentImpl(TEXTS[0], "http://example.org/sentence-2",
 								new ArrayList<Marking>(Arrays.asList(
 										(Marking) new NamedEntityCorrections(0, 20,
@@ -57,9 +55,8 @@ public class MissingEntityCompletionTest {
 										(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney"))))),
 				Arrays.asList(
 						new Document[] { new DocumentImpl(TEXTS[0], "http://example.org/sentence-1",
-								new ArrayList<Marking>(
-										Arrays.asList((Marking) new NamedEntity(0, 20,
-												"http://example.org/Florence_May_Harding")))) },
+								new ArrayList<Marking>(Arrays.asList((Marking) new NamedEntity(0, 20,
+										"http://example.org/Florence_May_Harding")))) },
 						new Document[] { new DocumentImpl(TEXTS[0], "http://example.org/sentence-2",
 								new ArrayList<Marking>(Arrays.asList(
 										(Marking) new NamedEntity(0, 20, "http://example.org/Florence_May_Harding"),
@@ -67,25 +64,27 @@ public class MissingEntityCompletionTest {
 										(Marking) new NamedEntity(44, 6, "http://example.org/Sydney"),
 										(Marking) new NamedEntity(82, 21,
 												"http://example.org/Douglas_Robert_Dundas")))) }),
-				Arrays.asList(new DocumentImpl(TEXTS[0], "http://example.org/sentence-1",
-						new ArrayList<Marking>(Arrays.asList(
-								(Marking) new NamedEntityCorrections(0, 20, "http://example.org/Florence_May_Harding",
-										Correction.GOOD),
-								(Marking) new NamedEntityCorrections(34, 6, "http://example.org/National_Art_School",
-										Correction.GOOD),
-								(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney", Correction.GOOD),
-								(Marking) new NamedEntityCorrections(82, 21, "http://example.org/Douglas_Robert_Dundas",
-										Correction.GOOD)))),
+				Arrays.asList(
+						new DocumentImpl(TEXTS[0], "http://example.org/sentence-1",
+								new ArrayList<Marking>(Arrays.asList(
+										(Marking) new NamedEntityCorrections(0, 20,
+												"http://example.org/Florence_May_Harding", ErrorType.NOERROR),
+										(Marking) new NamedEntityCorrections(34, 6,
+												"http://example.org/National_Art_School", ErrorType.NOERROR),
+										(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney",
+												ErrorType.NOERROR),
+										(Marking) new NamedEntityCorrections(82, 21,
+												"http://example.org/Douglas_Robert_Dundas", ErrorType.NOERROR)))),
 						new DocumentImpl(TEXTS[0], "http://example.org/sentence-2",
 								new ArrayList<Marking>(Arrays.asList(
 										(Marking) new NamedEntityCorrections(0, 20,
-												"http://example.org/Florence_May_Harding", Correction.GOOD),
+												"http://example.org/Florence_May_Harding", ErrorType.NOERROR),
 										(Marking) new NamedEntityCorrections(34, 6,
-												"http://example.org/National_Art_School", Correction.COMPLETED),
+												"http://example.org/National_Art_School", ErrorType.NOERROR),
 										(Marking) new NamedEntityCorrections(44, 6, "http://example.org/Sydney",
-												Correction.GOOD),
+												ErrorType.NOERROR),
 										(Marking) new NamedEntityCorrections(82, 21,
-												"http://example.org/Douglas_Robert_Dundas", Correction.COMPLETED))))),
+												"http://example.org/Douglas_Robert_Dundas", ErrorType.NOERROR))))),
 				Arrays.asList(new NamedEntityCorrections[] { null, null, null, null },
 						new NamedEntityCorrections[] { null, null }) });
 

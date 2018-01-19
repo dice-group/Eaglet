@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.dice.eaglet.error.OverLappingError;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -22,17 +23,9 @@ public class SubsetMarkingErrorTest {
 			"Florence May Harding studied at a school in Sydney, and with Douglas Robert Dundas , but in effect had no formal training in either botany or art.",
 			"Such notables include James Carville, who was the senior political adviser to Bill Clinton, and Donna Brazile, the campaign manager of the 2000 presidential campaign of Vice-President Al Gore.",
 			"The senator received a Bachelor of Laws from the Columbia University." };
-	// private static final DatasetConfiguration GOLD_STD = new
-	// NIFFileDatasetConfig("DBpedia",
-	// "gerbil_data/datasets/spotlight/dbpedia-spotlight-nif.ttl", false,
-	// ExperimentType.A2KB);
-	// private static final UriKBClassifier URI_KB_CLASSIFIER = new
-	// SimpleWhiteListBasedUriKBClassifier(
-	// "http://dbpedia.org/resource/");
+
 	List<Document> doc = new ArrayList<Document>();
-	List<Correction[]> expectedResults = new ArrayList<Correction[]>();
-	// List<NamedEntityCorrections[]> partner_list = new
-	// ArrayList<NamedEntityCorrections[]>();
+	List<ErrorType[]> expectedResults = new ArrayList<ErrorType[]>();
 
 	@Before
 	public void setUp() throws Exception {
@@ -48,7 +41,8 @@ public class SubsetMarkingErrorTest {
 						(Marking) new NamedEntityCorrections(61, 21,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas"))));
 
-		expectedResults.add(new Correction[] { Correction.GOOD, Correction.GOOD, Correction.GOOD, Correction.GOOD });
+		expectedResults
+				.add(new ErrorType[] { ErrorType.NOERROR, ErrorType.NOERROR, ErrorType.NOERROR, ErrorType.NOERROR });
 
 		// Complete subset overlap
 
@@ -66,8 +60,8 @@ public class SubsetMarkingErrorTest {
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore"))));
-		expectedResults
-				.add(new Correction[] { Correction.GOOD, Correction.GOOD, Correction.OVERLAPS, Correction.OVERLAPS, Correction.GOOD, Correction.GOOD });
+		expectedResults.add(new ErrorType[] { ErrorType.NOERROR, ErrorType.NOERROR, ErrorType.OVERLAPPINGERR,
+				ErrorType.OVERLAPPINGERR, ErrorType.NOERROR, ErrorType.NOERROR });
 
 		// Partial Overlap
 		doc.add(new DocumentImpl(TEXTS[0], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-1",
@@ -75,7 +69,7 @@ public class SubsetMarkingErrorTest {
 						(Marking) new NamedEntityCorrections(0, 20, "http://dbpedia.org/resource/Florence_May_Harding"),
 						(Marking) new NamedEntityCorrections(0, 10, "http://dbpedia.org/resource/Sydney"))));
 
-		expectedResults.add(new Correction[] { Correction.OVERLAPS, Correction.OVERLAPS });
+		expectedResults.add(new ErrorType[] { ErrorType.OVERLAPPINGERR, ErrorType.OVERLAPPINGERR });
 
 	}
 
@@ -86,7 +80,7 @@ public class SubsetMarkingErrorTest {
 		test_var.check(doc);
 
 		List<NamedEntityCorrections> markings;
-		Correction[] expectedResult;
+		ErrorType[] expectedResult;
 
 		for (int i = 0; i < doc.size(); i++) {
 			markings = doc.get(i).getMarkings(NamedEntityCorrections.class);
@@ -97,7 +91,7 @@ public class SubsetMarkingErrorTest {
 
 			for (int j = 0; j < markings.size(); j++) {
 				Assert.assertEquals("Error at marking #" + j + " in doc" + i, expectedResult[j],
-						markings.get(j).getResult());
+						markings.get(j).getError());
 
 				// Assert.assertEquals(partner[j],
 				// markings.get(j).getPartner());

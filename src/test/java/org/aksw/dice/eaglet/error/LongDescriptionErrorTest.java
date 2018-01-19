@@ -9,6 +9,7 @@ import java.util.List;
 import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.Correction;
+import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
 import org.aksw.dice.eaglet.error.LongDescriptionError;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -31,7 +32,7 @@ public class LongDescriptionErrorTest {
 	// SimpleWhiteListBasedUriKBClassifier(
 	// "http://dbpedia.org/resource/");
 	List<Document> doc = new ArrayList<Document>();
-	List<Correction[]> expectedResults = new ArrayList<Correction[]>();
+	List<ErrorType[]> expectedResults = new ArrayList<ErrorType[]>();
 
 	@Before
 	public void setUp() throws Exception {
@@ -46,7 +47,7 @@ public class LongDescriptionErrorTest {
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Sydney"),
 						(Marking) new NamedEntityCorrections(61, 21,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Douglas_Robert_Dundas")))));
-		expectedResults.add(new Correction[] { Correction.GOOD, Correction.GOOD, Correction.DELETED, Correction.GOOD });
+		expectedResults.add(new ErrorType[] { ErrorType.NOERROR, ErrorType.NOERROR, ErrorType.LONGDESCERR, ErrorType.NOERROR });
 
 		doc.add(new DocumentImpl(TEXTS[1], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-2",
 				new ArrayList<Marking>(Arrays.asList(
@@ -60,14 +61,14 @@ public class LongDescriptionErrorTest {
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Campaign_manager"),
 						(Marking) new NamedEntityCorrections(184, 7,
 								"http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/Al_Gore")))));
-		expectedResults.add(new Correction[] { Correction.GOOD, Correction.GOOD, Correction.GOOD, Correction.GOOD, Correction.GOOD });
+		expectedResults.add(new ErrorType[] { ErrorType.NOERROR, ErrorType.NOERROR, ErrorType.NOERROR, ErrorType.NOERROR, ErrorType.NOERROR });
 		// NO error
 		doc.add(new DocumentImpl(TEXTS[2], "http://www.ontologydesignpatterns.org/data/oke-challenge/task-1/sentence-3",
 				new ArrayList<Marking>(Arrays.asList(
 						(Marking) new NamedEntityCorrections(4, 7, "http://aksws.org/notInWiki/Senator_1"),
 						(Marking) new NamedEntityCorrections(49, 19,
 								"http://dbpedia.org/resource/Columbia_University")))));
-		expectedResults.add(new Correction[] { Correction.GOOD, Correction.GOOD });
+		expectedResults.add(new ErrorType[] { ErrorType.NOERROR, ErrorType.NOERROR });
 
 	}
 
@@ -81,7 +82,7 @@ public class LongDescriptionErrorTest {
 		test_var.check(doc);
 
 		List<NamedEntityCorrections> markings;
-		Correction[] expectedResult;
+		ErrorType[] expectedResult;
 
 		for (int i = 0; i < doc.size(); i++) {
 			markings = doc.get(i).getMarkings(NamedEntityCorrections.class);
@@ -89,7 +90,7 @@ public class LongDescriptionErrorTest {
 			Assert.assertEquals(expectedResult.length, markings.size());
 
 			for (int j = 0; j < markings.size(); j++) {
-				Assert.assertEquals(expectedResult[j], markings.get(j).getResult());
+				Assert.assertEquals(expectedResult[j], markings.get(j).getError());
 
 			}
 		}

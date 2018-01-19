@@ -21,7 +21,6 @@ import org.aksw.dice.eaglet.documentprocessor.StanfordParsedMarking;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.DecisionValue;
 import org.aksw.dice.eaglet.entitytypemodify.NamedEntityCorrections.ErrorType;
-import org.aksw.dice.eaglet.error.InconsitentMarkingUserInput;
 import org.aksw.dice.eaglet.errorcheckpipeline.InputforPipeline;
 import org.aksw.dice.eaglet.vocab.EAGLET;
 import org.aksw.gerbil.exceptions.GerbilException;
@@ -71,7 +70,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public class EagletController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EagletController.class);
-	private static final String DEFAULT_URI = "/Users/Kunal/workspace/Eaglet/eaglet_data/result_pipe/sample.ttl";
+	private static final String DEFAULT_URI = "/Users/Kunal/workspace/Eaglet/eaglet_data/result_pipe/aa-result.ttl";
 	// Kore-result-nif.ttl
 
 	String DATASET_FILES[] = new String[] { "OKECheck", DEFAULT_URI };
@@ -83,7 +82,7 @@ public class EagletController {
 	private List<Document> documents;
 	private List<Document> remainingDocuments;
 	private int counter;
-	private InconsitentMarkingUserInput er;
+
 	private Map<String, Integer> resultEagletSummary = new HashMap<String, Integer>();;
 	private HashMap<String, Integer> resultUserSummary = new HashMap<String, Integer>();;
 	private String currentUser;
@@ -92,12 +91,12 @@ public class EagletController {
 	 * Constructor
 	 */
 	public EagletController() {
+
 		DATASET_GIVEN = false;
 		this.documents = loadDocuments();
 		this.counter = 0;
 		this.remainingDocuments = new ArrayList<Document>();
 		this.currentUser = null;
-		er = new InconsitentMarkingUserInput();
 		this.intializeEAGLETResult();
 		this.initializeUserResult();
 	}
@@ -109,15 +108,15 @@ public class EagletController {
 	}
 
 	public void intializeEAGLETResult() {
-		this.resultEagletSummary.put("[COMBINEDTAGGINGERR]", 0);
-		this.resultEagletSummary.put("[INCONSITENTMARKINGERR]", 0);
-		this.resultEagletSummary.put("[WRONGPOSITIONERR]", 0);
-		this.resultEagletSummary.put("[LONGDESCERR]", 0);
-		this.resultEagletSummary.put("[OVERLAPPINGERR]", 0);
-		this.resultEagletSummary.put("[OUTDATEDURIERR]", 0);
-		this.resultEagletSummary.put("[INVALIDURIERR]", 0);
-		this.resultEagletSummary.put("[DISAMBIGURIERR]", 0);
-		this.resultEagletSummary.put("[NOERROR]", 0);
+		this.resultEagletSummary.put("COMBINEDTAGGINGERR", 0);
+		this.resultEagletSummary.put("INCONSITENTMARKINGERR", 0);
+		this.resultEagletSummary.put("WRONGPOSITIONERR", 0);
+		this.resultEagletSummary.put("LONGDESCERR", 0);
+		this.resultEagletSummary.put("OVERLAPPINGERR", 0);
+		this.resultEagletSummary.put("OUTDATEDURIERR", 0);
+		this.resultEagletSummary.put("INVALIDURIERR", 0);
+		this.resultEagletSummary.put("DISAMBIGURIERR", 0);
+		this.resultEagletSummary.put("NOERROR", 0);
 	}
 
 	/**
@@ -144,23 +143,13 @@ public class EagletController {
 	@RequestMapping(value = "/next", produces = "application/json;charset=utf-8")
 	public Object nextDocument(@RequestParam(value = "username") String userName) {
 		LOGGER.info("Got a message to /next!");
-
 		int userId = getUser(userName);
 		this.currentUser = userName;
 		// get the next document
 		Document document = getNextDocument(userId);
 		if (document == null) {
-			try {
-				// CHECKING AFTER EVALUATION
-				this.recheckUserInput();
-			} catch (GerbilException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				LOGGER.error("Problem with rechecking pipeline");
-				e.printStackTrace();
-			}
-			LOGGER.info("Redirecting to Thank you");
-
+			LOGGER.info("Thank you!!");
+	
 			return "redirect:/thankyou.html";
 
 		}
@@ -176,7 +165,6 @@ public class EagletController {
 		LOGGER.info("Got a message to pipe!");
 		try {
 			new InputforPipeline(datasetName, datasetPath);
-
 		} catch (GerbilException e) {
 
 			e.printStackTrace();
@@ -200,8 +188,6 @@ public class EagletController {
 	}
 
 	private Document getNextDocument(int userId) {
-
-		LOGGER.info("Updated all other documents for the previous markings");
 		Set<String> alreadySeenDocuments = new HashSet<String>(database.getDocumentUser(userId));
 		this.remainingDocuments.clear();
 		for (Document document : documents) {
@@ -244,8 +230,6 @@ public class EagletController {
 			if (this.resultEagletSummary.containsKey(nec.getError().toString())) {
 				this.resultEagletSummary.put(nec.getError().toString(),
 						this.resultEagletSummary.get(nec.getError().toString()) + 1);
-			} else if (nec.getError().toString().equals("[]")) {
-				this.resultEagletSummary.put("[GOOD]", this.resultEagletSummary.get("[GOOD]") + 1);
 			}
 			array.put(ne);
 		}
@@ -294,6 +278,7 @@ public class EagletController {
 
 	@RequestMapping(value = "/getResultSummary", method = RequestMethod.GET)
 	public ResponseEntity<String> showEagletSummary() {
+		LOGGER.info("Preparing charts");
 		DataTable data = new DataTable();
 		ArrayList<ColumnDescription> cd = new ArrayList<ColumnDescription>();
 		cd.add(new ColumnDescription("error", ValueType.TEXT, " Error"));
@@ -311,9 +296,9 @@ public class EagletController {
 		}
 		JsonNode root = null;
 		String json = JsonRenderer.renderDataTable(data, true, true).toString();
-
+		System.out.println(json);
 		try {
-			JsonParser parser = new JsonFactory().createJsonParser(json)
+			JsonParser parser = new JsonFactory().createParser(json)
 					.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES)
 					.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
 			root = new ObjectMapper().readTree(parser);
@@ -328,6 +313,7 @@ public class EagletController {
 
 	@RequestMapping(value = "/getUserResultSummary", method = RequestMethod.GET)
 	public ResponseEntity<String> showUserSummary() throws NumberFormatException, TypeMismatchException {
+		LOGGER.info("Preparing charts");
 		DataTable data = new DataTable();
 		ArrayList<ColumnDescription> cd = new ArrayList<ColumnDescription>();
 		cd.add(new ColumnDescription("error", ValueType.TEXT, " Error"));
@@ -345,9 +331,10 @@ public class EagletController {
 		}
 		JsonNode root = null;
 		String json = JsonRenderer.renderDataTable(data, true, true).toString();
+		System.out.println(json);
 
 		try {
-			JsonParser parser = new JsonFactory().createJsonParser(json)
+			JsonParser parser = new JsonFactory().createParser(json)
 					.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES)
 					.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
 			root = new ObjectMapper().readTree(parser);
@@ -402,10 +389,7 @@ public class EagletController {
 		Model nifModel = generateModifiedModel(result);
 
 		LOGGER.info("SIZE Of DOCUMENT LIST" + documents.size());
-
-		er.erraticMarkingUserInput(remainingDocuments, result);
 		this.updateDocumentList(remainingDocuments);
-
 		File resultfile = new File("eaglet_data" + File.separator + "result_user" + File.separator + this.currentUser
 				+ File.separator + DATASET_FILES[0] + File.separator + filename + "_" + counter + ".ttl");
 		if (!resultfile.exists()) {
@@ -462,9 +446,11 @@ public class EagletController {
 			temp = readDocuments(new File(DATASET_FILES[i]));
 			if (temp != null) {
 				loadedDocuments.addAll(temp);
-			} else {
-				LOGGER.error("Couldn't load the dataset!");
 			}
+
+		}
+		if (loadedDocuments.size() == 0) {
+			LOGGER.error("Couldn't load dataset!!");
 		}
 
 		DocumentProcessor dp = new DocumentProcessor();
@@ -509,13 +495,14 @@ public class EagletController {
 		}
 	}
 
-	private List<Document> generateDocumentList() {
-		List<Document> whitelist = new ArrayList<Document>();
-		generateList(whitelist, new File("eaglet_data" + File.separator + "result_user" + File.separator
-				+ this.currentUser + File.separator + DATASET_FILES[0]));
-		return whitelist;
-	}
-
+	/*
+	 * private List<Document> generateDocumentList() { List<Document> whitelist =
+	 * new ArrayList<Document>(); generateList(whitelist, new File("eaglet_data" +
+	 * File.separator + "result_user" + File.separator + this.currentUser +
+	 * File.separator + DATASET_FILES[0])); LOGGER.info("Read the files from " +
+	 * "eaglet_data" + File.separator + "result_user" + File.separator +
+	 * this.currentUser + File.separator + DATASET_FILES[0]); return whitelist; }
+	 */
 	private void generateList(List<Document> whitelist, File file) {
 		if (file.exists()) {
 			if (file.isDirectory()) {
@@ -589,11 +576,13 @@ public class EagletController {
 						"<" + EAGLET.Wrong.getURI() + ">");
 	}
 
-	public void recheckUserInput() throws GerbilException, IOException {
-
-		new InputforPipeline(this.generateDocumentList(), "eaglet_data" + File.separator + "result_final"
-				+ File.separator + this.currentUser + File.separator + DATASET_FILES[0] + "-result.ttl");
-		LOGGER.info("FINAL output is genreated!! After our correction");
-
-	}
+	/*
+	 * public void recheckUserInput() throws GerbilException, IOException {
+	 * LOGGER.info("Going to Read the files from " + "eaglet_data" + File.separator
+	 * + "result_user" + File.separator + this.currentUser + File.separator +
+	 * DATASET_FILES[0]); new InputforPipeline(this.generateDocumentList(),
+	 * "eaglet_data" + File.separator + "result_final" + File.separator +
+	 * this.currentUser + File.separator + DATASET_FILES[0] + "-result.ttl");
+	 * LOGGER.info("FINAL output is genreated!! After our correction");
+	 */
 }
