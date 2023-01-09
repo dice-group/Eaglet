@@ -384,7 +384,6 @@ public class EagletController {
 
 		String name = result.getDocumentURI().replaceAll("[^a-zA-Z0-9.-]", "_");
 		filename = "result-" + name + userName;
-		filename = name.substring(0, 20);
 		counter++;
 		Model nifModel = generateModifiedModel(result);
 

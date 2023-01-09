@@ -19,7 +19,7 @@ import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.entitytypemodify.EntityTypeChange;
 import org.aksw.gerbil.dataset.Dataset;
 import org.aksw.gerbil.dataset.DatasetConfiguration;
-import org.aksw.gerbil.dataset.impl.nif.NIFFileDatasetConfig;
+import org.aksw.gerbil.dataset.impl.gerdaq.GERDAQDataset;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
@@ -70,11 +70,11 @@ public class InputforPipeline {
 	public InputforPipeline(String name, String path) throws GerbilException,
 			IOException {
 
-		DatasetConfiguration DATASET = new NIFFileDatasetConfig(name, path,
-				false, ExperimentType.A2KB, null, null);
+		GERDAQDataset DATASET = new GERDAQDataset(path);
+		DATASET.setName("name");
+		DATASET.init();
 
-		List<Document> documents = DATASET.getDataset(ExperimentType.A2KB)
-				.getInstances();
+		List<Document> documents = DATASET.getInstances();
 
 		this.prePipeProcessor(documents);
 		// Starting the Pipe.
