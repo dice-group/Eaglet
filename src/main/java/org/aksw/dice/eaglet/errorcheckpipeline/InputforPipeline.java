@@ -17,9 +17,9 @@ import java.util.List;
 
 import org.aksw.dice.eaglet.documentprocessor.DocumentProcessor;
 import org.aksw.dice.eaglet.entitytypemodify.EntityTypeChange;
+import org.aksw.dice.eaglet.new_gerdaq.GERDAQDataset;
 import org.aksw.gerbil.dataset.Dataset;
 import org.aksw.gerbil.dataset.DatasetConfiguration;
-import org.aksw.gerbil.dataset.impl.gerdaq.GERDAQDataset;
 import org.aksw.gerbil.datatypes.ExperimentType;
 import org.aksw.gerbil.exceptions.GerbilException;
 import org.aksw.gerbil.transfer.nif.Document;
